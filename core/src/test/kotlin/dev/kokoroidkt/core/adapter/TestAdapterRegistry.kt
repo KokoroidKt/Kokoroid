@@ -76,7 +76,6 @@ class SimpleTestAdapter : Adapter {
                 event: Event,
                 message: MessageChain,
             ) {
-                TODO("Not yet implemented")
             }
 
             override val botId: String
