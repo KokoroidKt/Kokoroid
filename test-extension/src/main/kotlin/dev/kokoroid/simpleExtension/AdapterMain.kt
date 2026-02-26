@@ -4,6 +4,9 @@ import dev.kokoroid.simpleExtension.utils.Util
 import dev.kokoroidkt.adapterApi.adapter.Adapter
 import dev.kokoroidkt.adapterApi.logger.getLogger
 import dev.kokoroidkt.coreApi.bot.Bot
+import dev.kokoroidkt.coreApi.event.Event
+import dev.kokoroidkt.coreApi.message.MessageChain
+import kotlinx.serialization.json.JsonElement
 
 class AdapterMain : Adapter {
     override fun onLoad() {
@@ -26,7 +29,13 @@ class AdapterMain : Adapter {
         object : Bot {
             override fun callApi(
                 apiEndpoint: String,
-                data: Any,
+                data: JsonElement,
+            ) {
+            }
+
+            override fun replyMessage(
+                event: Event,
+                message: MessageChain,
             ) {
             }
 
