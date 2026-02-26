@@ -21,13 +21,13 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/adapter-api" />
-            <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/buildSrc" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core-api" />
             <option value="$PROJECT_DIR$/driver-api" />
             <option value="$PROJECT_DIR$/plugin-api" />
-            <option value="$PROJECT_DIR$/utils" />
+            <option value="$PROJECT_DIR$/test-extension" />
+            <option value="$PROJECT_DIR$/transport-api" />
           </set>
         </option>
       </GradleProjectSettings>

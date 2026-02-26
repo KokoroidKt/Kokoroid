@@ -9,7 +9,12 @@ kotlin {
     jvmToolchain(21)
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     // Add a dependency on the Kotlin Gradle plugin, so that convention plugins can apply it.
     implementation(libs.kotlinGradlePlugin)
+    implementation("org.eclipse.jgit:org.eclipse.jgit:7.2.1.202505142326-r")
 }

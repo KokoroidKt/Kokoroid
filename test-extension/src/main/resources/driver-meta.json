@@ -1,0 +1,11 @@
+{
+  "name": "SimpleDriver",
+  "version": "1.0.0",
+  "mainClass": "dev.kokoroid.simpleExtension.DriverMain",
+  "authors": [
+    "foo"
+  ],
+  "description": "meow",
+  "website": "https://example.com",
+  "priority": 0
+}

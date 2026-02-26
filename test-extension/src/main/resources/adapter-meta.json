@@ -1,0 +1,11 @@
+{
+  "name": "SimpleAdapter",
+  "version": "1.0.0",
+  "mainClass": "dev.kokoroid.simpleExtension.AdapterMain",
+  "authors": [
+    "cat"
+  ],
+  "description": "bar",
+  "website": "https://example.com",
+  "priority": 0
+}

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 moran0710 and Kokoroid contributors
+ * MIT License
+ */
+
 // The code in this file is a convention plugin - a Gradle mechanism for sharing reusable build logic.
 // `buildSrc` is a Gradle-recognized directory and every plugin there will be easily available in the rest of the build.
 package buildsrc.convention
@@ -23,7 +28,7 @@ tasks.withType<Test>().configureEach {
         events(
             TestLogEvent.FAILED,
             TestLogEvent.PASSED,
-            TestLogEvent.SKIPPED
+            TestLogEvent.SKIPPED,
         )
     }
 }

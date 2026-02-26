@@ -1,0 +1,13 @@
+{
+  "name": "SimplePluginForTest",
+  "author": [
+    "Author1",
+    "linus",
+    "meow"
+  ],
+  "description": "meow meow",
+  "version": "1.0.0",
+  "mainClass": "dev.kokoroid.simpleExtension.PluginMain",
+  "website": "https://example.com",
+  "priority": 10
+}

@@ -8,6 +8,13 @@ dependencyResolutionManagement {
     @Suppress("UnstableApiUsage")
     repositories {
         mavenCentral()
+
+        google()
+        maven {
+            // aliyun mirror for Chinese developers
+            name = "AliyunMirror"
+            url = uri("https://maven.aliyun.com/repository/central")
+        }
     }
 }
 
@@ -19,12 +26,13 @@ plugins {
 // Include the `app` and `utils` subprojects in the build.
 // If there are changes in only one of the projects, Gradle will rebuild only the one that has changed.
 // Learn more about structuring projects with Gradle - https://docs.gradle.org/8.7/userguide/multi_project_builds.html
-include(":app")
-include(":utils")
 
 rootProject.name = "Kokoroid"
-include("core")
-include("core-api")
-include("adapter-api")
-include("driver-api")
-include("plugin-api")
+include(":core")
+include(":core-api")
+include(":adapter-api")
+include(":driver-api")
+include(":plugin-api")
+include(":test-extension")
+
+include(":transport-api")
