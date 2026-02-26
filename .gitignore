@@ -43,3 +43,10 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Kokoroid ###
+kokoroid
+core-api/foo
+.tmp
+
+

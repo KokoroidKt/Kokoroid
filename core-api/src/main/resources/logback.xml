@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<configuration>
+    <!-- 禁止Logback自身的状态信息输出 -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+
+    <!-- 设置Logback自身日志级别为WARN -->
+    <logger name="ch.qos.logback" level="WARN"/>
+
+    <!-- 注册自定义转换器 -->
+    <conversionRule conversionWord="customLevel"
+                    converterClass="dev.kokoroidkt.coreApi.logging.CustomColorConverter"/>
+    <conversionRule conversionWord="coloredLog"
+                    converterClass="dev.kokoroidkt.coreApi.logging.ColoredPatternConverter"/>
+
+    <!-- 控制台输出 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- 启用Jansi支持Windows ANSI颜色 -->
+        <withJansi>true</withJansi>
+        <encoder>
+            <!-- 方案1：使用我们创建的完整格式化转换器 -->
+            <pattern>%coloredLog%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 文件输出 -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>./kokoroid/logs/latest.log</file>
+        <append>false</append>
+        <encoder>
+            <!-- 文件输出不使用颜色 -->
+            <pattern>%d{YYYY-MM-dd HH:mm:ss}[%-5level]: %msg%n</pattern>
+        </encoder>
+        <immediateFlush>true</immediateFlush>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+
+</configuration>

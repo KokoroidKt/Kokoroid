@@ -7,16 +7,48 @@ kotlin = "2.2.21"
 kotlinxDatetime = "0.7.1"
 kotlinxSerializationJSON = "1.9.0"
 kotlinxCoroutines = "1.10.2"
+kotlinReflect = "2.2.21"
+kotlin-logging = "5.1.0"
+logback = "1.5.25"
+jansi = "2.4.1"
+janino = "3.1.12"
+logstash-logback = "7.4"
+kotlinx-serialization = "1.8.1"
+koin-bom = "4.1.1"
+junit = "4.13.1"
+junitJupiter = "5.14.0"
+mockk="1.13.9"
+
 
 [libraries]
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-test = { module = "io.insert-koin:koin-test" }
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
+
 kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlinxDatetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
 kotlinxSerialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJSON" }
 kotlinxCoroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinReflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlinReflect" }
+# 日志
+kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+jansi = { module = "org.fusesource.jansi:jansi", version.ref = "jansi" }
+janino = { module = "org.codehaus.janino:janino", version.ref = "janino" }
+logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstash-logback" }
+# 序列化/反序列化
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-hocon = { module = "org.jetbrains.kotlinx:kotlinx-serialization-hocon", version.ref = "kotlinx-serialization" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
+mockk = {group = "io.mockk", name="mockk", version.ref="mockk"}
 
 # Libraries can be bundled together for easier import
 [bundles]
-kotlinxEcosystem = ["kotlinxDatetime", "kotlinxSerialization", "kotlinxCoroutines"]
+kotlinxEcosystem = ["kotlinxDatetime", "kotlinxSerialization", "kotlinxCoroutines", "kotlinReflect"]
+logging = ["kotlin-logging", "logback-classic", "jansi", "janino", "logstash-logback-encoder"]
+kotlinxSerialization = ["kotlinx-serialization-json", "kotlinx-serialization-hocon"]
+testSuit = ["mockk", "junit", "junit-jupiter"]
 
 [plugins]
 kotlinPluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
