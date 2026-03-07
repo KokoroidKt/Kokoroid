@@ -17,9 +17,9 @@ class RuntimeStateTest {
     @Test
     fun testIfMethodAllowsValidTransitionFromInitializingToStartingWithLoadingDrivers() {
         val runtimeState = RuntimeState()
-        val newState = InternalState.Starting(InternalState.Starting.StartingStep.LoadingDrivers())
-        runtimeState.state = newState
-        assertEquals(newState, runtimeState.state)
+        val newStatus = InternalState.Starting(InternalState.Starting.StartingStep.LoadingDrivers())
+        runtimeState.state = newStatus
+        assertEquals(newStatus, runtimeState.state)
     }
 
     /**

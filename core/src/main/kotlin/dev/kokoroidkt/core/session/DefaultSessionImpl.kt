@@ -7,6 +7,8 @@ package dev.kokoroidkt.core.session
 
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
+import dev.kokoroidkt.coreApi.event.MessageEvent
+import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.user.UserGroup
 import dev.kokoroidkt.pluginApi.conversation.ConversationContext
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
@@ -62,8 +64,16 @@ class DefaultSessionImpl(
                     when (val waitItem = (state as SessionState.WaitingFor).item) {
                         is SessionState.WaitingFor.Item.EventItem -> {
                             with(waitItem) {
-                                if (userGroup.any { it in this@DefaultSessionImpl.users } && eventClass.isInstance(event)) {
+                                if (eventClass.isInstance(event)) {
                                     continuation.resume(event)
+                                }
+                            }
+                        }
+
+                        is SessionState.WaitingFor.Item.MessageItem -> {
+                            with(waitItem) {
+                                if (event is MessageEvent) {
+                                    continuation.resume(event.messageChain)
                                 }
                             }
                         }
