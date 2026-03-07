@@ -10,7 +10,7 @@ import logger.getLogger
 
 class RuntimeState {
     private var _state: InternalState = InternalState.Initializing()
-    private val logger = getLogger("RuntimeStatus")
+    private val logger = getLogger("RuntimeState")
 
     var state: InternalState
         get() = _state

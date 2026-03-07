@@ -72,7 +72,7 @@ class CrashRegistryTest {
         )
         Assertions.assertTrue(
             crashRegistry.records[0].kokoroidState is InternalState.BeforeStopping,
-            "The Kokoroid status should change to WaitForStopping",
+            "The Kokoroid state should change to WaitForStopping",
         )
     }
 
