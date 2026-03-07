@@ -9,12 +9,11 @@ import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.user.UserGroup
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
-import dev.kokoroidkt.pluginApi.conversation.Reply
 import kotlinx.coroutines.CompletableDeferred
 
 interface Session {
     val users: UserGroup
-    var status: SessionStatus
+    var state: SessionState
 
     suspend fun process(
         conversationOrchestrator: ConversationOrchestrator,

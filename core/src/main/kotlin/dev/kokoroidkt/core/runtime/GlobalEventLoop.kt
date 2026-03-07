@@ -10,18 +10,17 @@ import dev.kokoroid.transport.raw.Raw
 import dev.kokoroidkt.adapterApi.transport.EventEmitter
 import dev.kokoroidkt.core.config.Config
 import dev.kokoroidkt.core.exceptions.EventBufferIsFullException
-import dev.kokoroidkt.core.exceptions.status.ErrorSessionStatusException
+import dev.kokoroidkt.core.exceptions.state.ErrorSessionStateException
 import dev.kokoroidkt.core.plugin.PluginManager
 import dev.kokoroidkt.core.runtime.crash.CrashRegistry
-import dev.kokoroidkt.core.runtime.status.InternalStatus
-import dev.kokoroidkt.core.runtime.status.RuntimeStatus
+import dev.kokoroidkt.core.runtime.state.InternalState
+import dev.kokoroidkt.core.runtime.state.RuntimeState
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
 import dev.kokoroidkt.pluginApi.conversation.Reply
-import dev.kokoroidkt.pluginApi.session.SessionStatus
+import dev.kokoroidkt.pluginApi.session.SessionState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ClosedReceiveChannelException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -40,12 +39,12 @@ class GlobalEventLoop :
     private val crashRegistry: CrashRegistry by inject()
 
     private val logger = getLogger("MainLoop")
-    private val runtimeStatus by inject<RuntimeStatus>()
+    private val runtimeState by inject<RuntimeState>()
     private val pluginManager: PluginManager by inject()
 
     suspend fun start() {
         logger.info { "Kokoroid Start Successfully!!! \n" }
-        while (runtimeStatus.status is InternalStatus.Running) {
+        while (runtimeState.state is InternalState.Running) {
             val event = eventChannel.receive()
             logger.debug { "receive ${event.eventId}(${event::class.qualifiedName})" }
             withContext(Dispatchers.Default) {
@@ -56,10 +55,10 @@ class GlobalEventLoop :
                             logger.debug { "orchestrator with processor ${orchestrator.getProcessorQualifiedName()} processing" }
                             val promise = orchestrator.callSessionToProcessOrCreate(event, event.bot)
                             promise.deferred.await()
-                            if (promise.session.status !is SessionStatus.Finished) {
-                                throw ErrorSessionStatusException(SessionStatus.Finished(Reply.NoReply), promise.session.status)
+                            if (promise.session.state !is SessionState.Finished) {
+                                throw ErrorSessionStateException(SessionState.Finished(Reply.NoReply), promise.session.state)
                             }
-                            when (val reply = (promise.session.status as SessionStatus.Finished).reply) {
+                            when (val reply = (promise.session.state as SessionState.Finished).reply) {
                                 is Reply.NoReply -> {}
 
                                 is Reply.MessageChainReply -> {

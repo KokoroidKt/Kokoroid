@@ -16,8 +16,8 @@ import dev.kokoroidkt.core.driver.DriverManager
 import dev.kokoroidkt.core.plugin.PluginLoader
 import dev.kokoroidkt.core.plugin.PluginManager
 import dev.kokoroidkt.core.runtime.crash.CrashRegistry
-import dev.kokoroidkt.core.runtime.status.InternalStatus
-import dev.kokoroidkt.core.runtime.status.RuntimeStatus
+import dev.kokoroidkt.core.runtime.state.InternalState
+import dev.kokoroidkt.core.runtime.state.RuntimeState
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
 import dev.kokoroidkt.driverApi.driver.Driver
 import dev.kokoroidkt.driverApi.driver.DriverMeta
@@ -41,13 +41,13 @@ class KokoroidLauncher : KoinComponent {
     private val config: Config by inject()
     private val globalEventLoop: GlobalEventLoop by inject()
     private val crashRegistry: CrashRegistry by inject()
-    private val runtimeStatus: RuntimeStatus by inject()
+    private val runtimeState: RuntimeState by inject()
 
     private val shutdownThread =
         Thread {
             val logger = getLogger("Shutdown")
             logger.info { "Shutting down...\n" }
-            runtimeStatus.status = InternalStatus.BeforeStopping()
+            runtimeState.state = InternalState.BeforeStopping()
             val ex = runCatching { stopAllExtensions() }.exceptionOrNull()
             if (ex != null) {
                 logger.error(ex) { "Error when shutdown: ${ex::class.qualifiedName}: ${ex.message}" }
@@ -55,10 +55,10 @@ class KokoroidLauncher : KoinComponent {
             if (crashRegistry.isCrashed) {
                 logger.error { "###### Kokoroid Crash Report ######" }
                 crashRegistry.logRecords()
-                runtimeStatus.status =
-                    InternalStatus.Stopped(ExitStatus.CRITICAL_ERROR_EXIT)
+                runtimeState.state =
+                    InternalState.Stopped(ExitStatus.CRITICAL_ERROR_EXIT)
             } else {
-                runtimeStatus.status = InternalStatus.Stopped(ExitStatus.SUCCESS_EXIT)
+                runtimeState.state = InternalState.Stopped(ExitStatus.SUCCESS_EXIT)
             }
             logger.info { "Kokoroid shutdown, bye" }
         }
@@ -72,8 +72,8 @@ class KokoroidLauncher : KoinComponent {
         try {
             initAllExtensions()
             if (!validatingOnly) {
-                runtimeStatus.status =
-                    InternalStatus.Running()
+                runtimeState.state =
+                    InternalState.Running()
                 runBlocking {
                     globalEventLoop.start()
                 }
@@ -94,26 +94,26 @@ class KokoroidLauncher : KoinComponent {
             shutdownThread.start()
             shutdownThread.join()
             val exitCode =
-                if (runtimeStatus.status is InternalStatus.Stopped) {
-                    (runtimeStatus.status as InternalStatus.Stopped).statusCode
+                if (runtimeState.state is InternalState.Stopped) {
+                    (runtimeState.state as InternalState.Stopped).statusCode
                 } else {
-                    logger.error { "Wrong exiting runtimeStatus.status: ${runtimeStatus.status::class.qualifiedName}" }
-                    ExitStatus.WRONG_EXIT_STATUS
+                    logger.error { "Wrong exiting runtimeStatus.status: ${runtimeState.state::class.qualifiedName}" }
+                    ExitStatus.WRONG_EXIT_STATE
                 }
             exitProcess(exitCode)
         }
     }
 
     fun stopAllExtensions() {
-        runtimeStatus.status = InternalStatus.Stopping(InternalStatus.Stopping.StoppingStep.StoppingDrivers())
+        runtimeState.state = InternalState.Stopping(InternalState.Stopping.StoppingStep.StoppingDrivers())
         stopDrivers()
-        runtimeStatus.status = InternalStatus.Stopping(InternalStatus.Stopping.StoppingStep.StoppingAdapters())
+        runtimeState.state = InternalState.Stopping(InternalState.Stopping.StoppingStep.StoppingAdapters())
         stopAdapters()
-        runtimeStatus.status = InternalStatus.Stopping(InternalStatus.Stopping.StoppingStep.UnloadingPlugins())
+        runtimeState.state = InternalState.Stopping(InternalState.Stopping.StoppingStep.UnloadingPlugins())
         unloadPlugins()
-        runtimeStatus.status = InternalStatus.Stopping(InternalStatus.Stopping.StoppingStep.UnloadingAdapters())
+        runtimeState.state = InternalState.Stopping(InternalState.Stopping.StoppingStep.UnloadingAdapters())
         unloadAdapters()
-        runtimeStatus.status = InternalStatus.Stopping(InternalStatus.Stopping.StoppingStep.UnloadingDrivers())
+        runtimeState.state = InternalState.Stopping(InternalState.Stopping.StoppingStep.UnloadingDrivers())
         unloadDrivers()
     }
 
@@ -194,17 +194,17 @@ class KokoroidLauncher : KoinComponent {
      * 5. 按照优先级顺序加载每个Plugin，Plugin启动成功后会立刻调用他的[Plugin.onEnable]方法
      */
     fun initAllExtensions() {
-        runtimeStatus.status = InternalStatus.Starting(InternalStatus.Starting.StartingStep.LoadingDrivers())
+        runtimeState.state = InternalState.Starting(InternalState.Starting.StartingStep.LoadingDrivers())
         loadDrivers()
-        runtimeStatus.status = InternalStatus.Starting(InternalStatus.Starting.StartingStep.LoadingAdapters())
+        runtimeState.state = InternalState.Starting(InternalState.Starting.StartingStep.LoadingAdapters())
         loadAdapters()
-        runtimeStatus.status = InternalStatus.Starting(InternalStatus.Starting.StartingStep.LoadingPlugins())
+        runtimeState.state = InternalState.Starting(InternalState.Starting.StartingStep.LoadingPlugins())
         initPlugins()
-        runtimeStatus.status = InternalStatus.Starting(InternalStatus.Starting.StartingStep.StartingAdapters())
+        runtimeState.state = InternalState.Starting(InternalState.Starting.StartingStep.StartingAdapters())
         startAdapters()
-        runtimeStatus.status = InternalStatus.Starting(InternalStatus.Starting.StartingStep.StartingDrivers())
+        runtimeState.state = InternalState.Starting(InternalState.Starting.StartingStep.StartingDrivers())
         startDrivers()
-        runtimeStatus.status = InternalStatus.AfterStarting()
+        runtimeState.state = InternalState.AfterStarting()
     }
 
     fun startAdapters() {

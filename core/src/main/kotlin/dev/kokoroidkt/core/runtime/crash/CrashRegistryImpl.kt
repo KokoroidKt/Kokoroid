@@ -6,8 +6,8 @@
 package dev.kokoroidkt.core.runtime.crash
 
 import dev.kokoroidkt.core.config.Config
-import dev.kokoroidkt.core.runtime.status.InternalStatus
-import dev.kokoroidkt.core.runtime.status.RuntimeStatus
+import dev.kokoroidkt.core.runtime.state.InternalState
+import dev.kokoroidkt.core.runtime.state.RuntimeState
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
 import logger.getLogger
@@ -28,7 +28,7 @@ class CrashRegistryImpl :
         get() = records.isNotEmpty()
 
     val records = mutableListOf<CrashRecord>()
-    val runtimeStatus = getKoin().get<RuntimeStatus>()
+    val runtimeState = getKoin().get<RuntimeState>()
 
     override fun recordAndRequestStop(
         err: CriticalException,
@@ -38,14 +38,14 @@ class CrashRegistryImpl :
             records.add(
                 CrashRecord(
                     err = err,
-                    kokoroidStatus = runtimeStatus.status,
+                    kokoroidState = runtimeState.state,
                     event = event,
                 ),
             )
             if (!callStopped) {
                 logger.error(err) { "Crash occurred, stopping Kokoroid" }
-                runtimeStatus.status =
-                    InternalStatus
+                runtimeState.state =
+                    InternalState
                         .BeforeStopping()
                 callStopped = true
             }

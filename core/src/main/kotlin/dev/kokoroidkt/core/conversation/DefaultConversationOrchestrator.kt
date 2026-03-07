@@ -48,7 +48,7 @@ class DefaultConversationOrchestrator(
         } else {
             promiseMap[session] = deferred
         }
-        logger.debug { "session $session: status -> ${session.status::class.qualifiedName}" }
+        logger.debug { "session $session: status -> ${session.state::class.qualifiedName}" }
         return SessionPromise(session, deferred)
     }
 

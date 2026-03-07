@@ -3,10 +3,10 @@
  * MIT License
  */
 
-package dev.kokoroidkt.pluginApi.conversation.status
+package dev.kokoroidkt.pluginApi.conversation.state
 
-enum class ConversationStatus(
-    val status: String,
+enum class ConversationState(
+    val state: String,
 ) {
     READY("READY"),
     OPEN("OPEN"),

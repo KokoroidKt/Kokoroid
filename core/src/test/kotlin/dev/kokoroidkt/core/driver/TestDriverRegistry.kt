@@ -28,7 +28,7 @@ import kotlin.test.assertTrue
 /**
  * 驱动器状态枚举
  */
-enum class DriverStatus {
+enum class DriverState {
     BEFORE_LOAD,
     LOADED,
     UNLOADED,
@@ -40,22 +40,22 @@ enum class DriverStatus {
  * 最简单的测试驱动器实现
  */
 class SimpleTestDriver : Driver() {
-    var status = DriverStatus.BEFORE_LOAD
+    var state = DriverState.BEFORE_LOAD
 
     override fun onLoad() {
-        status = DriverStatus.LOADED
+        state = DriverState.LOADED
     }
 
     override fun onStart() {
-        status = DriverStatus.STARTED
+        state = DriverState.STARTED
     }
 
     override fun onStop() {
-        status = DriverStatus.STOPPED
+        state = DriverState.STOPPED
     }
 
     override fun onUnload() {
-        status = DriverStatus.UNLOADED
+        state = DriverState.UNLOADED
     }
 }
 
@@ -113,18 +113,18 @@ class TestDriverRegistry {
     fun `test driver lifecycle`() {
         val container = registry.register(testDriver, testDriverMeta)
 
-        assertEquals(DriverStatus.BEFORE_LOAD, testDriver.status)
+        assertEquals(DriverState.BEFORE_LOAD, testDriver.state)
 
         registry.loadDriver(container)
-        assertEquals(DriverStatus.LOADED, testDriver.status)
+        assertEquals(DriverState.LOADED, testDriver.state)
         registry.startDriver(container)
-        assertEquals(DriverStatus.STARTED, testDriver.status)
+        assertEquals(DriverState.STARTED, testDriver.state)
 
         registry.stopDriver(container)
-        assertEquals(DriverStatus.STOPPED, testDriver.status)
+        assertEquals(DriverState.STOPPED, testDriver.state)
 
         registry.unloadDriver(container)
-        assertEquals(DriverStatus.UNLOADED, testDriver.status)
+        assertEquals(DriverState.UNLOADED, testDriver.state)
     }
 
     @Test

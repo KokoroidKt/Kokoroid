@@ -12,7 +12,7 @@ import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.user.User
 import dev.kokoroidkt.coreApi.user.UserGroup
 import dev.kokoroidkt.pluginApi.session.Session
-import dev.kokoroidkt.pluginApi.session.SessionStatus
+import dev.kokoroidkt.pluginApi.session.SessionState
 import dev.kokoroidkt.pluginApi.task.BackgroundTask
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
@@ -90,6 +90,6 @@ class Processor(
                 }.toMap()
 
         val result = function.callSuspendBy(arg)
-        session.status = SessionStatus.Finished(returnTypeWarps(result))
+        session.state = SessionState.Finished(returnTypeWarps(result))
     }
 }

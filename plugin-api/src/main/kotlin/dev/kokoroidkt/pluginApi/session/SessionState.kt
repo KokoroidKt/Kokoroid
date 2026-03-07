@@ -12,12 +12,12 @@ import dev.kokoroidkt.pluginApi.conversation.Reply
 import kotlinx.coroutines.CancellableContinuation
 import kotlin.reflect.KClass
 
-sealed class SessionStatus {
-    class Alive : SessionStatus()
+sealed class SessionState {
+    class Alive : SessionState()
 
     class WaitingFor(
         val item: Item<*>,
-    ) : SessionStatus() {
+    ) : SessionState() {
         sealed class Item<T>(
             val continuation: CancellableContinuation<T>,
         ) {
@@ -43,5 +43,5 @@ sealed class SessionStatus {
 
     class Finished(
         val reply: Reply,
-    ) : SessionStatus()
+    ) : SessionState()
 }

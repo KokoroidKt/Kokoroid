@@ -13,8 +13,8 @@ import com.github.ajalt.clikt.parameters.options.option
 import dev.kokoroidkt.core.constants.ExitStatus
 import dev.kokoroidkt.core.di.allModules
 import dev.kokoroidkt.core.runtime.KokoroidLauncher
-import dev.kokoroidkt.core.runtime.status.InternalStatus
-import dev.kokoroidkt.core.runtime.status.RuntimeStatus
+import dev.kokoroidkt.core.runtime.state.InternalState
+import dev.kokoroidkt.core.runtime.state.RuntimeState
 import dev.kokoroidkt.core.utils.KokoroidVersion
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
 import dev.kokoroidkt.coreApi.logging.LogFiles
@@ -68,7 +68,7 @@ class KokoroidBootstrap :
             logger.info { "Kokoroid Starting....." }
             initKoin()
             try {
-                getKoin().get<RuntimeStatus>().status = InternalStatus.Initializing()
+                getKoin().get<RuntimeState>().state = InternalState.Initializing()
                 getKoin().get<KokoroidLauncher>().launch(isValidationOnly)
             } catch (e: CriticalException) {
                 logger.error(e) { "Kokoroid Bootstrap Failed! Because：${e.javaClass.name}: ${e.message}" }

@@ -5,13 +5,13 @@
 
 package dev.kokoroidkt.core.runtime.crash
 
-import dev.kokoroidkt.core.runtime.status.InternalStatus
+import dev.kokoroidkt.core.runtime.state.InternalState
 import dev.kokoroidkt.coreApi.event.Event
 
 data class CrashRecord(
     val err: Throwable,
     val timestamp: Long = System.currentTimeMillis(),
-    val kokoroidStatus: InternalStatus,
+    val kokoroidState: InternalState,
     val event: Event?,
 ) {
     override fun toString() =
@@ -19,7 +19,7 @@ data class CrashRecord(
             "(" +
             "err=${err.javaClass.name}(${err.message}), " +
             "timestamp=$timestamp, " +
-            "status=$kokoroidStatus, " +
+            "status=$kokoroidState, " +
             "event=${event?.javaClass?.simpleName ?: "null"}" +
             ")"
 }

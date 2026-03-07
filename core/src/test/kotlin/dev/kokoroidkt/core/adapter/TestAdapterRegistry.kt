@@ -33,7 +33,7 @@ import kotlin.test.assertTrue
 /**
  * 适配器状态枚举
  */
-enum class AdapterStatus {
+enum class AdapterState {
     BEFORE_LOAD,
     LOADED,
     STARTED,
@@ -45,22 +45,22 @@ enum class AdapterStatus {
  * 最简单的测试适配器实现
  */
 class SimpleTestAdapter : Adapter {
-    var status = AdapterStatus.BEFORE_LOAD
+    var state = AdapterState.BEFORE_LOAD
 
     override fun onLoad() {
-        status = AdapterStatus.LOADED
+        state = AdapterState.LOADED
     }
 
     override fun onStart() {
-        status = AdapterStatus.STARTED
+        state = AdapterState.STARTED
     }
 
     override fun onStop() {
-        status = AdapterStatus.STOPPED
+        state = AdapterState.STOPPED
     }
 
     override fun onUnload() {
-        status = AdapterStatus.UNLOADED
+        state = AdapterState.UNLOADED
     }
 
     override fun getBot(botId: String): Bot =
@@ -160,21 +160,21 @@ class TestAdapterRegistry {
         val container = registry.register(testAdapter, testAdapterMeta)
 
         // 验证初始状态
-        assertEquals(AdapterStatus.BEFORE_LOAD, testAdapter.status)
+        assertEquals(AdapterState.BEFORE_LOAD, testAdapter.state)
 
         // 测试加载适配器
         registry.loadAdapter(container)
-        assertEquals(AdapterStatus.LOADED, testAdapter.status)
+        assertEquals(AdapterState.LOADED, testAdapter.state)
 
         registry.startAdapter(container)
-        assertEquals(AdapterStatus.STARTED, testAdapter.status)
+        assertEquals(AdapterState.STARTED, testAdapter.state)
 
         registry.stopAdapter(container)
-        assertEquals(AdapterStatus.STOPPED, testAdapter.status)
+        assertEquals(AdapterState.STOPPED, testAdapter.state)
 
         // 测试卸载适配器
         registry.unloadAdapter(container)
-        assertEquals(AdapterStatus.UNLOADED, testAdapter.status)
+        assertEquals(AdapterState.UNLOADED, testAdapter.state)
     }
 
     @Test

@@ -3,13 +3,13 @@
  * MIT License
  */
 
-package dev.kokoroidkt.core.exceptions.status
+package dev.kokoroidkt.core.exceptions.state
 
 import dev.kokoroidkt.core.exceptions.CoreException
-import dev.kokoroidkt.pluginApi.session.SessionStatus
+import dev.kokoroidkt.pluginApi.session.SessionState
 
-class ErrorSessionStatusException(
-    require: SessionStatus,
-    acuall: SessionStatus,
+class ErrorSessionStateException(
+    require: SessionState,
+    acuall: SessionState,
     cause: Throwable? = null,
 ) : CoreException("Require ${require::class.qualifiedName}, Acuall ${acuall::class.qualifiedName}", cause)

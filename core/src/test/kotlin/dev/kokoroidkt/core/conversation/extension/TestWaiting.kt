@@ -15,7 +15,7 @@ import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.conversation.Reply
 import dev.kokoroidkt.pluginApi.conversation.extensions.waitForEvent
 import dev.kokoroidkt.pluginApi.factory.ConversationOrchestratorFactory
-import dev.kokoroidkt.pluginApi.session.SessionStatus
+import dev.kokoroidkt.pluginApi.session.SessionState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -91,10 +91,10 @@ class TestWaiting {
         runBlocking {
             val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(Processor(::finishWithoutWait))
             val promise1 = orchestrator.callSessionToProcessOrCreate(TestEvent("123"), TestBot("123"))
-            println(promise1.session.status)
+            println(promise1.session.state)
             assertFalse(orchestrator.isExist(promise1.session))
             promise1.deferred.await()
-            println((promise1.session.status as SessionStatus.Finished).reply)
+            println((promise1.session.state as SessionState.Finished).reply)
         }
     }
 
@@ -104,13 +104,13 @@ class TestWaiting {
         runBlocking {
             val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(Processor(::waitForEventProcessor))
             val promise1 = orchestrator.callSessionToProcessOrCreate(TestEvent("123"), TestBot("123"))
-            println(promise1.session.status)
+            println(promise1.session.state)
             launch {
                 delay(100)
                 val promise2 = orchestrator.callSessionToProcessOrCreate(TestEvent("321"), TestBot("321"))
                 checkList.add(1)
                 assertEquals(promise1, promise2)
-                println("with status: ${promise2.session.status}")
+                println("with status: ${promise2.session.state}")
             }
             promise1.deferred.await()
             checkList.add(2)
@@ -121,8 +121,8 @@ class TestWaiting {
             }
 
             assert(promise1.deferred.isCompleted)
-            if (promise1.session.status is SessionStatus.Finished) {
-                println("Reply: ${(promise1.session.status as SessionStatus.Finished).reply}")
+            if (promise1.session.state is SessionState.Finished) {
+                println("Reply: ${(promise1.session.state as SessionState.Finished).reply}")
                 checkList.add(3)
                 assert(checkList[0] == 1)
                 assert(checkList[1] == 2)
@@ -139,27 +139,27 @@ class TestWaiting {
         runBlocking {
             val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(Processor(::waitForEventProcessor))
             val promise1 = orchestrator.callSessionToProcessOrCreate(TestEvent("123"), TestBot("123"))
-            println(promise1.session.status)
+            println(promise1.session.state)
             delay(100)
 
             val promise2 = orchestrator.callSessionToProcessOrCreate(AnotherTestEvent("456"), TestBot("321"))
             assertEquals(promise1, promise2)
             assert(
-                promise2.session.status is SessionStatus.WaitingFor &&
-                    (promise2.session.status as SessionStatus.WaitingFor).item is SessionStatus.WaitingFor.Item.EventItem &&
-                    ((promise2.session.status as SessionStatus.WaitingFor).item as SessionStatus.WaitingFor.Item.EventItem).eventClass ==
+                promise2.session.state is SessionState.WaitingFor &&
+                    (promise2.session.state as SessionState.WaitingFor).item is SessionState.WaitingFor.Item.EventItem &&
+                    ((promise2.session.state as SessionState.WaitingFor).item as SessionState.WaitingFor.Item.EventItem).eventClass ==
                     TestEvent::class,
             ) {
-                "wtf session is waiting for: ${promise2.session.status}[${(promise2.session.status as SessionStatus.WaitingFor).item}]"
+                "wtf session is waiting for: ${promise2.session.state}[${(promise2.session.state as SessionState.WaitingFor).item}]"
             }
             assert(promise2.deferred.isActive) { "promise is still active!!" }
-            println("with status: ${promise2.session.status}")
+            println("with status: ${promise2.session.state}")
 
             delay(100)
             val promise3 = orchestrator.callSessionToProcessOrCreate(TestEvent("321"), TestBot("321"))
             assertEquals(promise1, promise2)
             assertEquals(promise1, promise3)
-            println("with status: ${promise3.session.status}")
+            println("with status: ${promise3.session.state}")
 
             launch {
                 delay(200)
@@ -171,8 +171,8 @@ class TestWaiting {
 
             promise3.deferred.await()
             assert(promise3.deferred.isCompleted)
-            if (promise3.session.status is SessionStatus.Finished) {
-                println("Reply: ${(promise3.session.status as SessionStatus.Finished).reply}")
+            if (promise3.session.state is SessionState.Finished) {
+                println("Reply: ${(promise3.session.state as SessionState.Finished).reply}")
                 assert(true)
             } else {
                 assert(false)

@@ -10,7 +10,7 @@ import dev.kokoroidkt.coreApi.user.UserGroup
 import dev.kokoroidkt.pluginApi.conversation.ConversationContext
 import dev.kokoroidkt.pluginApi.conversation.ConversationScope
 import dev.kokoroidkt.pluginApi.exceptions.SessionTimeoutException
-import dev.kokoroidkt.pluginApi.session.SessionStatus
+import dev.kokoroidkt.pluginApi.session.SessionState
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -82,7 +82,7 @@ suspend fun ConversationScope.waitForEvent(
         launch {
             conversationContext.conversationOrchestrator.registerSession(session)
         }
-        if (session.status is SessionStatus.Finished) throw IllegalStateException("Session $session is already finished")
+        if (session.state is SessionState.Finished) throw IllegalStateException("Session $session is already finished")
 
         if (timeoutMilli != null) {
             launch {
@@ -95,9 +95,9 @@ suspend fun ConversationScope.waitForEvent(
             }
         }
 
-        session.status =
-            SessionStatus.WaitingFor(
-                SessionStatus.WaitingFor.Item.EventItem(
+        session.state =
+            SessionState.WaitingFor(
+                SessionState.WaitingFor.Item.EventItem(
                     eventClass,
                     userGroup ?: session.users,
                     continuation,

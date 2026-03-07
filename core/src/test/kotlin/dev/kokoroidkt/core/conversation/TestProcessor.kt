@@ -14,7 +14,7 @@ import dev.kokoroidkt.pluginApi.conversation.Reply
 import dev.kokoroidkt.pluginApi.conversation.extensions.waitForEvent
 import dev.kokoroidkt.pluginApi.factory.ConversationOrchestratorFactory
 import dev.kokoroidkt.pluginApi.plugin.Plugin
-import dev.kokoroidkt.pluginApi.session.SessionStatus
+import dev.kokoroidkt.pluginApi.session.SessionState
 import dev.kokoroidkt.pluginApi.task.BackgroundTask
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -123,13 +123,13 @@ class TestProcessor {
             runBlocking {
                 val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(Processor(funcPair.first))
                 val promise1 = orchestrator.callSessionToProcessOrCreate(TestEvent("123"), TestBot("123"))
-                println(promise1.session.status)
+                println(promise1.session.state)
                 launch {
                     delay(100)
                     val promise2 = orchestrator.callSessionToProcessOrCreate(TestEvent("321"), TestBot("321"))
                     checkList.add(1)
                     assertEquals(promise1, promise2)
-                    println("with status: ${promise2.session.status}")
+                    println("with status: ${promise2.session.state}")
                 }
                 promise1.deferred.await()
                 checkList.add(2)
@@ -140,13 +140,13 @@ class TestProcessor {
                 }
 
                 assert(promise1.deferred.isCompleted)
-                if (promise1.session.status is SessionStatus.Finished) {
-                    println("Reply: ${(promise1.session.status as SessionStatus.Finished).reply}")
+                if (promise1.session.state is SessionState.Finished) {
+                    println("Reply: ${(promise1.session.state as SessionState.Finished).reply}")
                     checkList.add(3)
                     assert(checkList[0] == 1)
                     assert(checkList[1] == 2)
                     assert(checkList[2] == 3)
-                    val reply = (promise1.session.status as SessionStatus.Finished).reply
+                    val reply = (promise1.session.state as SessionState.Finished).reply
                     assert(funcPair.second.isInstance(reply))
                 } else {
                     assert(false)

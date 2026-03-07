@@ -23,9 +23,9 @@ object ExitStatus {
     const val CRITICAL_ERROR_EXIT = -1
 
     /**
-     * 错误的最终状态（不是[dev.kokoroidkt.core.runtime.status.InternalStatus.Stopped]）
+     * 错误的最终状态（不是[dev.kokoroidkt.core.runtime.state.InternalState.Stopped]）
      */
-    const val WRONG_EXIT_STATUS = -2
+    const val WRONG_EXIT_STATE = -2
 
     // 验证模式：验证失败退出∈[-2000, -1000)
     const val DRIVER_LOADED_FAILED = -1001

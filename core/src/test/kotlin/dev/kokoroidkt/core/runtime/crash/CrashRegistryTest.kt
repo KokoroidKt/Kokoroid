@@ -6,7 +6,7 @@
 package dev.kokoroidkt.core.runtime.crash
 
 import dev.kokoroidkt.core.di.allModules
-import dev.kokoroidkt.core.runtime.status.InternalStatus
+import dev.kokoroidkt.core.runtime.state.InternalState
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
@@ -71,7 +71,7 @@ class CrashRegistryTest {
             "The recorded event should be null when no event is passed",
         )
         Assertions.assertTrue(
-            crashRegistry.records[0].kokoroidStatus is InternalStatus.BeforeStopping,
+            crashRegistry.records[0].kokoroidState is InternalState.BeforeStopping,
             "The Kokoroid status should change to WaitForStopping",
         )
     }

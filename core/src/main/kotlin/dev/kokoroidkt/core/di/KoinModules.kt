@@ -20,7 +20,7 @@ import dev.kokoroidkt.core.runtime.GlobalEventLoop
 import dev.kokoroidkt.core.runtime.KokoroidLauncher
 import dev.kokoroidkt.core.runtime.crash.CrashRegistry
 import dev.kokoroidkt.core.runtime.crash.CrashRegistryImpl
-import dev.kokoroidkt.core.runtime.status.RuntimeStatus
+import dev.kokoroidkt.core.runtime.state.RuntimeState
 import dev.kokoroidkt.core.utils.binds
 import dev.kokoroidkt.coreApi.logging.LoggerFactory
 import dev.kokoroidkt.driverApi.driver.DriverRegistry
@@ -72,7 +72,7 @@ val basicModules =
 
 val runtimeModules =
     module {
-        single<RuntimeStatus> { RuntimeStatus() }
+        single<RuntimeState> { RuntimeState() }
         factory<SessionContainer> {
             SessionContainerFactoryImpl().createSessionContainer()
         }

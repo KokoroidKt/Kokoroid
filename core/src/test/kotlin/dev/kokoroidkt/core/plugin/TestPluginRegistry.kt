@@ -25,7 +25,7 @@ import org.koin.core.error.KoinApplicationAlreadyStartedException
 import org.koin.java.KoinJavaComponent.getKoin
 import kotlin.test.Test
 
-enum class PluginStatus {
+enum class PluginState {
     BEFORE_LOAD,
     LOADED,
     ENABLED,
@@ -34,26 +34,26 @@ enum class PluginStatus {
 }
 
 class MaybeAPlugin : KotlinPlugin() {
-    var status = PluginStatus.BEFORE_LOAD
+    var state = PluginState.BEFORE_LOAD
 
     override fun onLoad() {
         getLogger().info { "This Plugin loaded!" }
-        status = PluginStatus.LOADED
+        state = PluginState.LOADED
     }
 
     override fun onEnable() {
         getLogger().info { "This Plugin enabled!" }
-        status = PluginStatus.ENABLED
+        state = PluginState.ENABLED
     }
 
     override fun onDisable() {
         getLogger().info { "This Plugin disabled!" }
-        status = PluginStatus.DISABLED
+        state = PluginState.DISABLED
     }
 
     override fun onUnload() {
         getLogger().info { "This Plugin unloaded!" }
-        status = PluginStatus.UNLOADED
+        state = PluginState.UNLOADED
     }
 }
 
@@ -124,17 +124,17 @@ class TestPluginContainer {
     fun `test life circle`() {
         val container = registry.register(plugin, meta)
 
-        assert(plugin.status == PluginStatus.BEFORE_LOAD)
+        assert(plugin.state == PluginState.BEFORE_LOAD)
         registry.loadPlugin(container)
-        assert(plugin.status == PluginStatus.LOADED)
+        assert(plugin.state == PluginState.LOADED)
         registry.enablePlugin(container)
-        assert(plugin.status == PluginStatus.ENABLED)
+        assert(plugin.state == PluginState.ENABLED)
         registry.disablePlugin(container)
-        assert(plugin.status == PluginStatus.DISABLED)
+        assert(plugin.state == PluginState.DISABLED)
         registry.enablePlugin(container)
-        assert(plugin.status == PluginStatus.ENABLED)
+        assert(plugin.state == PluginState.ENABLED)
         registry.unloadPlugin(container)
-        assert(plugin.status == PluginStatus.UNLOADED)
+        assert(plugin.state == PluginState.UNLOADED)
     }
 
     companion object {

@@ -9,7 +9,7 @@ import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.user.UserGroup
 import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.session.Session
-import dev.kokoroidkt.pluginApi.session.SessionStatus
+import dev.kokoroidkt.pluginApi.session.SessionState
 import dev.kokoroidkt.pluginApi.session.container.SessionContainer
 import dev.kokoroidkt.pluginApi.session.container.SessionFactoty
 import org.koin.core.component.KoinComponent
@@ -37,7 +37,7 @@ class CowSessionContainer :
     ): Session {
         while (true) {
             val cur = sessions.load()
-            val found = cur.firstOrNull { it.status !is SessionStatus.Finished && it.users == event.users }
+            val found = cur.firstOrNull { it.state !is SessionState.Finished && it.users == event.users }
             if (found != null) return found
 
             val newSession = sessionFactory.createSession(userGroup, processor)
