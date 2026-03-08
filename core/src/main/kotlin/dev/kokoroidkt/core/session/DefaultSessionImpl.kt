@@ -8,7 +8,6 @@ package dev.kokoroidkt.core.session
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.event.MessageEvent
-import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.user.UserGroup
 import dev.kokoroidkt.pluginApi.conversation.ConversationContext
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
@@ -24,6 +23,7 @@ class DefaultSessionImpl(
     private var _state: SessionState = SessionState.Alive(),
     private val processor: Processor,
     override val users: UserGroup,
+    conversationOrchestrator: ConversationOrchestrator,
 ) : Session {
     override var state: SessionState
         @Synchronized
@@ -33,6 +33,7 @@ class DefaultSessionImpl(
         set(value) {
             _state = value
         }
+    val context = ConversationContext(users, this, conversationOrchestrator, CompletableDeferred<Unit>())
 
     override fun toString() = "SessionImpl(state: SessionState=$state, users=${users.joinToString { ", " }})"
 
@@ -41,12 +42,12 @@ class DefaultSessionImpl(
     override fun equals(other: Any?): Boolean = other.hashCode() == this.hashCode()
 
     override suspend fun process(
-        conversationOrchestrator: ConversationOrchestrator,
         event: Event,
         bot: Bot,
     ): CompletableDeferred<Unit> {
         val deferred = CompletableDeferred<Unit>()
-        ConversationScope(ConversationContext(users, this, conversationOrchestrator)).launch {
+        context.deferred = deferred
+        ConversationScope(context).launch {
             when (state) {
                 is SessionState.Alive -> {
                     processor.tryCallSuspend(event, bot, users, this@DefaultSessionImpl)
@@ -54,10 +55,12 @@ class DefaultSessionImpl(
                         throw IllegalStateException("Session is already alive after processing event")
                     }
                     deferred.complete(Unit)
+                    context.deferred.complete(Unit)
                 }
 
                 is SessionState.Finished -> {
                     deferred.complete(Unit)
+                    context.deferred.complete(Unit)
                 }
 
                 is SessionState.WaitingFor -> {

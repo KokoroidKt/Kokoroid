@@ -15,6 +15,8 @@ sealed class Reply {
 
     object NoReply : Reply()
 
+    object Unprocessed : Reply()
+
     data class BackgroundTaskReply(
         val task: BackgroundTask,
     ) : Reply()

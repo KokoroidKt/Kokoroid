@@ -4,13 +4,13 @@ import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.user.UserGroup
 import dev.kokoroidkt.pluginApi.conversation.ConversationContext
 import dev.kokoroidkt.pluginApi.conversation.ConversationScope
-import dev.kokoroidkt.pluginApi.exceptions.SessionTimeoutException
+import dev.kokoroidkt.pluginApi.session.Session
 import dev.kokoroidkt.pluginApi.session.SessionState
+import dev.kokoroidkt.pluginApi.utils.startTimeoutWatchdog
+import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resumeWithException
 
 /**
  * 等待一条消息
@@ -48,22 +48,8 @@ suspend fun ConversationScope.waitForMessage(
         val conversationContext =
             this.coroutineContext[ConversationContext.Key]
                 ?: throw IllegalStateException("ConversationContext not found in coroutine context")
-        // 立马写入会话
-        val session = conversationContext.session
-        launch {
-            conversationContext.conversationOrchestrator.registerSession(session)
-        }
-        if (timeoutMilli != null) {
-            launch {
-                delay(timeoutMilli)
-                if (continuation.isActive) {
-                    continuation.resumeWithException(
-                        SessionTimeoutException("Session $session time out: already waited $timeoutMilli seconds."),
-                    )
-                }
-            }
-        }
-        if (session.state is SessionState.Finished) throw IllegalStateException("Session $session is already finished")
+        // 立马写入会话，并完成deferred
+        val session = addSessionAndComplete(conversationContext, timeoutMilli, continuation)
 
         session.state = SessionState.WaitingFor(SessionState.WaitingFor.Item.MessageItem(userGroup ?: session.users, continuation))
     }

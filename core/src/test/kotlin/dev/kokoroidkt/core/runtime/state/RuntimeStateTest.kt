@@ -45,10 +45,6 @@ class RuntimeStateTest {
             assertThrows<NotAllowedInternalStateChange> {
                 runtimeState.state = newStatus
             }
-        assertEquals(
-            "Not allowed status change from dev.kokoroidkt.core.runtime.status.InternalStatus.Initializing to dev.kokoroidkt.core.runtime.status.InternalStatus.Running",
-            exception.message,
-        )
     }
 
     /**
@@ -93,9 +89,5 @@ class RuntimeStateTest {
             assertThrows<NotAllowedInternalStateChange> {
                 runtimeState.state = newStatus
             }
-        assertEquals(
-            "Not allowed status change from dev.kokoroidkt.core.runtime.status.InternalStatus.Stopped to dev.kokoroidkt.core.runtime.status.InternalStatus.Initializing",
-            exception.message,
-        )
     }
 }

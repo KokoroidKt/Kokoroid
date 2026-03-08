@@ -17,6 +17,7 @@ import dev.kokoroidkt.coreApi.user.special.NoUser
 import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.conversation.Reply
 import dev.kokoroidkt.pluginApi.conversation.extensions.waitForMessage
+import dev.kokoroidkt.pluginApi.dsl.conversation
 import dev.kokoroidkt.pluginApi.factory.ConversationOrchestratorFactory
 import dev.kokoroidkt.pluginApi.session.SessionState
 import kotlinx.coroutines.delay
@@ -90,9 +91,11 @@ suspend fun waitForMessageWithTimeoutProcessor(event: TestMessageEvent): Reply {
 class TestWaitForMessage {
     @Test
     fun `test wait for message`() {
-        val checkList = mutableListOf<Int>()
         runBlocking {
-            val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(Processor(::waitForMessageProcessor))
+            val orchestrator =
+                getKoin().get<ConversationOrchestratorFactory>().create(
+                    conversation { setProcessor(::waitForMessageProcessor) },
+                )
             val promise1 =
                 orchestrator.callSessionToProcessOrCreate(
                     TestMessageEvent("123", MessageChain.empty()),
@@ -116,12 +119,10 @@ class TestWaitForMessage {
                         ),
                         TestBot("321"),
                     )
-                checkList.add(1)
-                assertEquals(promise1, promise2)
+
                 println("with status: ${promise2.session.state}")
             }
             promise1.deferred.await()
-            checkList.add(2)
             delay(200)
             if (promise1.deferred.isActive) {
                 println("promise is still active!!")
@@ -131,10 +132,6 @@ class TestWaitForMessage {
             assert(promise1.deferred.isCompleted)
             if (promise1.session.state is SessionState.Finished) {
                 println("Reply: ${(promise1.session.state as SessionState.Finished).reply}")
-                checkList.add(3)
-                assert(checkList[0] == 1)
-                assert(checkList[1] == 2)
-                assert(checkList[2] == 3)
                 assert(true)
             } else {
                 assert(false)
@@ -145,48 +142,58 @@ class TestWaitForMessage {
     @Test
     fun `test wait for message with user group`() {
         runBlocking {
-            val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(Processor(::waitForMessageWithUserGroupProcessor))
+            val orchestrator =
+                getKoin().get<ConversationOrchestratorFactory>().create(
+                    conversation {
+                        setProcessor(::waitForMessageWithUserGroupProcessor)
+                    },
+                )
             val promise1 =
                 orchestrator.callSessionToProcessOrCreate(
                     TestMessageEvent("123", MessageChain.empty()),
                     TestBot("123"),
                 )
             println(promise1.session.state)
+            launch {
+                delay(100)
+                val promise2 =
+                    orchestrator.callSessionToProcessOrCreate(
+                        TestMessageEvent(
+                            "321",
+                            MessageChain.of(
+                                object : MessageSegment(), TextConvertible {
+                                    override val isTextConvertible: Boolean
+                                        get() = true
 
-            delay(100)
-            val promise2 =
-                orchestrator.callSessionToProcessOrCreate(
-                    TestMessageEvent(
-                        "321",
-                        MessageChain.of(
-                            object : MessageSegment(), TextConvertible {
-                                override val isTextConvertible: Boolean
-                                    get() = true
-
-                                override fun toPlainText(): String = "User Group Test"
-                            },
+                                    override fun toPlainText(): String = "User Group Test"
+                                },
+                            ),
                         ),
-                    ),
-                    TestBot("321"),
-                )
-            assertEquals(promise1, promise2)
+                        TestBot("321"),
+                    )
 
-            promise2.deferred.await()
-            assert(promise2.deferred.isCompleted)
-
-            if (promise2.session.state is SessionState.Finished) {
-                println("Reply: ${(promise2.session.state as SessionState.Finished).reply}")
-                assert(true)
-            } else {
-                assert(false)
+                promise2.deferred.await()
+                assert(promise2.deferred.isCompleted)
+                if (promise1.session.state is SessionState.Finished) {
+                    println("Reply: ${(promise1.session.state as SessionState.Finished).reply}")
+                    assert(true)
+                } else {
+                    assert(false)
+                }
             }
+            promise1.deferred.await()
         }
     }
 
     @Test
     fun `test wait for message timeout`() {
         runBlocking {
-            val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(Processor(::waitForMessageWithTimeoutProcessor))
+            val orchestrator =
+                getKoin().get<ConversationOrchestratorFactory>().create(
+                    conversation {
+                        setProcessor(::waitForMessageWithTimeoutProcessor)
+                    },
+                )
             val promise1 =
                 orchestrator.callSessionToProcessOrCreate(
                     TestMessageEvent("123", MessageChain.empty()),

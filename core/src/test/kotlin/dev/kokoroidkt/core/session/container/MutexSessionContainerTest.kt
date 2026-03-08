@@ -11,8 +11,11 @@ import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.user.User
 import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
 import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.conversation.Reply
+import dev.kokoroidkt.pluginApi.dsl.conversation
+import dev.kokoroidkt.pluginApi.factory.ConversationOrchestratorFactory
 import dev.kokoroidkt.pluginApi.session.container.SessionFactoty
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonElement
@@ -48,14 +51,16 @@ class TestBot(
  * or a new session is created based on the provided event, processor, and user group.
  */
 class MutexSessionContainerTest {
+    val processor: Processor = conversation { setProcessor(::mockProcessor) }
+    val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(processor)
+
     @Test
     fun `test getOrCreateSession creates new session when no matching session exists`() =
         runBlocking {
             val container = MutexSessionContainer()
             val event = TestEvent(userGroupA)
-            val processor: Processor = Processor(::mockProcessor)
 
-            val session = container.getOrCreateSession(event, processor, userGroupA)
+            val session = container.getOrCreateSession(event, processor, userGroupA, orchestrator)
 
             assertNotNull(session)
             assertEquals(userGroupA, session.users)
@@ -65,16 +70,24 @@ class MutexSessionContainerTest {
     fun `test getOrCreateSession retrieves existing session if match exists`() =
         runBlocking {
             val container = MutexSessionContainer()
+            val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(processor)
             val preExistingSession =
                 getKoin().get<SessionFactoty>().createSession(
-                    processor = Processor(::mockProcessor),
+                    processor = conversation { setProcessor(::mockProcessor) },
                     user = userGroupA,
+                    conversationOrchestrator = orchestrator,
                 )
 
             container.registerSession(preExistingSession)
 
             val event = TestEvent(userGroupA)
-            val retrievedSession = container.getOrCreateSession(event, Processor(::mockProcessor), userGroupA)
+            val retrievedSession =
+                container.getOrCreateSession(
+                    event,
+                    conversation { setProcessor(::mockProcessor) },
+                    userGroupA,
+                    orchestrator,
+                )
 
             assertNotNull(retrievedSession)
             assertSame(preExistingSession, retrievedSession)
@@ -85,10 +98,10 @@ class MutexSessionContainerTest {
         runBlocking {
             val container = MutexSessionContainer()
             val event = TestEvent(userGroupA)
-            val processor: Processor = Processor(::mockProcessor)
+            val processor: Processor = conversation { setProcessor(::mockProcessor) }
 
-            val session1 = container.getOrCreateSession(event, processor, userGroupA)
-            val session2 = container.getOrCreateSession(event, processor, userGroupA)
+            val session1 = container.getOrCreateSession(event, processor, userGroupA, orchestrator)
+            val session2 = container.getOrCreateSession(event, processor, userGroupA, orchestrator)
 
             assertSame(session1, session2)
         }
@@ -99,10 +112,10 @@ class MutexSessionContainerTest {
             val container = MutexSessionContainer()
             val eventA = TestEvent(userGroupA)
             val eventB = TestEvent(userGroupB)
-            val processor: Processor = Processor(::mockProcessor)
+            val processor: Processor = conversation { setProcessor(::mockProcessor) }
 
-            val sessionA = container.getOrCreateSession(eventA, processor, userGroupA)
-            val sessionB = container.getOrCreateSession(eventB, processor, userGroupB)
+            val sessionA = container.getOrCreateSession(eventA, processor, userGroupA, orchestrator)
+            val sessionB = container.getOrCreateSession(eventB, processor, userGroupB, orchestrator)
 
             assertNotSame(sessionA, sessionB)
         }

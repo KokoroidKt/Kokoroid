@@ -36,13 +36,13 @@ internal fun Plugin.getContainer() =
 
 fun Plugin.metadata(): PluginMeta = getContainer().metadata
 
-fun Plugin.addConversation(func: KFunction<*>) {
+fun Plugin.addConversation(processor: Processor) {
     val orchestrator: ConversationOrchestrator
     val container = getContainer()
     try {
-        orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(Processor(func))
+        orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(processor)
         container.registerOrchestrator(orchestrator)
     } catch (e: Exception) {
-        throw ConversationRegisterFailedException("Register Conversation ${func.name} failed", container, e)
+        throw ConversationRegisterFailedException("Register Conversation ${processor.function.name} failed", container, e)
     }
 }

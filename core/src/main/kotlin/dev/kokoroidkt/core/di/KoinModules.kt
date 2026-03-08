@@ -12,8 +12,8 @@ import dev.kokoroidkt.core.config.Config
 import dev.kokoroidkt.core.driver.DriverManager
 import dev.kokoroidkt.core.driver.DriverRegistryImpl
 import dev.kokoroidkt.core.factory.ConversationOrchestratorFactoryImpl
-import dev.kokoroidkt.core.factory.DefaultSessionFactoryImpl
 import dev.kokoroidkt.core.factory.SessionContainerFactoryImpl
+import dev.kokoroidkt.core.factory.SessionFactoryImpl
 import dev.kokoroidkt.core.plugin.PluginManager
 import dev.kokoroidkt.core.plugin.PluginRegistryImpl
 import dev.kokoroidkt.core.runtime.GlobalEventLoop
@@ -76,7 +76,7 @@ val runtimeModules =
         factory<SessionContainer> {
             SessionContainerFactoryImpl().createSessionContainer()
         }
-        single<SessionFactoty> { DefaultSessionFactoryImpl() }
+        single<SessionFactoty> { SessionFactoryImpl() }
         single<ConversationOrchestratorFactory> { ConversationOrchestratorFactoryImpl() }
     }
 

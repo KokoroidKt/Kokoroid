@@ -7,6 +7,7 @@ package dev.kokoroidkt.core.session.container
 
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
 import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.session.Session
 import dev.kokoroidkt.pluginApi.session.container.SessionContainer
@@ -33,11 +34,12 @@ class MutexSessionContainer :
         event: Event,
         processor: Processor,
         userGroup: UserGroup,
+        orchestrator: ConversationOrchestrator,
     ): Session {
         mutexLock.withLock {
             val session = sessions.find { event.users.any { u -> it.users.contains(u) } }
             if (session != null) return session
-            val newSession = sessionFactory.createSession(userGroup, processor)
+            val newSession = sessionFactory.createSession(userGroup, processor, orchestrator)
             sessions.add(newSession)
             return newSession
         }

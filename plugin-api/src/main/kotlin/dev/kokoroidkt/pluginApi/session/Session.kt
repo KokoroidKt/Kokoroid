@@ -16,7 +16,6 @@ interface Session {
     var state: SessionState
 
     suspend fun process(
-        conversationOrchestrator: ConversationOrchestrator,
         event: Event,
         bot: Bot,
     ): CompletableDeferred<Unit>

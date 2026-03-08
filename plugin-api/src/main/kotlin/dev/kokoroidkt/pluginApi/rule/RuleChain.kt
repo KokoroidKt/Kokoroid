@@ -27,6 +27,11 @@ class RuleChain {
         return this
     }
 
+    operator fun plus(other: RuleChain): RuleChain {
+        rules += other.rules
+        return this
+    }
+
     suspend fun check(
         bot: Bot?,
         event: Event,

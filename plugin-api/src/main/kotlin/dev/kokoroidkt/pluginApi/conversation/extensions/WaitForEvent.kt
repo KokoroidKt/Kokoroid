@@ -6,6 +6,7 @@ import dev.kokoroidkt.pluginApi.conversation.ConversationContext
 import dev.kokoroidkt.pluginApi.conversation.ConversationScope
 import dev.kokoroidkt.pluginApi.exceptions.SessionTimeoutException
 import dev.kokoroidkt.pluginApi.session.SessionState
+import dev.kokoroidkt.pluginApi.utils.startTimeoutWatchdog
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -65,28 +66,13 @@ suspend fun ConversationScope.waitForEvent(
     userGroup: UserGroup? = null,
 ): Event =
     suspendCancellableCoroutine { continuation ->
-        timeoutMilli?.let { if (it < 0) throw IllegalStateException("Timeout must be greater than 0") }
 
         val conversationContext =
             this.coroutineContext[ConversationContext.Key]
                 ?: throw IllegalStateException("ConversationContext not found in coroutine context")
         // 立马写入会话
-        val session = conversationContext.session
-        launch {
-            conversationContext.conversationOrchestrator.registerSession(session)
-        }
-        if (session.state is SessionState.Finished) throw IllegalStateException("Session $session is already finished")
-
-        if (timeoutMilli != null) {
-            launch {
-                delay(timeoutMilli)
-                if (continuation.isActive) {
-                    continuation.resumeWithException(
-                        SessionTimeoutException("Session $session time out: already waited $timeoutMilli seconds."),
-                    )
-                }
-            }
-        }
+        val session = addSessionAndComplete(conversationContext, timeoutMilli, continuation)
+        startTimeoutWatchdog(timeoutMilli, continuation, session)
 
         session.state =
             SessionState.WaitingFor(
