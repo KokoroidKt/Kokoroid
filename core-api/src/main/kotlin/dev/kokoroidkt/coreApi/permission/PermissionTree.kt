@@ -89,15 +89,19 @@ class PermissionTree(
      *  - user<存在, DENY>.edit<不存在>.newItem<不存在>设置为ALLOW -> user(DENY).edit(NOT_SET).newItem(ALLOW) -> DENY
      *  - user<存在, DENY>.edit<存在, ALLOW>.newItem<不存在>设置为ALLOW -> user(DENY).edit(ALLOW).newItem(ALLOW) -> DENY
      *
+     *  如果doOverride = true, 则会重写路径上所有节点的权限
+     *  例子
+     *  - user<存在, DENY>.edit<不存在>.newItem<不存在>设置为ALLOW -> user(ALLOW).edit(ALLOW).newItem(ALLOW) -> ALLOW
+     *  - user<存在, DENY>.edit<存在, ALLOW>.newItem<不存在>设置为DENY -> user(DENY).edit(DENY).newItem(DENY) -> DENY
      *
      * @param permissionString
      * @param value
-     * @param description
+     * @param doOverride 是否重写节点的权限
      */
     fun setPermission(
         permissionString: String,
         value: PermissionValue,
-        description: String = "",
+        doOverride: Boolean = false,
     ) {
         var currentRoot = root
         val keys = permissionString.split(".")
@@ -120,7 +124,12 @@ class PermissionTree(
             }
             currentRoot =
                 if (keys.size - index > 1) {
-                    currentRoot.children.getOrPut(key, newNode)
+                    val old = currentRoot.children.getOrPut(key, newNode)
+                    if (doOverride) {
+                        old.permission = value
+                        currentRoot.children[key] = old
+                    }
+                    old
                 } else {
                     currentRoot.children[key] = newNode()
                     currentRoot.children[key]!!

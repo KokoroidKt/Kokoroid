@@ -134,4 +134,127 @@ class PermissionTreeTest {
         val result = tree.getPermission("user.edit.name")
         assertEquals(PermissionValue.NOT_SET, result)
     }
+
+    @Test
+    fun `test setPermission with doOverride=true overrides all nodes in path to ALLOW`() {
+        val tree = PermissionTree()
+        // 先设置一个DENY节点
+        tree.setPermission("user.edit", PermissionValue.DENY)
+        // 使用doOverride设置子节点为ALLOW，应该重写所有路径节点
+        tree.setPermission("user.edit.newItem", PermissionValue.ALLOW, doOverride = true)
+
+        // 验证所有节点都被重写为ALLOW
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user"))
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user.edit"))
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user.edit.newItem"))
+    }
+
+    @Test
+    fun `test setPermission with doOverride=true overrides all nodes in path to DENY`() {
+        val tree = PermissionTree()
+        // 先设置一个ALLOW节点
+        tree.setPermission("user.edit", PermissionValue.ALLOW)
+        // 使用doOverride设置子节点为DENY，应该重写所有路径节点
+        tree.setPermission("user.edit.newItem", PermissionValue.DENY, doOverride = true)
+
+        // 验证所有节点都被重写为DENY
+        assertEquals(PermissionValue.DENY, tree.getPermission("user"))
+        assertEquals(PermissionValue.DENY, tree.getPermission("user.edit"))
+        assertEquals(PermissionValue.DENY, tree.getPermission("user.edit.newItem"))
+    }
+
+    @Test
+    fun `test setPermission with doOverride=true creates intermediate nodes with same value`() {
+        val tree = PermissionTree()
+        // 设置一个不存在的路径，使用doOverride
+        tree.setPermission("user.edit.newItem", PermissionValue.ALLOW, doOverride = true)
+
+        // 验证所有节点都被设置为ALLOW
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user"))
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user.edit"))
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user.edit.newItem"))
+    }
+
+    @Test
+    fun `test setPermission with doOverride=false does not override existing nodes`() {
+        val tree = PermissionTree()
+        // 先设置一个DENY节点
+        tree.setPermission("user.edit", PermissionValue.DENY)
+        // 使用默认doOverride=false设置子节点为ALLOW
+        tree.setPermission("user.edit.newItem", PermissionValue.ALLOW)
+
+        // 验证父节点保持DENY
+        assertEquals(PermissionValue.DENY, tree.getPermission("user.edit"))
+        // 最终权限应该是DENY（拒绝优先策略）
+        assertEquals(PermissionValue.DENY, tree.getPermission("user.edit.newItem"))
+    }
+
+    @Test
+    fun `test setPermission with doOverride=true overrides existing intermediate nodes`() {
+        val tree = PermissionTree()
+        // 设置一个复杂的权限结构
+        tree.setPermission("user.edit", PermissionValue.DENY)
+        tree.setPermission("user.edit.name", PermissionValue.ALLOW)
+        tree.setPermission("user.edit.age", PermissionValue.ALLOW)
+
+        // 使用doOverride重写整个路径
+        tree.setPermission("user.edit.newItem", PermissionValue.ALLOW, doOverride = true)
+
+        // 验证所有节点都被重写为ALLOW
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user"))
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user.edit"))
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user.edit.name"))
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user.edit.age"))
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user.edit.newItem"))
+    }
+
+    @Test
+    fun `test setPermission with doOverride=true and wildcard star`() {
+        val tree = PermissionTree()
+        // 使用doOverride设置带通配符的权限
+        tree.setPermission("user.edit.*", PermissionValue.ALLOW, doOverride = true)
+
+        // 验证路径节点被正确设置
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user"))
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user.edit"))
+        // 通配符节点应该被设置为ALLOW
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user.edit.name"))
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user.edit.age"))
+    }
+
+    @Test
+    fun `test setPermission with doOverride=true and recursive double star`() {
+        val tree = PermissionTree()
+        // 使用doOverride设置递归通配符
+        tree.setPermission("user.edit.**", PermissionValue.DENY, doOverride = true)
+
+        // 验证路径节点被正确设置
+        assertEquals(PermissionValue.DENY, tree.getPermission("user"))
+        assertEquals(PermissionValue.DENY, tree.getPermission("user.edit"))
+        // 递归通配符应该影响所有子节点
+        assertEquals(PermissionValue.DENY, tree.getPermission("user.edit.name"))
+        assertEquals(PermissionValue.DENY, tree.getPermission("user.edit.name.length"))
+        assertEquals(PermissionValue.DENY, tree.getPermission("user.edit.age"))
+    }
+
+    @Test
+    fun `test setPermission with doOverride=true on existing tree with mixed permissions`() {
+        val tree = PermissionTree()
+        // 创建混合权限的树
+        tree.setPermission("user", PermissionValue.ALLOW)
+        tree.setPermission("user.edit", PermissionValue.DENY)
+        tree.setPermission("user.view", PermissionValue.ALLOW)
+        tree.setPermission("user.view.name", PermissionValue.ALLOW)
+
+        // 使用doOverride重写edit分支
+        tree.setPermission("user.edit.newItem", PermissionValue.ALLOW, doOverride = true)
+
+        // 验证edit分支被重写
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user.edit"))
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user.edit.newItem"))
+
+        // 验证其他分支不受影响
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user.view"))
+        assertEquals(PermissionValue.ALLOW, tree.getPermission("user.view.name"))
+    }
 }
