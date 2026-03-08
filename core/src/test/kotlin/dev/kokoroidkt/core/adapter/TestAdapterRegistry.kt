@@ -15,6 +15,8 @@ import dev.kokoroidkt.core.di.allModules
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.message.MessageChain
+import dev.kokoroidkt.coreApi.user.User
+import dev.kokoroidkt.coreApi.user.UserContainer
 import kotlinx.serialization.json.JsonElement
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -83,6 +85,21 @@ class SimpleTestAdapter : Adapter {
         }
 
     override fun getBotList(): List<Bot> = emptyList()
+
+    override fun getUserContainer(): UserContainer =
+        object : UserContainer {
+            override fun getUserById(userId: String): User? = null
+
+            override val size: Int = 0
+
+            override fun isEmpty(): Boolean = true
+
+            override fun contains(element: User): Boolean = false
+
+            override fun iterator(): Iterator<User> = emptyList<User>().iterator()
+
+            override fun containsAll(elements: Collection<User>): Boolean = false
+        }
 
     // override fun decodeJsonToEvent(): Event = object : Event("", 1L) {}
 }
