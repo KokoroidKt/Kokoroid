@@ -11,11 +11,13 @@ import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.user.UserGroup
 import dev.kokoroidkt.coreApi.user.special.NoUser
-import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.conversation.Reply
 import dev.kokoroidkt.pluginApi.conversation.extensions.waitForEvent
+import dev.kokoroidkt.pluginApi.dsl.conversation
+import dev.kokoroidkt.pluginApi.dsl.rule
 import dev.kokoroidkt.pluginApi.factory.ConversationOrchestratorFactory
 import dev.kokoroidkt.pluginApi.session.SessionState
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -27,7 +29,6 @@ import org.koin.core.context.stopKoin
 import org.koin.mp.KoinPlatform.getKoin
 import java.time.Instant
 import kotlin.test.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 
 class TestBot(
@@ -78,6 +79,19 @@ suspend fun waitForEventProcessor(event: TestEvent): Reply {
     return Reply.NoReply
 }
 
+suspend fun waitForEventWthRuleProcessor(event1: TestEvent): Reply {
+    event1.sayHi()
+    println(event1.getCheckId())
+    val event2 =
+        waitForEvent<TestEvent>(
+            rules = rule { with { event.eventId == "Matched" } },
+        )
+    delay(50) // processing....
+    event2.sayHi()
+    println(event2.getCheckId())
+    return Reply.NoReply
+}
+
 suspend fun finishWithoutWait(event: TestEvent): Reply {
     event.sayHi()
     delay(1000) // 这期间会去检查这个会话是不是被注册了，如果被注册了就验证失败
@@ -89,7 +103,12 @@ class TestWaiting {
     @Test
     fun `test register session on wait only`() {
         runBlocking {
-            val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(Processor(::finishWithoutWait))
+            val orchestrator =
+                getKoin().get<ConversationOrchestratorFactory>().create(
+                    conversation {
+                        setProcessor(::finishWithoutWait)
+                    },
+                )
             val promise1 = orchestrator.callSessionToProcessOrCreate(TestEvent("123"), TestBot("123"))
             println(promise1.session.state)
             assertFalse(orchestrator.isExist(promise1.session))
@@ -100,20 +119,23 @@ class TestWaiting {
 
     @Test
     fun `test wait for event`() {
-        val checkList = mutableListOf<Int>()
         runBlocking {
-            val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(Processor(::waitForEventProcessor))
+            val orchestrator =
+                getKoin().get<ConversationOrchestratorFactory>().create(
+                    conversation {
+                        setProcessor(::waitForEventProcessor)
+                    },
+                )
             val promise1 = orchestrator.callSessionToProcessOrCreate(TestEvent("123"), TestBot("123"))
             println(promise1.session.state)
             launch {
                 delay(100)
                 val promise2 = orchestrator.callSessionToProcessOrCreate(TestEvent("321"), TestBot("321"))
-                checkList.add(1)
-                assertEquals(promise1, promise2)
+
                 println("with status: ${promise2.session.state}")
             }
             promise1.deferred.await()
-            checkList.add(2)
+
             delay(200)
             if (promise1.deferred.isActive) {
                 println("promise is still active!!")
@@ -123,10 +145,48 @@ class TestWaiting {
             assert(promise1.deferred.isCompleted)
             if (promise1.session.state is SessionState.Finished) {
                 println("Reply: ${(promise1.session.state as SessionState.Finished).reply}")
-                checkList.add(3)
-                assert(checkList[0] == 1)
-                assert(checkList[1] == 2)
-                assert(checkList[2] == 3)
+
+                assert(true)
+            } else {
+                assert(false)
+            }
+        }
+    }
+
+    @Test
+    fun `test wait for event with rule`() {
+        runBlocking {
+            val orchestrator =
+                getKoin().get<ConversationOrchestratorFactory>().create(
+                    conversation {
+                        setProcessor(::waitForEventWthRuleProcessor)
+                    },
+                )
+            val promise1 = orchestrator.callSessionToProcessOrCreate(TestEvent("123"), TestBot("123"))
+            println(promise1.session.state)
+            launch {
+                delay(100)
+                val promise2 = orchestrator.callSessionToProcessOrCreate(TestEvent("321"), TestBot("321"))
+                println("promise2 with state: ${promise2.session.state}")
+                assertTrue(promise2.session.state is SessionState.WaitingFor)
+            }
+            launch {
+                delay(200)
+                val promise3 = orchestrator.callSessionToProcessOrCreate(TestEvent("Matched"), TestBot("321"))
+                println("with state: ${promise3.session.state}")
+            }
+            promise1.deferred.await()
+
+            delay(500)
+            if (promise1.deferred.isActive) {
+                println("promise is still active!!")
+                assert(false)
+            }
+
+            assert(promise1.deferred.isCompleted)
+            if (promise1.session.state is SessionState.Finished) {
+                println("Reply: ${(promise1.session.state as SessionState.Finished).reply}")
+
                 assert(true)
             } else {
                 assert(false)
@@ -137,13 +197,20 @@ class TestWaiting {
     @Test
     fun `test for event matching`() {
         runBlocking {
-            val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(Processor(::waitForEventProcessor))
+            val orchestrator =
+                getKoin().get<ConversationOrchestratorFactory>().create(
+                    conversation {
+                        setProcessor(::waitForEventProcessor)
+                    },
+                )
+            // Non-Matched Event before call
+            val promise0 = orchestrator.callSessionToProcessOrCreate(AnotherTestEvent("456"), TestBot("321"))
             val promise1 = orchestrator.callSessionToProcessOrCreate(TestEvent("123"), TestBot("123"))
             println(promise1.session.state)
             delay(100)
 
             val promise2 = orchestrator.callSessionToProcessOrCreate(AnotherTestEvent("456"), TestBot("321"))
-            assertEquals(promise1, promise2)
+
             assert(
                 promise2.session.state is SessionState.WaitingFor &&
                     (promise2.session.state as SessionState.WaitingFor).item is SessionState.WaitingFor.Item.EventItem &&
@@ -157,8 +224,7 @@ class TestWaiting {
 
             delay(100)
             val promise3 = orchestrator.callSessionToProcessOrCreate(TestEvent("321"), TestBot("321"))
-            assertEquals(promise1, promise2)
-            assertEquals(promise1, promise3)
+
             println("with status: ${promise3.session.state}")
 
             launch {

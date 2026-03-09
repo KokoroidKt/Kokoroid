@@ -7,8 +7,10 @@ package dev.kokoroidkt.pluginApi.session
 
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
+import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.user.UserGroup
 import dev.kokoroidkt.pluginApi.conversation.Reply
+import dev.kokoroidkt.pluginApi.rule.RuleChain
 import kotlinx.coroutines.CancellableContinuation
 import kotlin.reflect.KClass
 
@@ -17,6 +19,7 @@ sealed class SessionState {
 
     class WaitingFor(
         val item: Item<*>,
+        val rules: RuleChain,
     ) : SessionState() {
         sealed class Item<T>(
             val continuation: CancellableContinuation<T>,
@@ -37,6 +40,17 @@ sealed class SessionState {
                     users: UserGroup,
                     bot: Bot,
                 ): Boolean = eventClass.isInstance(event) && users.any { u -> u in userGroup }
+            }
+
+            class MessageItem(
+                val userGroup: UserGroup,
+                continuation: CancellableContinuation<MessageChain>,
+            ) : Item<MessageChain>(continuation) {
+                override fun isNeedToProcess(
+                    event: Event,
+                    users: UserGroup,
+                    bot: Bot,
+                ): Boolean = users.any { u -> u in userGroup }
             }
         }
     }

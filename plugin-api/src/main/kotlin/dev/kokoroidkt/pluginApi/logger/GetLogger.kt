@@ -11,8 +11,12 @@ import dev.kokoroidkt.pluginApi.plugin.Plugin
 import dev.kokoroidkt.pluginApi.utils.metadata
 import org.koin.java.KoinJavaComponent.getKoin
 
+/**
+ * 为插件获取一个日志记录器实例
+ * @return [KokoroidLogger] Logger
+ */
 fun Plugin.getLogger(): KokoroidLogger =
     getKoin().get<LoggerFactory>().invoke(
-        this.metadata()?.name.toString(),
+        this.metadata().name,
         this::class,
     )

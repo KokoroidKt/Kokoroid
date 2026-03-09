@@ -11,9 +11,12 @@ import dev.kokoroidkt.coreApi.event.MessageEvent
 import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.user.User
 import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.pluginApi.conversation.status.ProcessorStatus
+import dev.kokoroidkt.pluginApi.rule.RuleChain
 import dev.kokoroidkt.pluginApi.session.Session
 import dev.kokoroidkt.pluginApi.session.SessionState
 import dev.kokoroidkt.pluginApi.task.BackgroundTask
+import kotlin.collections.listOf
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.callSuspendBy
@@ -23,6 +26,7 @@ import kotlin.reflect.full.starProjectedType
 
 class Processor(
     val function: KFunction<*>,
+    val rules: RuleChain,
 ) {
     val returnTypeWarps: (Any?) -> Reply =
         run {
@@ -63,9 +67,9 @@ class Processor(
             .parameters
             .filter {
                 it.type.isSubtypeOf(Event::class.starProjectedType) ||
-                it.type.isSubtypeOf(MessageChain::class.starProjectedType) ||
-                it.type.isSubtypeOf(User::class.starProjectedType) ||
-                it.type.isSubtypeOf(Bot::class.starProjectedType)
+                    it.type.isSubtypeOf(MessageChain::class.starProjectedType) ||
+                    it.type.isSubtypeOf(User::class.starProjectedType) ||
+                    it.type.isSubtypeOf(Bot::class.starProjectedType)
             }.toList()
     }
 
@@ -74,22 +78,47 @@ class Processor(
         bot: Bot,
         users: UserGroup,
         session: Session,
-    ) {
-        if (arguments.any { it.type.isSubtypeOf(MessageEvent::class.starProjectedType) } && event !is MessageEvent) return
+    ): ProcessorStatus {
+        // check
+        if (arguments.any { it.type.isSubtypeOf(MessageEvent::class.starProjectedType) } && event !is MessageEvent) {
+            return ProcessorStatus.Unmatched(MessageEvent::class.starProjectedType, event)
+        }
+        if (arguments.any { it.type.isSubtypeOf(MessageChain::class.starProjectedType) } && event !is MessageEvent) {
+            return ProcessorStatus.Unmatched(MessageEvent::class.starProjectedType, event)
+        }
         val messageChain = (event as? MessageEvent)?.messageChain
+
+        // process
         val arg =
             arguments
                 .mapNotNull {
                     when {
-                        it.type.isSupertypeOf(event::class.starProjectedType) -> it to event
-                        it.type.isSupertypeOf(users::class.starProjectedType) -> it to users
-                        messageChain != null && it.type.isSupertypeOf(messageChain::class.starProjectedType) -> it to messageChain
-                        it.type.isSupertypeOf(bot::class.starProjectedType) -> it to bot
-                        else -> null
+                        it.type.isSupertypeOf(event::class.starProjectedType) -> {
+                            it to event
+                        }
+
+                        it.type.isSupertypeOf(users::class.starProjectedType) -> {
+                            it to users
+                        }
+
+                        messageChain != null && it.type.isSupertypeOf(messageChain::class.starProjectedType) -> {
+                            it to messageChain
+                        }
+
+                        it.type.isSupertypeOf(bot::class.starProjectedType) -> {
+                            it to bot
+                        }
+
+                        else -> {
+                            session.state = SessionState.Finished(Reply.Unprocessed)
+                            return ProcessorStatus.Unmatched(it.type, listOf(event, users, messageChain, bot))
+                        }
                     }
                 }.toMap()
 
         val result = function.callSuspendBy(arg)
+
         session.state = SessionState.Finished(returnTypeWarps(result))
+        return ProcessorStatus.Processed
     }
 }

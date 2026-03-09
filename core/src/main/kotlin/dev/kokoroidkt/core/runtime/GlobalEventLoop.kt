@@ -61,6 +61,8 @@ class GlobalEventLoop :
                             when (val reply = (promise.session.state as SessionState.Finished).reply) {
                                 is Reply.NoReply -> {}
 
+                                is Reply.Unprocessed -> {}
+
                                 is Reply.MessageChainReply -> {
                                     event.bot.replyMessage(event, reply.chain)
                                 }

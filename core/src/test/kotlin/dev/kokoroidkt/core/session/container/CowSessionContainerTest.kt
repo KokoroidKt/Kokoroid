@@ -15,6 +15,8 @@ import dev.kokoroidkt.coreApi.user.User
 import dev.kokoroidkt.coreApi.user.UserGroup
 import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.conversation.Reply
+import dev.kokoroidkt.pluginApi.dsl.conversation
+import dev.kokoroidkt.pluginApi.factory.ConversationOrchestratorFactory
 import dev.kokoroidkt.pluginApi.session.container.SessionFactoty
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.JsonElement
@@ -35,18 +37,21 @@ import kotlin.reflect.KFunction
  */
 
 class CowSessionContainerTest {
+    val processor: Processor = conversation { setProcessor(::testReplyProcessor) }
+    val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(processor)
+
     @Test
     fun `test when session is found existing session is returned`() =
         runBlocking {
             val container = CowSessionContainer()
             val event = TestEvent("1", testUserGroup(1))
-            val processor: Processor = Processor(::testReplyProcessor)
+
             val userGroup = testUserGroup(1)
-            val existingSession = getKoin().get<SessionFactoty>().createSession(userGroup, processor)
+            val existingSession = getKoin().get<SessionFactoty>().createSession(userGroup, processor, orchestrator)
 
             container.registerSession(existingSession)
 
-            val result = container.getOrCreateSession(event, processor, userGroup)
+            val result = container.getOrCreateSession(event, processor, userGroup, orchestrator)
 
             assertEquals(existingSession, result, "Expected existing session to be returned")
         }
@@ -56,10 +61,9 @@ class CowSessionContainerTest {
         runBlocking {
             val container = CowSessionContainer()
             val event = TestEvent("1", testUserGroup(1))
-            val processor: Processor = Processor(::testReplyProcessor)
             val userGroup = testUserGroup(1)
 
-            val result = container.getOrCreateSession(event, processor, userGroup)
+            val result = container.getOrCreateSession(event, processor, userGroup, orchestrator)
 
             assertNotNull(result, "Expected new session to be created")
             assertTrue(container.snapshot().contains(result), "Expected new session to be registered")
@@ -71,12 +75,11 @@ class CowSessionContainerTest {
             val container = CowSessionContainer()
             val event1 = TestEvent("1", testUserGroup(1))
             val event2 = TestEvent("2", testUserGroup(1))
-            val processor: Processor = Processor(::testReplyProcessor)
             val userGroup1 = testUserGroup(3)
             val userGroup2 = testUserGroup(5)
 
-            val session1 = container.getOrCreateSession(event1, processor, userGroup1)
-            val session2 = container.getOrCreateSession(event2, processor, userGroup2)
+            val session1 = container.getOrCreateSession(event1, processor, userGroup1, orchestrator)
+            val session2 = container.getOrCreateSession(event2, processor, userGroup2, orchestrator)
 
             assertNotNull(session1, "Expected session for user group 1 to be created")
             assertNotNull(session2, "Expected session for user group 2 to be created")

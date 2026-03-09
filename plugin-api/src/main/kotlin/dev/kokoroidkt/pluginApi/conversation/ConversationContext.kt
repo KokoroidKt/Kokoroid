@@ -8,6 +8,8 @@ package dev.kokoroidkt.pluginApi.conversation
 import dev.kokoroidkt.coreApi.user.User
 import dev.kokoroidkt.coreApi.user.UserGroup
 import dev.kokoroidkt.pluginApi.session.Session
+import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -28,6 +30,7 @@ class ConversationContext(
      */
     val session: Session,
     val conversationOrchestrator: ConversationOrchestrator,
+    var deferred: CompletableDeferred<Unit>,
 ) : CoroutineContext.Element {
     companion object Key : CoroutineContext.Key<ConversationContext>
 

@@ -33,21 +33,28 @@ class DefaultConversationOrchestrator(
 
     private val sessionFactory: SessionFactoty by inject()
 
+    /**
+     * 处理一个事件
+     * 此时会创建/获取一个Session
+     * 此方法返回一个SessionPromise，包含一个deferred
+     * Session运行到Kokoroid挂起点（waitForT函数）或处理完成时，deferred完成
+     * 预期行为：
+     *  - Kokoroid获得一个事件，启动一个新的协程，按责任链向下处理，交由Processor处理并挂起等待（deferred.await()）
+     *  - Processor处理，处理到Kokoroid挂起点或者处理完成时，完成deferred，事件继续向下传递
+     *
+     * @param event
+     * @param bot
+     * @return
+     */
     override suspend fun callSessionToProcessOrCreate(
         event: Event,
         bot: Bot,
     ): SessionPromise {
         val session =
             sessionContainer.getMatchedSession(event)
-                ?: sessionFactory.createSession(event.users, processor)
+                ?: sessionFactory.createSession(event.users, processor, this)
 
-        var deferred = session.process(this, event, bot)
-        val existingDeferred = promiseMap[session]
-        if (existingDeferred != null && existingDeferred.isActive) {
-            deferred = existingDeferred
-        } else {
-            promiseMap[session] = deferred
-        }
+        val deferred = session.process(event, bot)
         logger.debug { "session $session: state -> ${session.state::class.qualifiedName}" }
         return SessionPromise(session, deferred)
     }
