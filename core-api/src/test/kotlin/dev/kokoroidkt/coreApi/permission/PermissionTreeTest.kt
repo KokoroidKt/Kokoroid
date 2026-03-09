@@ -7,7 +7,7 @@ class PermissionTreeTest {
     @Test
     fun `test getAllPermissionString returns empty list for empty tree`() {
         val tree = PermissionTree()
-        val result = tree.getAllPermissionString()
+        val result = tree.getAllPermissionData()
         assertTrue(result.isEmpty())
     }
 
@@ -16,7 +16,7 @@ class PermissionTreeTest {
         val tree = PermissionTree()
         tree.setPermission("user.edit.name", PermissionValue.ALLOW)
         tree.setPermission("user.edit.age", PermissionValue.DENY)
-        val result = tree.getAllPermissionString()
+        val result = tree.getAllPermissionData()
         assertEquals(2, result.size)
         assertTrue(result.any { it.permissionString == "user.edit.name" && it.permission == PermissionValue.ALLOW })
         assertTrue(result.any { it.permissionString == "user.edit.age" && it.permission == PermissionValue.DENY })

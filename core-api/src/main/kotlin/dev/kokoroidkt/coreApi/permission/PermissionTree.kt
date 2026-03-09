@@ -45,7 +45,7 @@ class PermissionTree(
             "",
         ),
 ) {
-    fun getAllPermissionString(): List<PermissionData> =
+    fun getAllPermissionData(): List<PermissionData> =
         root.children.values.flatMap { child ->
             child
                 .getAllPermission()

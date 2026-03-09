@@ -5,6 +5,7 @@ import dev.kokoroidkt.coreApi.user.UserGroup
 import dev.kokoroidkt.pluginApi.conversation.ConversationContext
 import dev.kokoroidkt.pluginApi.conversation.ConversationScope
 import dev.kokoroidkt.pluginApi.exceptions.SessionTimeoutException
+import dev.kokoroidkt.pluginApi.rule.RuleChain
 import dev.kokoroidkt.pluginApi.session.SessionState
 import dev.kokoroidkt.pluginApi.utils.startTimeoutWatchdog
 import kotlinx.coroutines.currentCoroutineContext
@@ -44,26 +45,22 @@ suspend fun waitForEvent(
  * @return 你所等待的事件
  */
 suspend inline fun <reified T : Event> waitForEvent(
-    /**
-     * 最大等待时长，单位毫秒
-     * 若timeout为空，则默认无超时
-     * timeout必须大于0
-     * 超时时间到后，整个对话将关闭
-     */
     timeoutMilli: Long? = null,
     userGroup: UserGroup? = null,
+    rules: RuleChain = RuleChain(),
 ): T {
     val conversationContext =
         currentCoroutineContext()[ConversationContext.Key]
             ?: throw IllegalStateException("ConversationContext not found in coroutine context")
     val scope = ConversationScope(conversationContext)
-    return scope.waitForEvent(T::class, timeoutMilli, userGroup) as T
+    return scope.waitForEvent(T::class, timeoutMilli, userGroup, rules) as T
 }
 
 suspend fun ConversationScope.waitForEvent(
     eventClass: KClass<out Event>,
     timeoutMilli: Long? = null,
     userGroup: UserGroup? = null,
+    rules: RuleChain = RuleChain(),
 ): Event =
     suspendCancellableCoroutine { continuation ->
 
@@ -81,10 +78,12 @@ suspend fun ConversationScope.waitForEvent(
                     userGroup ?: session.users,
                     continuation,
                 ),
+                rules,
             )
     }
 
 suspend inline fun <reified T : Event> ConversationScope.waitForEvent(
     timeout: Long,
     userGroup: UserGroup? = null,
-): T = waitForEvent(T::class, timeout, userGroup) as T
+    rules: RuleChain = RuleChain(),
+): T = waitForEvent(T::class, timeout, userGroup, rules) as T

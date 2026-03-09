@@ -1,10 +1,14 @@
 package dev.kokoroid.simpleExtension
 
+import dev.kokoroid.simpleExtension.config.MockConfig
 import dev.kokoroid.simpleExtension.utils.Util
 import dev.kokoroidkt.adapterApi.adapter.Adapter
 import dev.kokoroidkt.adapterApi.logger.getLogger
+import dev.kokoroidkt.adapterApi.utils.loadConfigFromFile
+import dev.kokoroidkt.adapterApi.utils.saveConfigToFile
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
+import dev.kokoroidkt.coreApi.exceptions.CriticalException
 import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.user.User
 import dev.kokoroidkt.coreApi.user.UserContainer
@@ -17,6 +21,12 @@ class AdapterMain : Adapter {
 
     override fun onStart() {
         getLogger().info { "Adapter Main started and ${Util("AdapterMain").sayHi()}" }
+        val config = MockConfig("123", 456)
+        saveConfigToFile<MockConfig>(config)
+        val new = loadConfigFromFile<MockConfig>()
+        if (config != new) {
+            throw CriticalException("Config function assert false")
+        }
     }
 
     override fun onStop() {

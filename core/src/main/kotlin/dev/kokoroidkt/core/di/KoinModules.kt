@@ -9,6 +9,7 @@ import dev.kokoroidkt.adapterApi.adapter.AdapterRegistry
 import dev.kokoroidkt.core.adapter.AdapterManager
 import dev.kokoroidkt.core.adapter.AdapterRegistryImpl
 import dev.kokoroidkt.core.config.Config
+import dev.kokoroidkt.core.config.ConfigHelperImpl
 import dev.kokoroidkt.core.driver.DriverManager
 import dev.kokoroidkt.core.driver.DriverRegistryImpl
 import dev.kokoroidkt.core.factory.ConversationOrchestratorFactoryImpl
@@ -22,6 +23,7 @@ import dev.kokoroidkt.core.runtime.crash.CrashRegistry
 import dev.kokoroidkt.core.runtime.crash.CrashRegistryImpl
 import dev.kokoroidkt.core.runtime.state.RuntimeState
 import dev.kokoroidkt.core.utils.binds
+import dev.kokoroidkt.coreApi.config.ConfigHelper
 import dev.kokoroidkt.coreApi.logging.LoggerFactory
 import dev.kokoroidkt.driverApi.driver.DriverRegistry
 import dev.kokoroidkt.pluginApi.factory.ConversationOrchestratorFactory
@@ -62,6 +64,11 @@ val loggerModules =
         }
     }
 
+val utils =
+    module {
+        single<ConfigHelper> { ConfigHelperImpl() }
+    }
+
 val basicModules =
     module {
         single<Config> { Config() }
@@ -88,4 +95,5 @@ val allModules =
         driverModules,
         loggerModules,
         runtimeModules,
+        utils,
     )

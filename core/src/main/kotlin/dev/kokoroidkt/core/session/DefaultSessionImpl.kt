@@ -64,6 +64,16 @@ class DefaultSessionImpl(
                 }
 
                 is SessionState.WaitingFor -> {
+                    val checkResult =
+                        (state as SessionState.WaitingFor).rules.check(
+                            bot,
+                            event,
+                            if (event is MessageEvent) event.messageChain else null,
+                            event.users,
+                        )
+                    if (!checkResult) {
+                        return@launch
+                    }
                     when (val waitItem = (state as SessionState.WaitingFor).item) {
                         is SessionState.WaitingFor.Item.EventItem -> {
                             with(waitItem) {
