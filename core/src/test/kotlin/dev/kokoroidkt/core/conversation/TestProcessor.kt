@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1-or-later
+
 package dev.kokoroidkt.core.conversation
 
 import dev.kokoroidkt.core.conversation.extension.TestBot
@@ -9,7 +14,6 @@ import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.message.MessageSegment
 import dev.kokoroidkt.coreApi.user.UserGroup
 import dev.kokoroidkt.coreApi.user.special.NoUser
-import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.conversation.Reply
 import dev.kokoroidkt.pluginApi.conversation.extensions.waitForEvent
 import dev.kokoroidkt.pluginApi.dsl.conversation
@@ -28,7 +32,6 @@ import org.koin.core.context.stopKoin
 import org.koin.mp.KoinPlatform.getKoin
 import java.time.Instant
 import kotlin.test.Test
-import kotlin.test.assertEquals
 
 class TestBot : Bot {
     override fun callApi(
@@ -101,7 +104,8 @@ class TestProcessor {
     fun `test failed`() {
         runBlocking {
             try {
-                val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(conversation { setProcessor(::ohNo) })
+                val orchestrator =
+                    getKoin().get<ConversationOrchestratorFactory>().create(conversation { setProcessor(::ohNo) })
                 val promise1 = orchestrator.callSessionToProcessOrCreate(TestEvent("123"), TestBot("123"))
             } catch (_: IllegalArgumentException) {
                 println("catched!")
@@ -122,7 +126,10 @@ class TestProcessor {
         )) {
             // val checkList = mutableListOf<Int>()
             runBlocking {
-                val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(conversation { setProcessor(funcPair.first) })
+                val orchestrator =
+                    getKoin()
+                        .get<ConversationOrchestratorFactory>()
+                        .create(conversation { setProcessor(funcPair.first) })
                 val promise1 = orchestrator.callSessionToProcessOrCreate(TestEvent("123"), TestBot("123"))
                 println(promise1.session.state)
                 launch {

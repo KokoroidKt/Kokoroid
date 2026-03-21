@@ -1,16 +1,15 @@
-/*
- * Copyright (c) 2026 moran0710 and Kokoroid contributors
- * MIT License
- */
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
+
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1-or-later
 
 @file:Suppress("ktlint:standard:no-wildcard-imports")
 
 package dev.kokoroidkt.core.session.container
 
 import dev.kokoroidkt.core.di.allModules
-import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
-import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.user.User
 import dev.kokoroidkt.coreApi.user.UserGroup
 import dev.kokoroidkt.pluginApi.conversation.Processor
@@ -19,7 +18,6 @@ import dev.kokoroidkt.pluginApi.dsl.conversation
 import dev.kokoroidkt.pluginApi.factory.ConversationOrchestratorFactory
 import dev.kokoroidkt.pluginApi.session.container.SessionFactoty
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.JsonElement
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
@@ -28,7 +26,6 @@ import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.mp.KoinPlatform.getKoin
 import java.time.Instant
-import kotlin.reflect.KFunction
 
 /**
  * Unit tests for the CowSessionContainer class and its getOrCreateSession method.

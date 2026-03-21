@@ -49,4 +49,5 @@ kokoroid
 core-api/foo
 .tmp
 
-
+### Python ###
+/.venv/

@@ -1,11 +1,13 @@
-/*
- * Copyright (c) 2026 moran0710 and Kokoroid contributors
- * MIT License
- */
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
+
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1-or-later
 
 package dev.kokoroidkt.core.conversation
 
 import dev.kokoroidkt.core.config.Config
+import dev.kokoroidkt.core.logger.getLogger
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
@@ -15,7 +17,6 @@ import dev.kokoroidkt.pluginApi.session.SessionPromise
 import dev.kokoroidkt.pluginApi.session.container.SessionContainer
 import dev.kokoroidkt.pluginApi.session.container.SessionFactoty
 import kotlinx.coroutines.CompletableDeferred
-import logger.getLogger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.concurrent.ConcurrentHashMap

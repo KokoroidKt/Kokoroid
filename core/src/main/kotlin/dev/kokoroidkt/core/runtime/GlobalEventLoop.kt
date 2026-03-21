@@ -1,7 +1,8 @@
-/*
- * Copyright (c) 2026 moran0710 and Kokoroid contributors
- * MIT License
- */
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
+
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1-or-later
 
 package dev.kokoroidkt.core.runtime
 
@@ -11,6 +12,7 @@ import dev.kokoroidkt.adapterApi.transport.EventEmitter
 import dev.kokoroidkt.core.config.Config
 import dev.kokoroidkt.core.exceptions.EventBufferIsFullException
 import dev.kokoroidkt.core.exceptions.state.ErrorSessionStateException
+import dev.kokoroidkt.core.logger.getLogger
 import dev.kokoroidkt.core.plugin.PluginManager
 import dev.kokoroidkt.core.runtime.crash.CrashRegistry
 import dev.kokoroidkt.core.runtime.state.InternalState
@@ -24,7 +26,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import logger.getLogger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.coroutines.cancellation.CancellationException
@@ -56,7 +57,10 @@ class GlobalEventLoop :
                             val promise = orchestrator.callSessionToProcessOrCreate(event, event.bot)
                             promise.deferred.await()
                             if (promise.session.state !is SessionState.Finished) {
-                                throw ErrorSessionStateException(SessionState.Finished(Reply.NoReply), promise.session.state)
+                                throw ErrorSessionStateException(
+                                    SessionState.Finished(Reply.NoReply),
+                                    promise.session.state,
+                                )
                             }
                             when (val reply = (promise.session.state as SessionState.Finished).reply) {
                                 is Reply.NoReply -> {}

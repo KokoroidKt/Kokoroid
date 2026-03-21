@@ -1,13 +1,14 @@
-/*
- * Copyright (c) 2026 moran0710 and Kokoroid contributors
- * MIT License
- */
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
+
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1-or-later
 
 package dev.kokoroidkt.core
 
 import com.github.ajalt.clikt.core.main
+import dev.kokoroidkt.core.logger.getLogger
 import dev.kokoroidkt.core.utils.KokoroidVersion
-import logger.getLogger
 import org.junit.jupiter.api.Test
 import kotlin.test.assertTrue
 

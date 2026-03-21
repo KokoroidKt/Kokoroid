@@ -1,16 +1,17 @@
-/*
- * Copyright (c) 2026 moran0710 and Kokoroid contributors
- * MIT License
- */
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
+
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1-or-later
 
 package dev.kokoroidkt.core.runtime.crash
 
 import dev.kokoroidkt.core.config.Config
+import dev.kokoroidkt.core.logger.getLogger
 import dev.kokoroidkt.core.runtime.state.InternalState
 import dev.kokoroidkt.core.runtime.state.RuntimeState
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
-import logger.getLogger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.concurrent.locks.ReentrantLock

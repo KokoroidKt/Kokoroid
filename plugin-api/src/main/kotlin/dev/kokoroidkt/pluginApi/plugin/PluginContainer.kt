@@ -1,7 +1,8 @@
-/*
- * Copyright (c) 2026 moran0710 and Kokoroid contributors
- * MIT License
- */
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
+
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1-or-later
 
 package dev.kokoroidkt.pluginApi.plugin
 
@@ -23,11 +24,11 @@ data class PluginContainer(
     fun isInstance(clazz: Class<*>) = clazz.isInstance(plugin)
 
     fun registerOrchestrator(orchestrator: ConversationOrchestrator) {
-        _orchestrators + orchestrator
+        _orchestrators += orchestrator
     }
 
     fun unregisterOrchestrator(orchestrator: ConversationOrchestrator) {
-        _orchestrators - orchestrator
+        _orchestrators -= orchestrator
     }
 
     fun load() = plugin.onLoad()
