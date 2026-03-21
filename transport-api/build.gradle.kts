@@ -1,3 +1,5 @@
+import buildsrc.convention.gitCommitShort
+
 plugins {
     kotlin("jvm")
     id("com.palantir.git-version")
@@ -28,8 +30,7 @@ tasks.test {
     useJUnitPlatform()
 }
 
-val gitVersion: groovy.lang.Closure<String> by extra
-val gitCommit = gitVersion().substring(0, 7)
+val gitCommit = gitCommitShort().get()
 
 tasks.jar {
     manifest {

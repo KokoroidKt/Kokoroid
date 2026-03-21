@@ -18,6 +18,11 @@ koin-bom = "4.1.1"
 junit = "4.13.1"
 junitJupiter = "5.14.0"
 mockk = "1.13.9"
+exposed = "1.1.1"
+h2 = "2.4.240"
+sqlite-jdbc = "3.51.3.0"
+mysql-jdbc = "9.6.0"
+pgsql-jdbc = "42.7.9"
 
 
 
@@ -43,6 +48,14 @@ kotlinx-serialization-hocon = { module = "org.jetbrains.kotlinx:kotlinx-serializ
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 junit-jupiter = { group = "org.junit.jupiter", name = "junit-jupiter", version.ref = "junitJupiter" }
 mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
+# db
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+h2 = { module = "com.h2database:h2", version.ref = "h2" }
+sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite-jdbc" }
+mysql-jdbc = { module = "com.mysql:mysql-connector-j", version.ref = "mysql-jdbc"}
+pgsql-jdbc = { module = "org.postgresql:postgresql", version.ref = "pgsql-jdbc" }
+
 
 # Libraries can be bundled together for easier import
 [bundles]
@@ -50,6 +63,7 @@ kotlinxEcosystem = ["kotlinxDatetime", "kotlinxSerialization", "kotlinxCoroutine
 logging = ["kotlin-logging", "logback-classic", "jansi", "janino", "logstash-logback-encoder"]
 kotlinxSerialization = ["kotlinx-serialization-json", "kotlinx-serialization-hocon"]
 testSuit = ["mockk", "junit", "junit-jupiter"]
+exposedPlatform = ["exposed-core", "exposed-jdbc", "h2", "sqlite-jdbc", "pgsql-jdbc", "mysql-jdbc"]
 
 [plugins]
 kotlinPluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

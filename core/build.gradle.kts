@@ -1,3 +1,5 @@
+import buildsrc.convention.gitCommitShort
+
 plugins {
     kotlin("jvm")
     id("com.gradleup.shadow") version "9.3.1"
@@ -14,8 +16,7 @@ application {
 group = "dev.kokoroidkt"
 version = project.findProperty("version") as String? ?: "undefined"
 
-val gitVersion: groovy.lang.Closure<String> by extra
-val gitCommit = gitVersion().substring(0, 7)
+val gitCommit = gitCommitShort().get()
 
 repositories {
     mavenCentral()
@@ -28,6 +29,7 @@ dependencies {
     api(libs.bundles.kotlinxEcosystem)
     api(libs.bundles.logging)
     api(libs.bundles.kotlinxSerialization)
+    implementation(libs.bundles.exposedPlatform)
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
 
@@ -39,6 +41,7 @@ dependencies {
     implementation(project(":adapter-api"))
     implementation(project(":driver-api"))
     implementation(project(":transport-api"))
+
     testImplementation(kotlin("test"))
     testImplementation(libs.bundles.testSuit)
     // testImplementation()

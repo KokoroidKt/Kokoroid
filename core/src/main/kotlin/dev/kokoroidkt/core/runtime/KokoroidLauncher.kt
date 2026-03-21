@@ -6,12 +6,14 @@
 
 package dev.kokoroidkt.core.runtime
 
+import ch.qos.logback.classic.Level
 import dev.kokoroidkt.adapterApi.adapter.Adapter
 import dev.kokoroidkt.adapterApi.adapter.AdapterMeta
 import dev.kokoroidkt.core.adapter.AdapterLoader
 import dev.kokoroidkt.core.adapter.AdapterManager
 import dev.kokoroidkt.core.config.Config
 import dev.kokoroidkt.core.constants.ExitStatus
+import dev.kokoroidkt.core.di.allModules
 import dev.kokoroidkt.core.driver.DriverLoader
 import dev.kokoroidkt.core.driver.DriverManager
 import dev.kokoroidkt.core.logger.getLogger
@@ -20,7 +22,11 @@ import dev.kokoroidkt.core.plugin.PluginManager
 import dev.kokoroidkt.core.runtime.crash.CrashRegistry
 import dev.kokoroidkt.core.runtime.state.InternalState
 import dev.kokoroidkt.core.runtime.state.RuntimeState
+import dev.kokoroidkt.core.utils.KokoroidVersion
+import dev.kokoroidkt.coreApi.database.DatabaseType
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
+import dev.kokoroidkt.coreApi.logging.LogFiles
+import dev.kokoroidkt.coreApi.logging.LogLevelManager
 import dev.kokoroidkt.driverApi.driver.Driver
 import dev.kokoroidkt.driverApi.driver.DriverMeta
 import dev.kokoroidkt.pluginApi.plugin.Plugin
@@ -28,8 +34,12 @@ import dev.kokoroidkt.pluginApi.plugin.PluginMeta
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import org.jetbrains.exposed.v1.jdbc.Database
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.core.context.GlobalContext.startKoin
+import org.koin.java.KoinJavaComponent
+import java.nio.file.Paths
 import kotlin.io.path.extension
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.walk
@@ -43,6 +53,7 @@ class KokoroidLauncher : KoinComponent {
     private val globalEventLoop: GlobalEventLoop by inject()
     private val crashRegistry: CrashRegistry by inject()
     private val runtimeState: RuntimeState by inject()
+    val logger = getLogger("KokoroidLifecycle")
 
     private val shutdownThread =
         Thread {
@@ -64,12 +75,67 @@ class KokoroidLauncher : KoinComponent {
             logger.info { "Kokoroid shutdown, bye" }
         }
 
+    private fun initKoin() {
+        startKoin {
+            modules(allModules)
+        }
+    }
+
+    private fun initDB() {
+        val db =
+            when (config.basic.database.type) {
+                DatabaseType.H2,
+                DatabaseType.SQLITE,
+                -> {
+                    Database.connect(
+                        config.basic.database.jdbc,
+                        driver = config.basic.database.type.jdbcClassName,
+                    )
+                }
+
+                DatabaseType.MYSQL,
+                DatabaseType.POSTGRESQL,
+                -> {
+                    Database.connect(
+                        config.basic.database.jdbc,
+                        driver = config.basic.database.type.jdbcClassName,
+                        user = config.basic.database.username,
+                        password = config.basic.database.password,
+                    )
+                }
+            }
+        logger.debug { "jdbc url: ${db.url}" }
+    }
+
     /**
      * 启动Kokoroid
      */
-    fun launch(validatingOnly: Boolean) {
+    fun launch(
+        validatingOnly: Boolean,
+        isDebug: Boolean = false,
+    ) {
+        LogLevelManager.setLevel(Level.INFO)
+        if (isDebug) {
+            LogLevelManager.setLevel(Level.DEBUG)
+        }
+
+        println(
+            """
+                           _                         _      _ 
+              /\ /\  ___  | | __  ___   _ __   ___  (_)  __| |
+             / //_/ / _ \ | |/ / / _ \ | '__| / _ \ | | / _` |
+            / __ \ | (_) ||   < | (_) || |   | (_) || || (_| |
+            \/  \/  \___/ |_|\_\ \___/ |_|    \___/ |_| \__,_|                                                            
+            """.trimIndent(),
+        )
+        LogFiles.archiveLatestLogOnStartup(Paths.get("./kokoroid/logs"))
+        logger.info { "Kokoroid Version ${KokoroidVersion.version} (Build #${KokoroidVersion.gitHash})" }
+        logger.info { "「ちょー高尚な理由で 目指すは　ひとりぼっち産業革命」" }
+        logger.info { "Kokoroid Starting....." }
+        initKoin()
+        KoinJavaComponent.getKoin().get<RuntimeState>().state = InternalState.Initializing()
         Runtime.getRuntime().addShutdownHook(shutdownThread)
-        val logger = getLogger("KokoroidLifecycle")
+        initDB()
         try {
             initAllExtensions()
             if (!validatingOnly) {

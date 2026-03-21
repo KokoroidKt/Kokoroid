@@ -41,51 +41,12 @@ class KokoroidBootstrap :
     val logger = getLogger("KokoroidBootstrap")
 
     override fun run() {
-        try {
-            // Initlazing
-
-            if (isPrintVersion) {
-                println("Kokoroid Version ${KokoroidVersion.version} (Build #${KokoroidVersion.gitHash})")
-                return
-            }
-
-            LogLevelManager.setLevel(Level.INFO)
-            if (isDebug) {
-                LogLevelManager.setLevel(Level.DEBUG)
-            }
-
-            println(
-                """
-                               _                         _      _ 
-                  /\ /\  ___  | | __  ___   _ __   ___  (_)  __| |
-                 / //_/ / _ \ | |/ / / _ \ | '__| / _ \ | | / _` |
-                / __ \ | (_) ||   < | (_) || |   | (_) || || (_| |
-                \/  \/  \___/ |_|\_\ \___/ |_|    \___/ |_| \__,_|                                                            
-                """.trimIndent(),
-            )
-            LogFiles.archiveLatestLogOnStartup(Paths.get("./kokoroid/logs"))
-            logger.info { "Kokoroid Version ${KokoroidVersion.version} (Build #${KokoroidVersion.gitHash})" }
-            logger.info { "「ちょー高尚な理由で 目指すは　ひとりぼっち産業革命」" }
-            logger.info { "Kokoroid Starting....." }
-            initKoin()
-            try {
-                getKoin().get<RuntimeState>().state = InternalState.Initializing()
-                getKoin().get<KokoroidLauncher>().launch(isValidationOnly)
-            } catch (e: CriticalException) {
-                logger.error(e) { "Kokoroid Bootstrap Failed! Because：${e.javaClass.name}: ${e.message}" }
-                exitProcess(ExitStatus.CRITICAL_ERROR_EXIT)
-            }
-        } catch (e: Exception) {
-            logger.error(e) { "Kokoroid Initialized Failed! Because：${e.javaClass.name}: ${e.message}" }
-            logger.error { "please save latest.log and report this to kokoroid issue" }
+        if (isPrintVersion) {
+            println("Kokoroid Version ${KokoroidVersion.version} (Build #${KokoroidVersion.gitHash})")
+            return
         }
-    }
 
-    private fun initKoin() {
-        startKoin {
-            logger.debug { "init koin" }
-            modules(allModules)
-        }
+        KokoroidLauncher().launch(isValidationOnly, isDebug)
     }
 }
 

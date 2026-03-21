@@ -9,6 +9,7 @@ package dev.kokoroidkt.core.config
 import dev.kokoroidkt.core.constants.DefaultPaths
 import dev.kokoroidkt.coreApi.annotation.WithComment
 import dev.kokoroidkt.coreApi.config.PathSerializer
+import dev.kokoroidkt.coreApi.database.DatabaseType
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import java.nio.file.Path
@@ -100,6 +101,19 @@ data class PerformanceConfig(
 }
 
 @Serializable
+@WithComment("数据库配置", "如果你不知道这是做什么的，请保持默认！")
+data class DatabaseConfig(
+    @WithComment("数据库类型", "支持SQLITE， H2， MYSQL， POSTGRESQL", "默认使用SQLITE", "H2建议只在测试时使用（内存数据库模式）")
+    val type: DatabaseType,
+    @WithComment("jdbc连接字符串", "数据库名称请写在jdbc url中")
+    val jdbc: String,
+    @WithComment("数据库用户名", "SQLite/H2方式请忽略")
+    val username: String,
+    @WithComment("数据库密码", "SQLite/H2方式请忽略")
+    val password: String,
+)
+
+@Serializable
 @WithComment("Kokoroid 默认主配置文件")
 data class BasicConfig(
     @WithComment("插件目录", "Kokoroid会在此目录下寻找插件")
@@ -109,6 +123,7 @@ data class BasicConfig(
     @WithComment("驱动器目录", "Kokoroid会在此目录下寻找驱动器")
     val driverDirectory: Path,
     val performance: PerformanceConfig,
+    val database: DatabaseConfig,
 ) {
     init {
         pluginDirectory.toFile().mkdirs()
@@ -137,6 +152,13 @@ data class BasicConfig(
                                 storeShardSize = 64,
                             ),
                         eventDecoderMaxParallelism = 64,
+                    ),
+                database =
+                    DatabaseConfig(
+                        type = DatabaseType.SQLITE,
+                        jdbc = "jdbc:sqlite:./kokoroid/data.db",
+                        username = "nyanya",
+                        password = "gulugulu",
                     ),
             )
     }

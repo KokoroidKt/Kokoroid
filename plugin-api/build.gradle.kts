@@ -1,3 +1,5 @@
+import buildsrc.convention.gitCommitShort
+
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization") version "2.1.21"
@@ -34,8 +36,7 @@ tasks.test {
     useJUnitPlatform()
 }
 
-val gitVersion: groovy.lang.Closure<String> by extra
-val gitCommit = gitVersion().substring(0, 7)
+val gitCommit = gitCommitShort().get()
 
 tasks.jar {
     manifest {
