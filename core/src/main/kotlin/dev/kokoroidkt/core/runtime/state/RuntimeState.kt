@@ -1,12 +1,13 @@
-/*
- * Copyright (c) 2026 moran0710 and Kokoroid contributors
- * MIT License
- */
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
+
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1-or-later
 
 package dev.kokoroidkt.core.runtime.state
 
 import dev.kokoroidkt.core.exceptions.state.NotAllowedInternalStateChange
-import logger.getLogger
+import dev.kokoroidkt.core.logger.getLogger
 
 class RuntimeState {
     private var _state: InternalState = InternalState.Initializing()

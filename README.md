@@ -38,14 +38,5 @@ Kokoroid目前还处于0.x版本，还有大部分内容等待实现
 - [ ] 对[Milky](https://milky.ntqqrev.org/)和[Onebot V11](https://github.com/botuniverse/onebot-11)的适配器支持
 
 ## 许可证
-Kokoroid使用MIT许可证进行开源
 
-```
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+Kokoroid使用GNU Lesser General Public License-2.1许可证进行开源，了解更多请访问：[Wikipedia - GNU Lesser General Public License](https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License)

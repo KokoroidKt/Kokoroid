@@ -1,7 +1,8 @@
-/*
- * Copyright (c) 2026 moran0710 and Kokoroid contributors
- * MIT License
- */
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
+
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1-or-later
 
 package dev.kokoroidkt.core.di
 
@@ -15,6 +16,7 @@ import dev.kokoroidkt.core.driver.DriverRegistryImpl
 import dev.kokoroidkt.core.factory.ConversationOrchestratorFactoryImpl
 import dev.kokoroidkt.core.factory.SessionContainerFactoryImpl
 import dev.kokoroidkt.core.factory.SessionFactoryImpl
+import dev.kokoroidkt.core.logger.DefaultKokoroidLogger
 import dev.kokoroidkt.core.plugin.PluginManager
 import dev.kokoroidkt.core.plugin.PluginRegistryImpl
 import dev.kokoroidkt.core.runtime.GlobalEventLoop
@@ -30,7 +32,6 @@ import dev.kokoroidkt.pluginApi.factory.ConversationOrchestratorFactory
 import dev.kokoroidkt.pluginApi.plugin.PluginRegistry
 import dev.kokoroidkt.pluginApi.session.container.SessionContainer
 import dev.kokoroidkt.pluginApi.session.container.SessionFactoty
-import logger.DefaultKokoroidLogger
 import org.koin.dsl.module
 import kotlin.reflect.KClass
 

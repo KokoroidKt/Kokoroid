@@ -1,7 +1,8 @@
-/*
- * Copyright (c) 2026 moran0710 and Kokoroid contributors
- * MIT License
- */
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
+
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1-or-later
 
 package dev.kokoroidkt.core.runtime
 
@@ -13,6 +14,7 @@ import dev.kokoroidkt.core.config.Config
 import dev.kokoroidkt.core.constants.ExitStatus
 import dev.kokoroidkt.core.driver.DriverLoader
 import dev.kokoroidkt.core.driver.DriverManager
+import dev.kokoroidkt.core.logger.getLogger
 import dev.kokoroidkt.core.plugin.PluginLoader
 import dev.kokoroidkt.core.plugin.PluginManager
 import dev.kokoroidkt.core.runtime.crash.CrashRegistry
@@ -26,7 +28,6 @@ import dev.kokoroidkt.pluginApi.plugin.PluginMeta
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
-import logger.getLogger
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.io.path.extension

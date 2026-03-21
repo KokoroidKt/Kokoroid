@@ -1,7 +1,8 @@
-/*
- * Copyright (c) 2026 moran0710 and Kokoroid contributors
- * MIT License
- */
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
+
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1-or-later
 
 package dev.kokoroidkt.core.runtime.crash
 
@@ -12,11 +13,7 @@ import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
 import dev.kokoroidkt.coreApi.message.MessageChain
 import kotlinx.serialization.json.JsonElement
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import org.koin.core.context.GlobalContext
 import org.koin.core.error.KoinApplicationAlreadyStartedException
 import java.time.Instant
@@ -147,7 +144,8 @@ class CrashRegistryTest {
                 override fun recordAndRequestStop(
                     err: CriticalException,
                     event: Event?,
-                ) {}
+                ) {
+                }
 
                 override val isCrashed: Boolean = false
 

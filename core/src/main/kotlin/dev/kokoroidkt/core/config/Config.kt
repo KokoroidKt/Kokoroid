@@ -1,7 +1,8 @@
-/*
- * Copyright (c) 2026 moran0710 and Kokoroid contributors
- * MIT License
- */
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
+
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1-or-later
 
 package dev.kokoroidkt.core.config
 
@@ -9,12 +10,12 @@ import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigOriginFactory
 import com.typesafe.config.ConfigValueFactory
 import dev.kokoroidkt.core.constants.DefaultPaths
+import dev.kokoroidkt.core.logger.getLogger
 import dev.kokoroidkt.coreApi.config.decodeHoconFromHoconConfig
 import dev.kokoroidkt.coreApi.config.encodeHocon
 import dev.kokoroidkt.coreApi.config.render
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
 import kotlinx.serialization.ExperimentalSerializationApi
-import logger.getLogger
 import kotlin.io.path.exists
 
 class Config {

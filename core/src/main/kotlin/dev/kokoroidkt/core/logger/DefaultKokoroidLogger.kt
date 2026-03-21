@@ -1,17 +1,14 @@
-/*
- * Copyright (c) 2026 moran0710 and Kokoroid contributors
- * MIT License
- */
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
 
-package logger
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1-or-later
+
+package dev.kokoroidkt.core.logger
 
 import dev.kokoroidkt.coreApi.logging.KokoroidLogger
 import dev.kokoroidkt.coreApi.logging.LogLevelManager
-import io.github.oshai.kotlinlogging.KLogger
-import io.github.oshai.kotlinlogging.KLoggingEventBuilder
-import io.github.oshai.kotlinlogging.KotlinLogging
-import io.github.oshai.kotlinlogging.Level
-import io.github.oshai.kotlinlogging.Marker
+import io.github.oshai.kotlinlogging.*
 
 class DefaultKokoroidLogger(
     override val name: String,
