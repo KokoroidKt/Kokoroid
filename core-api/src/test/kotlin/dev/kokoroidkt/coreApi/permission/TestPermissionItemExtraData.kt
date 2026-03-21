@@ -2,7 +2,7 @@ package dev.kokoroidkt.coreApi.permission
 
 import kotlin.test.Test
 
-class TestPermissionExtraData {
+class TestPermissionItemExtraData {
     @Test
     fun `test json transport`() {
         val raw = PermissionExtraData.empty()

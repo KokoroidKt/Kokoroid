@@ -10,6 +10,7 @@ import dev.kokoroidkt.core.constants.DefaultPaths
 import dev.kokoroidkt.coreApi.annotation.WithComment
 import dev.kokoroidkt.coreApi.config.PathSerializer
 import dev.kokoroidkt.coreApi.database.DatabaseType
+import kotlinx.coroutines.FlowPreview
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import java.nio.file.Path
@@ -156,7 +157,7 @@ data class BasicConfig(
                 database =
                     DatabaseConfig(
                         type = DatabaseType.SQLITE,
-                        jdbc = "jdbc:sqlite:./kokoroid/data.db",
+                        jdbc = "jdbc:sqlite:./kokoroid/datas/dev.kokoroid.core/data.db",
                         username = "nyanya",
                         password = "gulugulu",
                     ),

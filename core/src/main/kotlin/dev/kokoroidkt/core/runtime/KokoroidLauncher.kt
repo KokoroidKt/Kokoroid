@@ -40,6 +40,7 @@ import org.koin.core.component.inject
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.java.KoinJavaComponent
 import java.nio.file.Paths
+import kotlin.io.path.Path
 import kotlin.io.path.extension
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.walk
@@ -82,6 +83,7 @@ class KokoroidLauncher : KoinComponent {
     }
 
     private fun initDB() {
+        Path("kokoroid/datas/dev.kokoroid.core").toFile().mkdirs()
         val db =
             when (config.basic.database.type) {
                 DatabaseType.H2,
