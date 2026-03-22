@@ -51,6 +51,9 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 # db
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+exposed-json-support = { module = "org.jetbrains.exposed:exposed-json", version.ref = "exposed" }
+exposed-migration-support = { module = "org.jetbrains.exposed:exposed-migration-core", version.ref = "exposed" }
+exposed-migration-jdbc-support = { module = "org.jetbrains.exposed:exposed-migration-jdbc", version.ref = "exposed" }
 h2 = { module = "com.h2database:h2", version.ref = "h2" }
 sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite-jdbc" }
 mysql-jdbc = { module = "com.mysql:mysql-connector-j", version.ref = "mysql-jdbc"}
@@ -63,7 +66,12 @@ kotlinxEcosystem = ["kotlinxDatetime", "kotlinxSerialization", "kotlinxCoroutine
 logging = ["kotlin-logging", "logback-classic", "jansi", "janino", "logstash-logback-encoder"]
 kotlinxSerialization = ["kotlinx-serialization-json", "kotlinx-serialization-hocon"]
 testSuit = ["mockk", "junit", "junit-jupiter"]
-exposedPlatform = ["exposed-core", "exposed-jdbc", "h2", "sqlite-jdbc", "pgsql-jdbc", "mysql-jdbc"]
+# TMD 脑浆喷射剁臊子呢
+exposedPlatform = [
+    "exposed-core", "exposed-jdbc", "h2", "sqlite-jdbc", "pgsql-jdbc",
+    "mysql-jdbc", "exposed-json-support", "exposed-migration-support",
+    "exposed-migration-jdbc-support"
+]
 
 [plugins]
 kotlinPluginSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

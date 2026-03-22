@@ -6,6 +6,7 @@
 
 package dev.kokoroidkt.core.runtime.crash
 
+import dev.kokoroidkt.core.constants.ExitStatus
 import dev.kokoroidkt.core.di.allModules
 import dev.kokoroidkt.core.runtime.state.InternalState
 import dev.kokoroidkt.coreApi.bot.Bot
@@ -144,8 +145,12 @@ class CrashRegistryTest {
                 override fun recordAndRequestStop(
                     err: CriticalException,
                     event: Event?,
+                    exitCode: Int,
                 ) {
                 }
+
+                override val exitCode: Int
+                    get() = -1
 
                 override val isCrashed: Boolean = false
 

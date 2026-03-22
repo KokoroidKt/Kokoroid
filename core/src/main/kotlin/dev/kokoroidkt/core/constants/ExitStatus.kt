@@ -28,6 +28,9 @@ object ExitStatus {
      */
     const val WRONG_EXIT_STATE = -2
 
+    // 数据库错误退出∈[-3000, -2000)
+    const val DATABASE_TOO_OLD = -2001
+
     // 验证模式：验证失败退出∈[-2000, -1000)
     const val DRIVER_LOADED_FAILED = -1001
     const val PLUGIN_LOADED_FAILED = -1002

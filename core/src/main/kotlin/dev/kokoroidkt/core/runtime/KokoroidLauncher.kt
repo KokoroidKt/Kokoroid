@@ -13,9 +13,11 @@ import dev.kokoroidkt.core.adapter.AdapterLoader
 import dev.kokoroidkt.core.adapter.AdapterManager
 import dev.kokoroidkt.core.config.Config
 import dev.kokoroidkt.core.constants.ExitStatus
+import dev.kokoroidkt.core.constants.ExitStatus.DATABASE_TOO_OLD
 import dev.kokoroidkt.core.di.allModules
 import dev.kokoroidkt.core.driver.DriverLoader
 import dev.kokoroidkt.core.driver.DriverManager
+import dev.kokoroidkt.core.exceptions.DatabaseTooOldException
 import dev.kokoroidkt.core.logger.getLogger
 import dev.kokoroidkt.core.plugin.PluginLoader
 import dev.kokoroidkt.core.plugin.PluginManager
@@ -24,6 +26,8 @@ import dev.kokoroidkt.core.runtime.state.InternalState
 import dev.kokoroidkt.core.runtime.state.RuntimeState
 import dev.kokoroidkt.core.utils.KokoroidVersion
 import dev.kokoroidkt.coreApi.database.DatabaseType
+import dev.kokoroidkt.coreApi.database.migrations.MigrationResult
+import dev.kokoroidkt.coreApi.database.migrations.trySyncDB
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
 import dev.kokoroidkt.coreApi.logging.LogFiles
 import dev.kokoroidkt.coreApi.logging.LogLevelManager
@@ -69,7 +73,7 @@ class KokoroidLauncher : KoinComponent {
                 logger.error { "###### Kokoroid Crash Report ######" }
                 crashRegistry.logRecords()
                 runtimeState.state =
-                    InternalState.Stopped(ExitStatus.CRITICAL_ERROR_EXIT)
+                    InternalState.Stopped(crashRegistry.exitCode)
             } else {
                 runtimeState.state = InternalState.Stopped(ExitStatus.SUCCESS_EXIT)
             }
@@ -84,6 +88,9 @@ class KokoroidLauncher : KoinComponent {
 
     private fun initDB() {
         Path("kokoroid/datas/dev.kokoroid.core").toFile().mkdirs()
+        if (config.basic.database.type == DatabaseType.H2) {
+            logger.warn { "H2 database is used for development! MAKE SURE WHEN YOU ARE IN PRODUCTION, USE A PROPER DATABASE" }
+        }
         val db =
             when (config.basic.database.type) {
                 DatabaseType.H2,
@@ -107,6 +114,22 @@ class KokoroidLauncher : KoinComponent {
                 }
             }
         logger.debug { "jdbc url: ${db.url}" }
+        when (val result = trySyncDB()) {
+            MigrationResult.NoChange -> {
+                logger.debug { "Database is up to date" }
+            }
+
+            is MigrationResult.NotMatch -> {
+                logger.error { "Database too old!, please run migration" }
+                logger.error { "Migration Script Location: ${result.migrationScriptFilename}" }
+                val ex = DatabaseTooOldException(message = "Database too old. require: ${result.newHash}, actual: ${result.oldHash}")
+                crashRegistry.recordAndRequestStop(ex, null, DATABASE_TOO_OLD)
+            }
+
+            MigrationResult.CreateNew -> {
+                logger.info { "Kokoroid database has been created" }
+            }
+        }
     }
 
     /**
