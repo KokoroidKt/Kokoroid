@@ -23,6 +23,8 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
+        env:
+          GRADLE_WRAPPER_VALIDATION: 'false'  # bur我这个gradle是idea创建项目的时候自带的啊
 
       - name: Run Tests
         run: ./gradlew test
