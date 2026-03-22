@@ -26,6 +26,9 @@ jobs:
         with:
           validate-wrappers: false # bur我这个gradle是idea创建项目的时候自带的啊
 
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
       - name: Run Tests
         run: ./gradlew test
 
@@ -45,6 +48,9 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       - name: Build All Modules
         run: ./gradlew build
