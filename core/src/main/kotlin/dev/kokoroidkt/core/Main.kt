@@ -38,6 +38,12 @@ class KokoroidBootstrap :
         help = "Only validate configuration & extension avalliable, do not start Kokoroid.",
     ).flag()
 
+    val doMigration by option(
+        "-m",
+        "--migration",
+        help = "Run database migration.",
+    ).flag()
+
     val logger = getLogger("KokoroidBootstrap")
 
     override fun run() {
@@ -46,7 +52,27 @@ class KokoroidBootstrap :
             return
         }
 
-        KokoroidLauncher().launch(isValidationOnly, isDebug)
+        var isConfirm = false
+        if (doMigration) {
+            logger.warn {
+                "WARNING: You enabled migration flag, it will execute database migration, " +
+                    "please BACKUP your database before proceeding."
+            }
+            println("Confirm? [Y]es/[N]o")
+            val confirm = readlnOrNull()
+            if (confirm == null) {
+                isConfirm = false
+                logger.warn { "stdin not exist, set NO automatically" }
+            } else if (confirm.lowercase().startsWith("y")) {
+                isConfirm = true
+                logger.warn { "Kokoroid database will be automatically migrated" }
+            } else {
+                isConfirm = false
+                logger.warn { "Migration option has been set to false" }
+            }
+        }
+
+        KokoroidLauncher().launch(isValidationOnly, isDebug, doMigration && isConfirm)
     }
 }
 

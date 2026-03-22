@@ -19,5 +19,5 @@ fun computeTableHash(): String =
                     }
                 }
             }
-        sha256Fingerprint(totalDDL)
+        sha256Fingerprint(totalDDL).substring(0, 16)
     }

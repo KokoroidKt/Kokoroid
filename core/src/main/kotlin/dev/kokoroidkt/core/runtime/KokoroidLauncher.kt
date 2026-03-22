@@ -26,8 +26,12 @@ import dev.kokoroidkt.core.runtime.state.InternalState
 import dev.kokoroidkt.core.runtime.state.RuntimeState
 import dev.kokoroidkt.core.utils.KokoroidVersion
 import dev.kokoroidkt.coreApi.database.DatabaseType
+import dev.kokoroidkt.coreApi.database.allTables
+import dev.kokoroidkt.coreApi.database.migrations.MIGRATION_VERSION_KEY
 import dev.kokoroidkt.coreApi.database.migrations.MigrationResult
+import dev.kokoroidkt.coreApi.database.migrations.computeTableHash
 import dev.kokoroidkt.coreApi.database.migrations.trySyncDB
+import dev.kokoroidkt.coreApi.database.tables.MigrationTable
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
 import dev.kokoroidkt.coreApi.logging.LogFiles
 import dev.kokoroidkt.coreApi.logging.LogLevelManager
@@ -38,7 +42,13 @@ import dev.kokoroidkt.pluginApi.plugin.PluginMeta
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.SchemaUtils
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.update
+import org.jetbrains.exposed.v1.migration.jdbc.MigrationUtils
+import org.jetbrains.exposed.v1.migration.jdbc.MigrationUtils.statementsRequiredForDatabaseMigration
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.GlobalContext.startKoin
@@ -86,7 +96,7 @@ class KokoroidLauncher : KoinComponent {
         }
     }
 
-    private fun initDB() {
+    private fun initDB(doMigration: Boolean) {
         Path("kokoroid/datas/dev.kokoroid.core").toFile().mkdirs()
         if (config.basic.database.type == DatabaseType.H2) {
             logger.warn { "H2 database is used for development! MAKE SURE WHEN YOU ARE IN PRODUCTION, USE A PROPER DATABASE" }
@@ -120,10 +130,39 @@ class KokoroidLauncher : KoinComponent {
             }
 
             is MigrationResult.NotMatch -> {
-                logger.error { "Database too old!, please run migration" }
-                logger.error { "Migration Script Location: ${result.migrationScriptFilename}" }
-                val ex = DatabaseTooOldException(message = "Database too old. require: ${result.newHash}, actual: ${result.oldHash}")
-                crashRegistry.recordAndRequestStop(ex, null, DATABASE_TOO_OLD)
+                if (!doMigration) {
+                    val errorMessage =
+                        """
+                            
+                            
+                        Database too old! Please run migration.
+                        Required: ${result.newHash}, Actual: ${result.oldHash}
+                        Migration Script Location (for reference): ${result.migrationScriptFilename}
+                        You can use --migration option to run migration automatically
+                        or use the SQL script to do migration by yourself.
+
+
+                        """.trimIndent()
+                    logger.error { errorMessage }
+                    crashRegistry.stopNow(DATABASE_TOO_OLD)
+                } else {
+                    logger.warn { "Trying to auto migration ${result.oldHash} --> ${result.newHash}" }
+
+                    transaction {
+                        val sqls =
+                            MigrationUtils.statementsRequiredForDatabaseMigration(
+                                *allTables,
+                            )
+                        sqls.forEach {
+                            exec(it)
+                            logger.info { "executeing -> $it " }
+                        }
+                        MigrationTable.update({ MigrationTable.key eq MIGRATION_VERSION_KEY }) {
+                            it[value] = computeTableHash()
+                        }
+                    }
+                    logger.info { "Auto migration ${result.oldHash} -> ${result.newHash} completed successfully" }
+                }
             }
 
             MigrationResult.CreateNew -> {
@@ -138,6 +177,7 @@ class KokoroidLauncher : KoinComponent {
     fun launch(
         validatingOnly: Boolean,
         isDebug: Boolean = false,
+        doMigration: Boolean = false,
     ) {
         LogLevelManager.setLevel(Level.INFO)
         if (isDebug) {
@@ -160,7 +200,7 @@ class KokoroidLauncher : KoinComponent {
         initKoin()
         KoinJavaComponent.getKoin().get<RuntimeState>().state = InternalState.Initializing()
         Runtime.getRuntime().addShutdownHook(shutdownThread)
-        initDB()
+        initDB(doMigration)
         try {
             initAllExtensions()
             if (!validatingOnly) {
@@ -192,7 +232,7 @@ class KokoroidLauncher : KoinComponent {
                     logger.error { "Wrong exiting runtimeStatus.status: ${runtimeState.state::class.qualifiedName}" }
                     ExitStatus.WRONG_EXIT_STATE
                 }
-            exitProcess(exitCode)
+            crashRegistry.stopNow(exitCode = exitCode)
         }
     }
 
