@@ -29,11 +29,8 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Compile Kotlin
-        run: ./gradlew :test-extension:compileKotlin --info --stacktrace
-
-      - name: Run Tests
-        run: ./gradlew test --stacktrace --info
+      - name: Clean build with no caches
+        run: ./gradlew clean build --no-build-cache --no-configuration-cache --stacktrace
 
       - name: Debug on failure
         if: ${{ failure() }}

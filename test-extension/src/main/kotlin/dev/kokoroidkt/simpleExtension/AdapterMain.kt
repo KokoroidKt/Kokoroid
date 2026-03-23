@@ -3,10 +3,8 @@
 //
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
-package dev.kokoroid.simpleExtension
+package dev.kokoroidkt.simpleExtension
 
-import dev.kokoroid.simpleExtension.config.MockConfig
-import dev.kokoroid.simpleExtension.utils.Util
 import dev.kokoroidkt.adapterApi.adapter.Adapter
 import dev.kokoroidkt.adapterApi.logger.getLogger
 import dev.kokoroidkt.adapterApi.utils.loadConfigFromFile
@@ -17,6 +15,8 @@ import dev.kokoroidkt.coreApi.exceptions.CriticalException
 import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.user.User
 import dev.kokoroidkt.coreApi.user.UserContainer
+import dev.kokoroidkt.simpleExtension.config.MockConfig
+import dev.kokoroidkt.simpleExtension.utils.Util
 import kotlinx.serialization.json.JsonElement
 
 class AdapterMain : Adapter {

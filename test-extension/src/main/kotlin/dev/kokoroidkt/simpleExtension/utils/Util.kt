@@ -4,7 +4,7 @@
 //
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
-package dev.kokoroid.simpleExtension.utils
+package dev.kokoroidkt.simpleExtension.utils
 
 class Util(
     val from: String,
