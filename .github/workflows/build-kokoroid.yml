@@ -29,6 +29,9 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
+      - name: Compile Kotlin
+        run: ./gradlew :test-extension:compileKotlin --info --stacktrace
+
       - name: Run Tests
         run: ./gradlew test --stacktrace --info
 
@@ -59,9 +62,6 @@ jobs:
 
       - name: Build Fat Jar (Core Only)
         run: ./gradlew :core:shadowjar
-
-      - name: Compile Kotlin
-        run: ./gradlew :test-extension:compileKotlin --info --stacktrace
 
       - name: Collect Artifacts
         uses: actions/upload-artifact@v7
