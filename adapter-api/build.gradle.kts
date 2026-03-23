@@ -4,7 +4,6 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization") version "2.1.21"
     application
-    id("com.palantir.git-version")
 }
 
 group = "dev.kokoroidkt"
