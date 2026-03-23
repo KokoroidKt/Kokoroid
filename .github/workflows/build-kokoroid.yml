@@ -35,6 +35,10 @@ jobs:
       - name: Run Tests
         run: ./gradlew test --stacktrace --info
 
+      - name: Debug on failure
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+
   # Job 2: 构建和打包，依赖于测试 job
   build:
     runs-on: ubuntu-latest
