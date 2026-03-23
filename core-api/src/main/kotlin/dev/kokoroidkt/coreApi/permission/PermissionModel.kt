@@ -5,12 +5,19 @@
 
 package dev.kokoroidkt.coreApi.permission
 
-class PermissionItem {
+/**
+ * 用于声明权限模型
+ *
+ * @constructor Create empty Permission model
+ */
+class PermissionModel {
     val data: PermissionExtraData
-    val namescape: String
+    val namespace: String
     val node: String
 
     val checker: PermissionChecker
+
+    val nodeList by lazy { node.split(".") }
 
     private constructor(
         data: PermissionExtraData,
@@ -19,7 +26,7 @@ class PermissionItem {
         checker: PermissionChecker,
     ) {
         this.data = data
-        this.namescape = namescape
+        this.namespace = namescape
         this.node = node
         this.checker = checker
     }
@@ -30,8 +37,16 @@ class PermissionItem {
             namescape: String,
             node: String,
             checker: PermissionChecker = { _ -> true },
-        ): PermissionItem = PermissionItem(data, namescape, node, checker)
+        ): PermissionModel = PermissionModel(data, namescape, node, checker)
     }
 
-    fun verify(extraData: PermissionExtraData): Boolean = TODO("你还没做大傻缺")
+    override fun toString(): String = "Permission=${toPermissionString()} (Checker=${checker.javaClass.name})}"
+
+    fun toPermissionString(): String = "$namespace:$node:${data.toJsonString()}"
+
+    fun verify(granted: GrantedPermission): Boolean {
+        if (granted.namespace != namespace) return false
+        val nodeListCopy = nodeList.toMutableList()
+        TODO("我困死了，下次月假写")
+    }
 }

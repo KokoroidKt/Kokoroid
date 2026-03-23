@@ -26,7 +26,7 @@ import kotlinx.serialization.json.longOrNull
  * 则可以用 PermissionExtraData 存储 {"dmOnly": true}，并用自定义权限检查函数获取该字段
  */
 class PermissionExtraData {
-    private val data: MutableMap<String, JsonElement> = mutableMapOf()
+    val data: MutableMap<String, JsonElement> = mutableMapOf()
 
     private fun setElement(
         key: String,
