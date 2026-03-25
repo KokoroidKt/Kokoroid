@@ -7,7 +7,7 @@
 package dev.kokoroidkt.coreApi.user.special
 
 import dev.kokoroidkt.coreApi.user.User
-import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.coreApi.user.Users
 
 /**
  * 这是一个特殊的用户，代表无用户
@@ -20,5 +20,5 @@ object NoUser : User() {
     override val userId: String
         get() = "###NO-USER###"
 
-    val NO_USER_GROUP: UserGroup = listOf(NoUser)
+    val NO_USER_GROUP: Users = listOf(NoUser)
 }

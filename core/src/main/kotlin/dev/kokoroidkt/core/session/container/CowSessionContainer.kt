@@ -7,7 +7,7 @@
 package dev.kokoroidkt.core.session.container
 
 import dev.kokoroidkt.coreApi.event.Event
-import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.coreApi.user.Users
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
 import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.session.Session
@@ -35,7 +35,7 @@ class CowSessionContainer :
     override suspend fun getOrCreateSession(
         event: Event,
         processor: Processor,
-        userGroup: UserGroup,
+        users: Users,
         orchestrator: ConversationOrchestrator,
     ): Session {
         while (true) {
@@ -43,7 +43,7 @@ class CowSessionContainer :
             val found = cur.firstOrNull { it.state !is SessionState.Finished && it.users == event.users }
             if (found != null) return found
 
-            val newSession = sessionFactory.createSession(userGroup, processor, orchestrator)
+            val newSession = sessionFactory.createSession(users, processor, orchestrator)
             val next = cur + newSession
 
             if (sessions.compareAndSet(cur, next)) return newSession

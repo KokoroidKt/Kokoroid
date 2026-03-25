@@ -9,8 +9,7 @@ package dev.kokoroidkt.pluginApi.rule
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.message.MessageChain
-import dev.kokoroidkt.coreApi.user.User
-import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.coreApi.user.Users
 
 /**
  * Rule信息，存优先级用
@@ -37,7 +36,7 @@ class RuleChain {
         bot: Bot?,
         event: Event,
         messageChain: MessageChain?,
-        user: UserGroup?,
+        user: Users?,
     ): Boolean {
         rules
             .sortedByDescending { it.second }

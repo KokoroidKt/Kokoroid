@@ -16,6 +16,5 @@ object PermissionTable : Table("kokoroid_permission") {
     val namespace = varchar("namespace", 64)
     val permissionNode = varchar("permission_node", 256)
     val patternType = enumeration<PermissionType>("permission_type")
-
     val extra = json<Map<String, JsonElement>>("extra", Json)
 }

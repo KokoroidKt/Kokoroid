@@ -47,7 +47,13 @@ bin/
 ### Kokoroid ###
 kokoroid
 core-api/foo
-.tmp
+core-api/kokoroid
+core/kokoroid
+.tmp/
+
+# 墨冉会把自己的一些笔记放在MR_NOTE.md，以防忘掉了
+MR_NOTE.md
+
 
 ### Python ###
 /.venv/

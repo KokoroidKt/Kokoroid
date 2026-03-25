@@ -11,7 +11,7 @@ package dev.kokoroidkt.core.session.container
 import dev.kokoroidkt.core.di.allModules
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.user.User
-import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.coreApi.user.Users
 import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.conversation.Reply
 import dev.kokoroidkt.pluginApi.dsl.conversation
@@ -89,7 +89,7 @@ class CowSessionContainerTest {
         return Reply.NoReply // Assuming Reply is a callable implementation for testing purposes
     }
 
-    fun testUserGroup(len: Int): UserGroup =
+    fun testUserGroup(len: Int): Users =
         List(len) {
             object : User() {
                 override val userId: String
@@ -99,7 +99,7 @@ class CowSessionContainerTest {
 
     private class TestEvent(
         eventId: String,
-        user: UserGroup,
+        user: Users,
     ) : Event(eventId, Instant.now(), user, TestBot(""))
 
     companion object {

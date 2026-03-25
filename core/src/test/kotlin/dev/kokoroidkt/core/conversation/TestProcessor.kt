@@ -12,7 +12,7 @@ import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.message.MessageSegment
-import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.coreApi.user.Users
 import dev.kokoroidkt.coreApi.user.special.NoUser
 import dev.kokoroidkt.pluginApi.conversation.Reply
 import dev.kokoroidkt.pluginApi.conversation.extensions.waitForEvent
@@ -52,7 +52,7 @@ class TestBot : Bot {
 
 class TestEvent(
     eventId: String,
-    users: UserGroup = NoUser.NO_USER_GROUP,
+    users: Users = NoUser.NO_USER_GROUP,
 ) : Event(eventId, Instant.now(), users, TestBot()) {
     fun sayHi() {
         println("hi")

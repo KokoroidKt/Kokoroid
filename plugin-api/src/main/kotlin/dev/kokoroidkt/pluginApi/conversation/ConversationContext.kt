@@ -6,11 +6,9 @@
 
 package dev.kokoroidkt.pluginApi.conversation
 
-import dev.kokoroidkt.coreApi.user.User
-import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.coreApi.user.Users
 import dev.kokoroidkt.pluginApi.session.Session
 import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Deferred
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -25,7 +23,7 @@ class ConversationContext(
      * 如果Users为空，则代表开启本次对话的事件无法拥有上下文（如：群聊解散）
      * 这个用户信息应该携带在事件里面
      */
-    val currentUsers: UserGroup,
+    val currentUsers: Users,
     /**
      * 当前事件
      */
