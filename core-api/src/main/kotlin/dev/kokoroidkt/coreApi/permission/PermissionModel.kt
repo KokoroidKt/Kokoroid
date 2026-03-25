@@ -5,12 +5,14 @@
 
 package dev.kokoroidkt.coreApi.permission
 
+import dev.kokoroidkt.coreApi.user.User
+
 /**
  * 用于声明权限模型
  *
- * @constructor Create empty Permission model
+ * @constructor Create an empty Permission model
  */
-class PermissionModel {
+open class PermissionModel {
     val data: PermissionExtraData
     val namespace: String
     val node: String
@@ -44,9 +46,9 @@ class PermissionModel {
 
     fun toPermissionString(): String = "$namespace:$node:${data.toJsonString()}"
 
-    fun verify(granted: GrantedPermission): Boolean {
-        if (granted.namespace != namespace) return false
-        val nodeListCopy = nodeList.toMutableList()
-        TODO("我困死了，下次月假写")
+    fun verify(user: User) {
+        for (i in nodeList.size - 1 downTo 0) {
+            val currentNode = nodeList.subList(0, i).joinToString { "." }
+        }
     }
 }

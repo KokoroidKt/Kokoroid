@@ -10,7 +10,6 @@ import dev.kokoroidkt.coreApi.database.migrations.MigrationResult
 import dev.kokoroidkt.coreApi.database.migrations.trySyncDB
 import dev.kokoroidkt.coreApi.database.tables.MigrationTable
 import dev.kokoroidkt.coreApi.database.tables.PermissionTable
-import dev.kokoroidkt.coreApi.database.tables.UserTable
 import dev.kokoroidkt.coreApi.logging.KokoroidLogger
 import org.jetbrains.exposed.v1.core.ExperimentalDatabaseMigrationApi
 import org.jetbrains.exposed.v1.core.StdOutSqlLogger

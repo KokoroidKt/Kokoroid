@@ -6,6 +6,8 @@
 
 package dev.kokoroidkt.coreApi.user
 
+import dev.kokoroidkt.coreApi.permission.GrantedPermission
+
 abstract class User {
     /**
      * 唯一标识一个用户的ID
@@ -27,6 +29,10 @@ abstract class User {
         if (this === other) return true
         if (other !is User) return false
         return userId == other.userId
+    }
+
+    fun findPermission(): GrantedPermission {
+        TODO()
     }
 
     override fun hashCode(): Int = userId.hashCode()
