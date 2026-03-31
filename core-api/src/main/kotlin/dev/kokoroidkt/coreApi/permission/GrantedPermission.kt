@@ -1,30 +1,33 @@
 package dev.kokoroidkt.coreApi.permission
 
-import dev.kokoroidkt.coreApi.database.tables.PermissionTable
+import dev.kokoroidkt.coreApi.database.DatabaseManager
+import dev.kokoroidkt.coreApi.database.tables.UserPermissionTable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jetbrains.exposed.v1.jdbc.insert
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.koin.java.KoinJavaComponent.getKoin
 
 data class GrantedPermission(
     val namespace: String,
     val permissionNode: String,
     val extraData: PermissionExtraData,
 ) {
-    fun toPermissionString(): String = "$namespace:$permissionNode:${extraData.toJsonString()}"
+    val databaseManager: DatabaseManager by lazy { getKoin().get<DatabaseManager>() }
+
+    fun toPermissionString(): String = "$namespace|$permissionNode|${extraData.toJsonString()}"
 
     companion object {
         @JvmStatic
         fun fromPermissionString(permissionString: String): GrantedPermission {
-            val (namespace, permissionNode, extraDataJson) = permissionString.split(":")
+            val (namespace, permissionNode, extraDataJson) = permissionString.split("|")
             val extraData = PermissionExtraData.fromJsonString(extraDataJson)
             return GrantedPermission(namespace, permissionNode, extraData)
         }
     }
 
     fun saveToDbSync() {
-        transaction {
-            PermissionTable.insert {
+        databaseManager.transaction {
+            UserPermissionTable.insert {
                 it[namespace] = this@GrantedPermission.namespace
                 it[permissionNode] = this@GrantedPermission.permissionNode
                 it[extra] = this@GrantedPermission.extraData.data

@@ -5,6 +5,7 @@
 
 package dev.kokoroidkt.coreApi.database.migrations
 
+import dev.kokoroidkt.coreApi.database.DatabaseManager
 import dev.kokoroidkt.coreApi.database.allTables
 import dev.kokoroidkt.coreApi.database.tables.MigrationTable
 import org.jetbrains.exposed.v1.core.ExperimentalDatabaseMigrationApi
@@ -16,6 +17,7 @@ import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.migration.jdbc.MigrationUtils
+import org.koin.java.KoinJavaComponent.getKoin
 import kotlin.io.path.Path
 
 const val MIGRATION_VERSION_KEY = "migration_version"
@@ -34,8 +36,9 @@ sealed class MigrationResult {
 
 @OptIn(ExperimentalDatabaseMigrationApi::class)
 fun trySyncDB(): MigrationResult {
+    val databaseManager = getKoin().get<DatabaseManager>()
     val oldVersion =
-        transaction {
+        databaseManager.transaction {
             if (!MigrationTable.exists()) {
                 null
             } else {
@@ -46,7 +49,7 @@ fun trySyncDB(): MigrationResult {
             }
         }
     if (oldVersion == null) {
-        transaction {
+        databaseManager.transaction {
             allTables.forEach {
                 SchemaUtils.create(it)
             }
@@ -66,7 +69,7 @@ fun trySyncDB(): MigrationResult {
         val scriptName = "migration_${oldHash}_to_$latestHash"
         val path = "kokoroid/migration"
         Path(path).toFile().mkdirs()
-        transaction {
+        databaseManager.transaction {
             MigrationUtils.generateMigrationScript(
                 *allTables,
                 scriptName = scriptName,

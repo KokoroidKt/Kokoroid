@@ -5,12 +5,16 @@
 
 package dev.kokoroidkt.coreApi.database.migrations
 
+import dev.kokoroidkt.coreApi.database.DatabaseManager
 import dev.kokoroidkt.coreApi.database.allTables
 import dev.kokoroidkt.coreApi.utils.sha256Fingerprint
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.koin.java.KoinJavaComponent.getKoin
 
-fun computeTableHash(): String =
-    transaction {
+fun computeTableHash(): String {
+    val databaseManager = getKoin().get<DatabaseManager>()
+
+    return databaseManager.transaction {
         val totalDDL =
             buildString {
                 allTables.forEach { table ->
@@ -21,3 +25,4 @@ fun computeTableHash(): String =
             }
         sha256Fingerprint(totalDDL).substring(0, 16)
     }
+}

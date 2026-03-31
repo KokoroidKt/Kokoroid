@@ -8,7 +8,10 @@ package dev.kokoroidkt.coreApi.user.internal
 
 import dev.kokoroidkt.coreApi.user.User
 
-class KokoroidSystemUser : User() {
+class KokoroidSystemUser : User("dev.kokoroidkt.coreApi") {
+    override val platfromUserId: String
+        get() = "###KokoroidSystem###"
+
     override val userId: String
-        get() = "###KokoroidSystem###@dev.kokoroidkt.coreApi"
+        get() = "$platfromUserId@$adapterId"
 }

@@ -12,6 +12,6 @@ object UserGroupTable : Table("kokoroid_user_group") {
 
     @OptIn(ExperimentalUuidApi::class)
     override val primaryKey = PrimaryKey(this.uuid)
-    val name = varchar("group_name", 255)
+    val name = varchar("group_name", 255).uniqueIndex()
     val users = json<List<String>>("users", Json)
 }

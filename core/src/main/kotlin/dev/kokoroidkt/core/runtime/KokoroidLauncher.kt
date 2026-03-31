@@ -25,6 +25,7 @@ import dev.kokoroidkt.core.runtime.crash.CrashRegistry
 import dev.kokoroidkt.core.runtime.state.InternalState
 import dev.kokoroidkt.core.runtime.state.RuntimeState
 import dev.kokoroidkt.core.utils.KokoroidVersion
+import dev.kokoroidkt.coreApi.database.DatabaseManager
 import dev.kokoroidkt.coreApi.database.DatabaseType
 import dev.kokoroidkt.coreApi.database.allTables
 import dev.kokoroidkt.coreApi.database.migrations.MIGRATION_VERSION_KEY
@@ -68,6 +69,7 @@ class KokoroidLauncher : KoinComponent {
     private val globalEventLoop: GlobalEventLoop by inject()
     private val crashRegistry: CrashRegistry by inject()
     private val runtimeState: RuntimeState by inject()
+    private val databaseManager: DatabaseManager by inject()
     val logger = getLogger("KokoroidLifecycle")
 
     private val shutdownThread =
@@ -76,6 +78,9 @@ class KokoroidLauncher : KoinComponent {
             logger.info { "Shutting down...\n" }
             runtimeState.state = InternalState.BeforeStopping()
             val ex = runCatching { stopAllExtensions() }.exceptionOrNull()
+            logger.info { "All extensions stopped" }
+            databaseManager.close()
+            logger.info { "Kokoroid Database closed" }
             if (ex != null) {
                 logger.error(ex) { "Error when shutdown: ${ex::class.qualifiedName}: ${ex.message}" }
             }
@@ -147,15 +152,14 @@ class KokoroidLauncher : KoinComponent {
                     crashRegistry.stopNow(DATABASE_TOO_OLD)
                 } else {
                     logger.warn { "Trying to auto migration ${result.oldHash} --> ${result.newHash}" }
-
-                    transaction {
+                    databaseManager.transaction {
                         val sqls =
                             MigrationUtils.statementsRequiredForDatabaseMigration(
                                 *allTables,
                             )
                         sqls.forEach {
                             exec(it)
-                            logger.info { "executeing -> $it " }
+                            logger.info { "executing -> $it " }
                         }
                         MigrationTable.update({ MigrationTable.key eq MIGRATION_VERSION_KEY }) {
                             it[value] = computeTableHash()
@@ -163,6 +167,7 @@ class KokoroidLauncher : KoinComponent {
                     }
                     logger.info { "Auto migration ${result.oldHash} -> ${result.newHash} completed successfully" }
                 }
+                databaseManager.init(db)
             }
 
             MigrationResult.CreateNew -> {

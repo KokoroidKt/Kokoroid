@@ -4,17 +4,13 @@
 //
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
-package dev.kokoroid.pluginApi.rule
+package dev.kokoroidkt.pluginApi.rule
 
-import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.message.MessageChain
-import dev.kokoroidkt.coreApi.user.User
 import dev.kokoroidkt.pluginApi.dsl.rule
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.JsonElement
 import org.junit.jupiter.api.Assertions.assertFalse
-import java.time.Instant
 import kotlin.test.Test
 
 val ruleChainSuccess =
@@ -28,38 +24,16 @@ val ruleChainFailed =
         with { false }
     }
 
-class TestBot : Bot {
-    override fun callApi(
-        apiEndpoint: String,
-        data: JsonElement,
-    ) {
-    }
-
-    override fun replyMessage(
-        event: Event,
-        message: MessageChain,
-    ) {
-    }
-
-    override val botId: String
-        get() = ""
-}
-
 class TestRule {
     @Test
     fun `test success`() {
         runBlocking {
             assert(
                 ruleChainSuccess.check(
-                    TestBot(),
-                    object : Event("", Instant.now(), users = listOf(), TestBot()) {},
+                    MockBot(),
+                    MockEvent(),
                     MessageChain.empty(),
-                    listOf(
-                        object : User() {
-                            override val userId: String
-                                get() = ""
-                        },
-                    ),
+                    listOf(MockUser()),
                 ),
             )
         }
@@ -70,15 +44,10 @@ class TestRule {
         runBlocking {
             assertFalse(
                 ruleChainFailed.check(
-                    TestBot(),
-                    object : Event("", Instant.now(), users = listOf(), TestBot()) {},
+                    MockBot(),
+                    MockEvent(),
                     MessageChain.empty(),
-                    listOf(
-                        object : User() {
-                            override val userId: String
-                                get() = ""
-                        },
-                    ),
+                    listOf(MockUser()),
                 ),
             )
         }

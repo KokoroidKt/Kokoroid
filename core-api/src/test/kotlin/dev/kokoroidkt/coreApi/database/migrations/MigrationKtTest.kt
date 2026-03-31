@@ -5,25 +5,26 @@
 
 package dev.kokoroidkt.coreApi.database.migrations
 
+import dev.kokoroidkt.coreApi.database.DatabaseManager
 import dev.kokoroidkt.coreApi.database.allTables
-import dev.kokoroidkt.coreApi.database.migrations.MigrationResult
-import dev.kokoroidkt.coreApi.database.migrations.trySyncDB
 import dev.kokoroidkt.coreApi.database.tables.MigrationTable
-import dev.kokoroidkt.coreApi.database.tables.PermissionTable
-import dev.kokoroidkt.coreApi.logging.KokoroidLogger
-import org.jetbrains.exposed.v1.core.ExperimentalDatabaseMigrationApi
 import org.jetbrains.exposed.v1.core.StdOutSqlLogger
 import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
 import org.jetbrains.exposed.v1.jdbc.SchemaUtils
 import org.jetbrains.exposed.v1.jdbc.deleteAll
 import org.jetbrains.exposed.v1.jdbc.exists
 import org.jetbrains.exposed.v1.jdbc.insert
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
+import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
+import org.koin.dsl.module
+import org.koin.java.KoinJavaComponent.getKoin
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction as realTransaction
 
 /**
  * Tests for the trySyncDB function in the MigrationKt class.
@@ -31,16 +32,58 @@ import kotlin.test.assertTrue
  */
 class MigrationKtTest {
     companion object {
+        @AfterAll
+        @JvmStatic
+        fun `tear down koin`() {
+            stopKoin()
+        }
+
         @BeforeAll
         @JvmStatic
         fun `init database connection with h2`() {
-            Database.connect("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
+            startKoin {
+                modules(
+                    module {
+                        single<DatabaseManager> {
+                            object : DatabaseManager {
+                                val actualDb =
+                                    Database.connect(
+                                        "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1",
+                                        driver = "org.h2.Driver",
+                                    )
+
+                                override fun <T> transaction(
+                                    db: Database?,
+                                    transactionIsolation: Int?,
+                                    readOnly: Boolean?,
+                                    statement: JdbcTransaction.() -> T,
+                                ): T =
+                                    realTransaction(
+                                        db = actualDb,
+                                        transactionIsolation = transactionIsolation,
+                                        readOnly = readOnly,
+                                        statement = statement,
+                                    )
+
+                                override fun init(database: Database) {
+                                    // no-op for test
+                                }
+
+                                override fun close() {
+                                    // no-op for test
+                                }
+                            }
+                        }
+                    },
+                )
+            }
         }
     }
 
     @Test
     fun `test when no previous version exists then database is initialized`() {
-        transaction {
+        val databaseManager = getKoin().get<DatabaseManager>()
+        databaseManager.transaction {
             addLogger(StdOutSqlLogger)
             SchemaUtils.drop(*allTables)
             // Clear the MigrationTable to mimic no previous version entry
@@ -50,7 +93,7 @@ class MigrationKtTest {
 
         val result = trySyncDB()
 
-        transaction {
+        databaseManager.transaction {
             addLogger(StdOutSqlLogger)
             // Verify that all tables have been created
             allTables.forEach { assertTrue(it.exists()) }
@@ -61,7 +104,8 @@ class MigrationKtTest {
 
     @Test
     fun `test when previous version matches current version then no changes`() {
-        transaction {
+        val databaseManager = getKoin().get<DatabaseManager>()
+        databaseManager.transaction {
             SchemaUtils.drop(*allTables)
             SchemaUtils.drop(MigrationTable)
         }
@@ -73,9 +117,10 @@ class MigrationKtTest {
 
     @Test
     fun `test when previous version does not match current version then migration script is generated`() {
+        val databaseManager = getKoin().get<DatabaseManager>()
         val oldHash = "oldVersionHash123"
 
-        transaction {
+        databaseManager.transaction {
             addLogger(StdOutSqlLogger)
             SchemaUtils.drop(*allTables)
             SchemaUtils.create(MigrationTable)

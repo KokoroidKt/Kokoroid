@@ -216,6 +216,8 @@ class PermissionExtraData {
             .encodeToString(JsonElement.serializer(), toJsonElement())
 
     companion object {
+        fun fromMap(map: Map<String, JsonElement>): PermissionExtraData = PermissionExtraData.fromJsonElement(JsonObject(map))
+
         fun fromJsonElement(json: JsonElement): PermissionExtraData {
             require(json is JsonObject) { "PermissionExtraData only accepts JsonObject as root" }
             val result = PermissionExtraData()

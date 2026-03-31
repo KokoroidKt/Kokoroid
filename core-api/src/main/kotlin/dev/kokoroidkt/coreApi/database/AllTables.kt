@@ -5,7 +5,7 @@
 
 package dev.kokoroidkt.coreApi.database
 
-import dev.kokoroidkt.coreApi.database.tables.PermissionTable
+import dev.kokoroidkt.coreApi.database.tables.UserPermissionTable
 import org.jetbrains.exposed.v1.core.Table
 
-val allTables: Array<out Table> = arrayOf(PermissionTable)
+val allTables: Array<out Table> = arrayOf(UserPermissionTable)

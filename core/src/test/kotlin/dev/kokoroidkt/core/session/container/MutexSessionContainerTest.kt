@@ -6,6 +6,9 @@
 
 package dev.kokoroidkt.core.session.container
 
+import dev.kokoroidkt.core.MockBot
+import dev.kokoroidkt.core.MockEvent
+import dev.kokoroidkt.core.MockUser
 import dev.kokoroidkt.core.di.allModules
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
@@ -28,23 +31,6 @@ import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.mp.KoinPlatform.getKoin
 import java.time.Instant
 
-class TestBot(
-    override val botId: String,
-) : Bot {
-    override fun callApi(
-        apiEndpoint: String,
-        data: JsonElement,
-    ) {
-        println("$botId -> apiEndpoint: $apiEndpoint, data: $data")
-    }
-
-    override fun replyMessage(
-        event: Event,
-        message: MessageChain,
-    ) {
-    }
-}
-
 /**
  * Tests for the MutexSessionContainer class.
  * The `getOrCreateSession` method ensures that either a matching session is retrieved
@@ -58,7 +44,7 @@ class MutexSessionContainerTest {
     fun `test getOrCreateSession creates new session when no matching session exists`() =
         runBlocking {
             val container = MutexSessionContainer()
-            val event = TestEvent(userGroupA)
+            val event = MockEvent(users = userGroupA)
 
             val session = container.getOrCreateSession(event, processor, userGroupA, orchestrator)
 
@@ -80,7 +66,7 @@ class MutexSessionContainerTest {
 
             container.registerSession(preExistingSession)
 
-            val event = TestEvent(userGroupA)
+            val event = MockEvent(users = userGroupA)
             val retrievedSession =
                 container.getOrCreateSession(
                     event,
@@ -97,7 +83,7 @@ class MutexSessionContainerTest {
     fun `test getOrCreateSession does not create duplicate sessions for same user group`() =
         runBlocking {
             val container = MutexSessionContainer()
-            val event = TestEvent(userGroupA)
+            val event = MockEvent(users = userGroupA)
             val processor: Processor = conversation { setProcessor(::mockProcessor) }
 
             val session1 = container.getOrCreateSession(event, processor, userGroupA, orchestrator)
@@ -110,8 +96,8 @@ class MutexSessionContainerTest {
     fun `test getOrCreateSession creates new session for different user groups`() =
         runBlocking {
             val container = MutexSessionContainer()
-            val eventA = TestEvent(userGroupA)
-            val eventB = TestEvent(userGroupB)
+            val eventA = MockEvent(users = userGroupA)
+            val eventB = MockEvent(users = userGroupB)
             val processor: Processor = conversation { setProcessor(::mockProcessor) }
 
             val sessionA = container.getOrCreateSession(eventA, processor, userGroupA, orchestrator)
@@ -123,26 +109,8 @@ class MutexSessionContainerTest {
     // Mock processor for testing purposes
     private fun mockProcessor(): Reply = throw NotImplementedError("This is a test processor mock.")
 
-    // Mock event class for testing purposes
-    private class TestEvent(
-        users: Users,
-    ) : Event(
-            eventId = "test-event",
-            timestamp = Instant.now(),
-            users = users,
-            TestBot(""),
-        )
-
-    // Mock user groups for testing
-
-    class MockUser(
-        val id: String,
-    ) : User() {
-        override val userId get() = id
-    }
-
-    private val userGroupA = listOf(MockUser("A"))
-    private val userGroupB = listOf(MockUser("B"))
+    private val userGroupA = listOf(MockUser(platfromUserId = "A"))
+    private val userGroupB = listOf(MockUser(platfromUserId = "B"))
 
     companion object {
         @JvmStatic
