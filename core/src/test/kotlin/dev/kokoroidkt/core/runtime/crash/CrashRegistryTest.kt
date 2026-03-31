@@ -6,7 +6,6 @@
 
 package dev.kokoroidkt.core.runtime.crash
 
-import dev.kokoroidkt.core.constants.ExitStatus
 import dev.kokoroidkt.core.di.allModules
 import dev.kokoroidkt.core.runtime.state.InternalState
 import dev.kokoroidkt.coreApi.bot.Bot

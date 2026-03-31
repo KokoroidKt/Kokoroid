@@ -7,7 +7,6 @@
 package dev.kokoroidkt.core.di
 
 import dev.kokoroidkt.adapterApi.adapter.AdapterRegistry
-import dev.kokoroidkt.core.KokoroidBootstrap
 import dev.kokoroidkt.core.adapter.AdapterManager
 import dev.kokoroidkt.core.adapter.AdapterRegistryImpl
 import dev.kokoroidkt.core.config.Config
