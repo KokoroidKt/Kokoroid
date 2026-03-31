@@ -55,10 +55,6 @@ abstract class User(
         return userId == other.userId
     }
 
-    fun findPermission(): GrantedPermission {
-        TODO()
-    }
-
     override fun hashCode(): Int = userId.hashCode()
 
     /**
