@@ -47,7 +47,11 @@ fun Plugin.addConversation(processor: Processor) {
         orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(processor)
         container.registerOrchestrator(orchestrator)
     } catch (e: Exception) {
-        throw ConversationRegisterFailedException("Register Conversation ${processor.function.name} failed", container, e)
+        throw ConversationRegisterFailedException(
+            "Register Conversation ${processor.function.name} failed",
+            container,
+            e,
+        )
     }
 }
 
@@ -55,7 +59,10 @@ fun <T> Plugin.saveConfigToFile(
     config: T,
     path: Path = Paths.get("/settings.conf"),
 ) {
-    KoinPlatform.getKoin().get<ConfigHelper>().encodeHoconToFile(config, Path.of("plugin", metadata().name).resolve(path))
+    KoinPlatform
+        .getKoin()
+        .get<ConfigHelper>()
+        .encodeHoconToFile(config, Path.of("plugin", metadata().name).resolve(path))
 }
 
 fun <T> Plugin.loadConfigFromFile(path: Path = Paths.get("/settings.conf")): T =

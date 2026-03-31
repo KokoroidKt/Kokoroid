@@ -123,13 +123,19 @@ class PermissionModelTest {
 
         // USER_ONLY: User has perm, Group doesn't
         userHolder.addPermission(userPerm)
-        assertTrue(model.verify(user, PermissionModel.VerifyMode.USER_ONLY), "USER_ONLY should be true when user has perm")
+        assertTrue(
+            model.verify(user, PermissionModel.VerifyMode.USER_ONLY),
+            "USER_ONLY should be true when user has perm",
+        )
 
         // USER_ONLY: User doesn't have perm, Group has perm
         val userHolder2 = TestPermissionHolder()
         val user2 = MockUser("test_user_2", userHolder2, listOf(group))
         groupHolder.addPermission(groupPerm)
-        assertFalse(model.verify(user2, PermissionModel.VerifyMode.USER_ONLY), "USER_ONLY should be false when only group has perm")
+        assertFalse(
+            model.verify(user2, PermissionModel.VerifyMode.USER_ONLY),
+            "USER_ONLY should be false when only group has perm",
+        )
 
         // GROUP_ONLY: User has perm, Group doesn't
         val groupHolder3 = TestPermissionHolder()
@@ -137,11 +143,17 @@ class PermissionModelTest {
         val userHolder3 = TestPermissionHolder()
         userHolder3.addPermission(userPerm)
         val user3 = MockUser("test_user_3", userHolder3, listOf(group3))
-        assertFalse(model.verify(user3, PermissionModel.VerifyMode.GROUP_ONLY), "GROUP_ONLY should be false when only user has perm")
+        assertFalse(
+            model.verify(user3, PermissionModel.VerifyMode.GROUP_ONLY),
+            "GROUP_ONLY should be false when only user has perm",
+        )
 
         // GROUP_ONLY: User doesn't have perm, Group has perm
         groupHolder3.addPermission(groupPerm)
-        assertTrue(model.verify(user3, PermissionModel.VerifyMode.GROUP_ONLY), "GROUP_ONLY should be true when group has perm")
+        assertTrue(
+            model.verify(user3, PermissionModel.VerifyMode.GROUP_ONLY),
+            "GROUP_ONLY should be true when group has perm",
+        )
 
         // ALL: Either has perm
         assertTrue(model.verify(user, PermissionModel.VerifyMode.ALL), "ALL should be true when user has perm")

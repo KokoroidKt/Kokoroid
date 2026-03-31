@@ -2,7 +2,6 @@ package dev.kokoroidkt.coreApi.database
 
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.JdbcTransaction
-import org.jetbrains.exposed.v1.jdbc.transactions.transactionManager
 
 interface DatabaseManager {
     fun <T> transaction(

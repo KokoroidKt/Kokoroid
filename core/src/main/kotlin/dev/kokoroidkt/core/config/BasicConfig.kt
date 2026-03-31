@@ -10,7 +10,6 @@ import dev.kokoroidkt.core.constants.DefaultPaths
 import dev.kokoroidkt.coreApi.annotation.WithComment
 import dev.kokoroidkt.coreApi.config.PathSerializer
 import dev.kokoroidkt.coreApi.database.DatabaseType
-import kotlinx.coroutines.FlowPreview
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.UseSerializers
 import java.nio.file.Path
@@ -104,7 +103,12 @@ data class PerformanceConfig(
 @Serializable
 @WithComment("数据库配置", "如果你不知道这是做什么的，请保持默认！")
 data class DatabaseConfig(
-    @WithComment("数据库类型", "支持SQLITE， H2， MYSQL， POSTGRESQL", "默认使用SQLITE", "H2建议只在测试时使用（内存数据库模式）")
+    @WithComment(
+        "数据库类型",
+        "支持SQLITE， H2， MYSQL， POSTGRESQL",
+        "默认使用SQLITE",
+        "H2建议只在测试时使用（内存数据库模式）",
+    )
     val type: DatabaseType,
     @WithComment("jdbc连接字符串", "数据库名称请写在jdbc url中")
     val jdbc: String,

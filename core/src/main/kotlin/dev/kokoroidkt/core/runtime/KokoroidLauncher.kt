@@ -17,7 +17,6 @@ import dev.kokoroidkt.core.constants.ExitStatus.DATABASE_TOO_OLD
 import dev.kokoroidkt.core.di.allModules
 import dev.kokoroidkt.core.driver.DriverLoader
 import dev.kokoroidkt.core.driver.DriverManager
-import dev.kokoroidkt.core.exceptions.DatabaseTooOldException
 import dev.kokoroidkt.core.logger.getLogger
 import dev.kokoroidkt.core.plugin.PluginLoader
 import dev.kokoroidkt.core.plugin.PluginManager
@@ -45,11 +44,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.Database
-import org.jetbrains.exposed.v1.jdbc.SchemaUtils
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.jetbrains.exposed.v1.jdbc.update
 import org.jetbrains.exposed.v1.migration.jdbc.MigrationUtils
-import org.jetbrains.exposed.v1.migration.jdbc.MigrationUtils.statementsRequiredForDatabaseMigration
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.GlobalContext.startKoin
@@ -59,7 +55,6 @@ import kotlin.io.path.Path
 import kotlin.io.path.extension
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.walk
-import kotlin.system.exitProcess
 
 class KokoroidLauncher : KoinComponent {
     private val pluginManager: PluginManager by inject()

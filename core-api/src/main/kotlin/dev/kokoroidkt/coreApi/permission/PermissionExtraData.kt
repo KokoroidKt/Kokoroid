@@ -5,15 +5,7 @@
 
 package dev.kokoroidkt.coreApi.permission
 
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonNull
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.JsonUnquotedLiteral
-import kotlinx.serialization.json.booleanOrNull
-import kotlinx.serialization.json.doubleOrNull
-import kotlinx.serialization.json.floatOrNull
-import kotlinx.serialization.json.longOrNull
+import kotlinx.serialization.json.*
 
 /**
  * 权限附加信息，应当也仅应当用于限定更细粒度的权限控制

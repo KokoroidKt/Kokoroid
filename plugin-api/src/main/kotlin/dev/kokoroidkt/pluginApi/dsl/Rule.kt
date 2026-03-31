@@ -6,12 +6,7 @@
 
 package dev.kokoroidkt.pluginApi.dsl
 
-import dev.kokoroidkt.pluginApi.rule.Rule
-import dev.kokoroidkt.pluginApi.rule.RuleChain
-import dev.kokoroidkt.pluginApi.rule.RuleContext
-import dev.kokoroidkt.pluginApi.rule.RuleFunction
-import dev.kokoroidkt.pluginApi.rule.RuleInfo
-import dev.kokoroidkt.pluginApi.rule.RuleWrapper
+import dev.kokoroidkt.pluginApi.rule.*
 
 @Suppress("UNCHECKED_CAST")
 class RuleCollection {

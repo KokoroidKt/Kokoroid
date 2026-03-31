@@ -17,7 +17,6 @@ import dev.kokoroidkt.pluginApi.rule.RuleChain
 import dev.kokoroidkt.pluginApi.session.Session
 import dev.kokoroidkt.pluginApi.session.SessionState
 import dev.kokoroidkt.pluginApi.task.BackgroundTask
-import kotlin.collections.listOf
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.callSuspendBy

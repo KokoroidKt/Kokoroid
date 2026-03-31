@@ -6,7 +6,6 @@
 package dev.kokoroidkt.pluginApi.dsl
 
 import dev.kokoroidkt.pluginApi.conversation.Processor
-import dev.kokoroidkt.pluginApi.rule.Rule
 import dev.kokoroidkt.pluginApi.rule.RuleChain
 import kotlin.reflect.KFunction
 

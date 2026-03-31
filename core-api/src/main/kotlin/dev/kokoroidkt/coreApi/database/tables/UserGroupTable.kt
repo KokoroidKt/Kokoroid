@@ -1,6 +1,5 @@
 package dev.kokoroidkt.coreApi.database.tables
 
-import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
 import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.json.json

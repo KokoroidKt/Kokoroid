@@ -3,11 +3,6 @@ package dev.kokoroidkt.coreApi.user
 import dev.kokoroidkt.coreApi.database.DatabaseManager
 import dev.kokoroidkt.coreApi.database.tables.UserGroupPermissionTable
 import dev.kokoroidkt.coreApi.database.tables.UserGroupTable
-import dev.kokoroidkt.coreApi.database.tables.UserPermissionTable
-import dev.kokoroidkt.coreApi.database.tables.UserPermissionTable.extra
-import dev.kokoroidkt.coreApi.database.tables.UserPermissionTable.namespace
-import dev.kokoroidkt.coreApi.database.tables.UserPermissionTable.permissionNode
-import dev.kokoroidkt.coreApi.database.tables.UserPermissionTable.userId
 import dev.kokoroidkt.coreApi.permission.GrantedPermission
 import dev.kokoroidkt.coreApi.permission.PermissionExtraData
 import dev.kokoroidkt.coreApi.permission.PermissionHolder
@@ -19,8 +14,7 @@ import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.upsert
 import org.koin.java.KoinJavaComponent.getKoin
-import java.util.UUID
-import java.util.function.IntFunction
+import java.util.*
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 import kotlin.uuid.toJavaUuid

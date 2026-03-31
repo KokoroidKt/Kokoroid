@@ -55,5 +55,9 @@ suspend fun ConversationScope.waitForMessage(
         // 立马写入会话，并完成deferred
         val session = addSessionAndComplete(conversationContext, timeoutMilli, continuation)
 
-        session.state = SessionState.WaitingFor(SessionState.WaitingFor.Item.MessageItem(users ?: session.users, continuation), rules)
+        session.state =
+            SessionState.WaitingFor(
+                SessionState.WaitingFor.Item.MessageItem(users ?: session.users, continuation),
+                rules,
+            )
     }

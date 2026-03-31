@@ -6,7 +6,6 @@
 
 package dev.kokoroidkt.pluginApi.rule
 
-import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.pluginApi.dsl.rule
 import kotlinx.coroutines.runBlocking

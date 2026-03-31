@@ -15,7 +15,6 @@ import dev.kokoroidkt.coreApi.permission.PermissionHolder
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.selectAll
-import org.jetbrains.exposed.v1.jdbc.update
 import org.jetbrains.exposed.v1.jdbc.upsert
 import org.jetbrains.exposed.v1.json.contains
 import org.koin.java.KoinJavaComponent.getKoin
@@ -37,7 +36,11 @@ abstract class User(
                 .where { UserGroupTable.users.contains(userId) }
                 .map { row ->
                     @OptIn(ExperimentalUuidApi::class)
-                    UserGroup.createFromExist(row[UserGroupTable.name], row[UserGroupTable.uuid], row[UserGroupTable.users])
+                    UserGroup.createFromExist(
+                        row[UserGroupTable.name],
+                        row[UserGroupTable.uuid],
+                        row[UserGroupTable.users],
+                    )
                 }.toList()
         }
     }

@@ -11,8 +11,6 @@ package dev.kokoroidkt.core.session.container
 import dev.kokoroidkt.core.MockEvent
 import dev.kokoroidkt.core.MockUser
 import dev.kokoroidkt.core.di.allModules
-import dev.kokoroidkt.coreApi.event.Event
-import dev.kokoroidkt.coreApi.user.User
 import dev.kokoroidkt.coreApi.user.Users
 import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.conversation.Reply
@@ -27,7 +25,6 @@ import org.junit.jupiter.api.Test
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.mp.KoinPlatform.getKoin
-import java.time.Instant
 
 /**
  * Unit tests for the CowSessionContainer class and its getOrCreateSession method.

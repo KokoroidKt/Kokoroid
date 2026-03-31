@@ -56,7 +56,7 @@ exposed-migration-support = { module = "org.jetbrains.exposed:exposed-migration-
 exposed-migration-jdbc-support = { module = "org.jetbrains.exposed:exposed-migration-jdbc", version.ref = "exposed" }
 h2 = { module = "com.h2database:h2", version.ref = "h2" }
 sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqlite-jdbc" }
-mysql-jdbc = { module = "com.mysql:mysql-connector-j", version.ref = "mysql-jdbc"}
+mysql-jdbc = { module = "com.mysql:mysql-connector-j", version.ref = "mysql-jdbc" }
 pgsql-jdbc = { module = "org.postgresql:postgresql", version.ref = "pgsql-jdbc" }
 
 

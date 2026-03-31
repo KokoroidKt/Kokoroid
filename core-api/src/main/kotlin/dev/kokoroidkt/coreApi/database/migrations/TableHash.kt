@@ -8,7 +8,6 @@ package dev.kokoroidkt.coreApi.database.migrations
 import dev.kokoroidkt.coreApi.database.DatabaseManager
 import dev.kokoroidkt.coreApi.database.allTables
 import dev.kokoroidkt.coreApi.utils.sha256Fingerprint
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.koin.java.KoinJavaComponent.getKoin
 
 fun computeTableHash(): String {

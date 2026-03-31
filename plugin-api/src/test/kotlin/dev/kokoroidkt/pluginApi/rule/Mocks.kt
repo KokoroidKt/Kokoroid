@@ -20,12 +20,14 @@ class MockBot(
     override fun callApi(
         apiEndpoint: String,
         data: JsonElement,
-    ) {}
+    ) {
+    }
 
     override fun replyMessage(
         event: Event,
         message: MessageChain,
-    ) {}
+    ) {
+    }
 }
 
 class MockUser(
