@@ -47,7 +47,23 @@ bin/
 ### Kokoroid ###
 kokoroid
 core-api/foo
-.tmp
+core-api/kokoroid
+core/kokoroid
+.tmp/
+
+# 墨冉会把自己的一些笔记放在MR_NOTE.md，以防忘掉了
+MR_NOTE.md
+
 
 ### Python ###
 /.venv/
+
+
+### AI Configs ###
+# 说实话，我感觉AI的配置文件不该出现在这
+.cursorrules
+CLAUDE.md
+AGENTS.md
+.codebuddy/
+.continue/
+.github/copilot-instructions.md

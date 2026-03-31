@@ -9,7 +9,7 @@ package dev.kokoroidkt.pluginApi.rule
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.message.MessageChain
-import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.coreApi.user.Users
 import kotlin.reflect.KFunction
 
 /**
@@ -27,6 +27,6 @@ fun interface Rule {
         bot: Bot?,
         event: Event,
         messageChain: MessageChain?,
-        users: UserGroup?,
+        users: Users?,
     ): Boolean
 }

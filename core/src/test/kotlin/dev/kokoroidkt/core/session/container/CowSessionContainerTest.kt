@@ -8,10 +8,10 @@
 
 package dev.kokoroidkt.core.session.container
 
+import dev.kokoroidkt.core.MockEvent
+import dev.kokoroidkt.core.MockUser
 import dev.kokoroidkt.core.di.allModules
-import dev.kokoroidkt.coreApi.event.Event
-import dev.kokoroidkt.coreApi.user.User
-import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.coreApi.user.Users
 import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.conversation.Reply
 import dev.kokoroidkt.pluginApi.dsl.conversation
@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.context.GlobalContext.stopKoin
 import org.koin.mp.KoinPlatform.getKoin
-import java.time.Instant
 
 /**
  * Unit tests for the CowSessionContainer class and its getOrCreateSession method.
@@ -41,7 +40,7 @@ class CowSessionContainerTest {
     fun `test when session is found existing session is returned`() =
         runBlocking {
             val container = CowSessionContainer()
-            val event = TestEvent("1", testUserGroup(1))
+            val event = MockEvent(users = testUserGroup(1))
 
             val userGroup = testUserGroup(1)
             val existingSession = getKoin().get<SessionFactoty>().createSession(userGroup, processor, orchestrator)
@@ -57,7 +56,7 @@ class CowSessionContainerTest {
     fun `test when session does not exist new one is created and registered`() =
         runBlocking {
             val container = CowSessionContainer()
-            val event = TestEvent("1", testUserGroup(1))
+            val event = MockEvent(users = testUserGroup(1))
             val userGroup = testUserGroup(1)
 
             val result = container.getOrCreateSession(event, processor, userGroup, orchestrator)
@@ -70,8 +69,8 @@ class CowSessionContainerTest {
     fun `test new session is created for different user group`() =
         runBlocking {
             val container = CowSessionContainer()
-            val event1 = TestEvent("1", testUserGroup(1))
-            val event2 = TestEvent("2", testUserGroup(1))
+            val event1 = MockEvent(users = testUserGroup(1))
+            val event2 = MockEvent(users = testUserGroup(1))
             val userGroup1 = testUserGroup(3)
             val userGroup2 = testUserGroup(5)
 
@@ -89,18 +88,10 @@ class CowSessionContainerTest {
         return Reply.NoReply // Assuming Reply is a callable implementation for testing purposes
     }
 
-    fun testUserGroup(len: Int): UserGroup =
-        List(len) {
-            object : User() {
-                override val userId: String
-                    get() = "user"
-            }
+    fun testUserGroup(len: Int): Users =
+        List(len) { i ->
+            MockUser(platfromUserId = "user_$i")
         }
-
-    private class TestEvent(
-        eventId: String,
-        user: UserGroup,
-    ) : Event(eventId, Instant.now(), user, TestBot(""))
 
     companion object {
         @JvmStatic

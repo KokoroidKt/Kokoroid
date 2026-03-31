@@ -144,8 +144,12 @@ class CrashRegistryTest {
                 override fun recordAndRequestStop(
                     err: CriticalException,
                     event: Event?,
+                    exitCode: Int,
                 ) {
                 }
+
+                override val exitCode: Int
+                    get() = -1
 
                 override val isCrashed: Boolean = false
 

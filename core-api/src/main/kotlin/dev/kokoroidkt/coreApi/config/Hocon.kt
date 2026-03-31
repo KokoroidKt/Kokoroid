@@ -101,7 +101,12 @@ fun addCommentForElements(
             result = result.injectComment(pathSegments, comment.toList(), field)
         }
 
-        result = addCommentForElements(result.root(), pathSegments + field.name, field.returnType.classifier as KClass<*>).toConfig()
+        result =
+            addCommentForElements(
+                result.root(),
+                pathSegments + field.name,
+                field.returnType.classifier as KClass<*>,
+            ).toConfig()
     }
     return result.root()
 }

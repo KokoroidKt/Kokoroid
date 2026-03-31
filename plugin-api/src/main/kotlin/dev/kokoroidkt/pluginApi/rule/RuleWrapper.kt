@@ -9,7 +9,7 @@ package dev.kokoroidkt.pluginApi.rule
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.message.MessageChain
-import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.coreApi.user.Users
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.callSuspendBy
 import kotlin.reflect.full.isSubtypeOf
@@ -26,7 +26,7 @@ class RuleWrapper(
             .filter {
                 it.type.isSubtypeOf(Event::class.starProjectedType) ||
                     it.type.isSubtypeOf(MessageChain::class.starProjectedType) ||
-                    it.type.isSubtypeOf(UserGroup::class.starProjectedType) ||
+                    it.type.isSubtypeOf(Users::class.starProjectedType) ||
                     it.type.isSubtypeOf(Bot::class.starProjectedType)
             }.toList()
     }
@@ -35,7 +35,7 @@ class RuleWrapper(
         bot: Bot?,
         event: Event,
         messageChain: MessageChain?,
-        users: UserGroup?,
+        users: Users?,
     ): Boolean {
         val arg =
             arguments

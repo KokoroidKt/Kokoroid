@@ -6,25 +6,13 @@
 
 package dev.kokoroidkt.core
 
-import ch.qos.logback.classic.Level
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.main
 import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
-import dev.kokoroidkt.core.constants.ExitStatus
-import dev.kokoroidkt.core.di.allModules
 import dev.kokoroidkt.core.logger.getLogger
 import dev.kokoroidkt.core.runtime.KokoroidLauncher
-import dev.kokoroidkt.core.runtime.state.InternalState
-import dev.kokoroidkt.core.runtime.state.RuntimeState
 import dev.kokoroidkt.core.utils.KokoroidVersion
-import dev.kokoroidkt.coreApi.exceptions.CriticalException
-import dev.kokoroidkt.coreApi.logging.LogFiles
-import dev.kokoroidkt.coreApi.logging.LogLevelManager
-import org.koin.core.context.GlobalContext.startKoin
-import org.koin.java.KoinJavaComponent.getKoin
-import java.nio.file.Paths
-import kotlin.system.exitProcess
 
 class KokoroidBootstrap :
     CliktCommand(
@@ -38,54 +26,41 @@ class KokoroidBootstrap :
         help = "Only validate configuration & extension avalliable, do not start Kokoroid.",
     ).flag()
 
+    val doMigration by option(
+        "-m",
+        "--migration",
+        help = "Run database migration.",
+    ).flag()
+
     val logger = getLogger("KokoroidBootstrap")
 
     override fun run() {
-        try {
-            // Initlazing
-
-            if (isPrintVersion) {
-                println("Kokoroid Version ${KokoroidVersion.version} (Build #${KokoroidVersion.gitHash})")
-                return
-            }
-
-            LogLevelManager.setLevel(Level.INFO)
-            if (isDebug) {
-                LogLevelManager.setLevel(Level.DEBUG)
-            }
-
-            println(
-                """
-                               _                         _      _ 
-                  /\ /\  ___  | | __  ___   _ __   ___  (_)  __| |
-                 / //_/ / _ \ | |/ / / _ \ | '__| / _ \ | | / _` |
-                / __ \ | (_) ||   < | (_) || |   | (_) || || (_| |
-                \/  \/  \___/ |_|\_\ \___/ |_|    \___/ |_| \__,_|                                                            
-                """.trimIndent(),
-            )
-            LogFiles.archiveLatestLogOnStartup(Paths.get("./kokoroid/logs"))
-            logger.info { "Kokoroid Version ${KokoroidVersion.version} (Build #${KokoroidVersion.gitHash})" }
-            logger.info { "「ちょー高尚な理由で 目指すは　ひとりぼっち産業革命」" }
-            logger.info { "Kokoroid Starting....." }
-            initKoin()
-            try {
-                getKoin().get<RuntimeState>().state = InternalState.Initializing()
-                getKoin().get<KokoroidLauncher>().launch(isValidationOnly)
-            } catch (e: CriticalException) {
-                logger.error(e) { "Kokoroid Bootstrap Failed! Because：${e.javaClass.name}: ${e.message}" }
-                exitProcess(ExitStatus.CRITICAL_ERROR_EXIT)
-            }
-        } catch (e: Exception) {
-            logger.error(e) { "Kokoroid Initialized Failed! Because：${e.javaClass.name}: ${e.message}" }
-            logger.error { "please save latest.log and report this to kokoroid issue" }
+        if (isPrintVersion) {
+            println("Kokoroid Version ${KokoroidVersion.version} (Build #${KokoroidVersion.gitHash})")
+            return
         }
-    }
 
-    private fun initKoin() {
-        startKoin {
-            logger.debug { "init koin" }
-            modules(allModules)
+        var isConfirm = false
+        if (doMigration) {
+            logger.warn {
+                "WARNING: You enabled migration flag, it will execute database migration, " +
+                    "please BACKUP your database before proceeding."
+            }
+            println("Confirm? [Y]es/[N]o")
+            val confirm = readlnOrNull()
+            if (confirm == null) {
+                isConfirm = false
+                logger.warn { "stdin not exist, set NO automatically" }
+            } else if (confirm.lowercase().startsWith("y")) {
+                isConfirm = true
+                logger.warn { "Kokoroid database will be automatically migrated" }
+            } else {
+                isConfirm = false
+                logger.warn { "Migration option has been set to false" }
+            }
         }
+
+        KokoroidLauncher().launch(isValidationOnly, isDebug, doMigration && isConfirm)
     }
 }
 

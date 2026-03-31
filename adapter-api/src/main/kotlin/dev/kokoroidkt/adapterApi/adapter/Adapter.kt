@@ -7,7 +7,6 @@
 package dev.kokoroidkt.adapterApi.adapter
 
 import dev.kokoroidkt.coreApi.bot.Bot
-import dev.kokoroidkt.coreApi.user.User
 import dev.kokoroidkt.coreApi.user.UserContainer
 
 interface Adapter {

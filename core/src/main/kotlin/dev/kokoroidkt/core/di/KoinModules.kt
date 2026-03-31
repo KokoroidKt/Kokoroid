@@ -11,6 +11,7 @@ import dev.kokoroidkt.core.adapter.AdapterManager
 import dev.kokoroidkt.core.adapter.AdapterRegistryImpl
 import dev.kokoroidkt.core.config.Config
 import dev.kokoroidkt.core.config.ConfigHelperImpl
+import dev.kokoroidkt.core.database.DatabaseManagerImpl
 import dev.kokoroidkt.core.driver.DriverManager
 import dev.kokoroidkt.core.driver.DriverRegistryImpl
 import dev.kokoroidkt.core.factory.ConversationOrchestratorFactoryImpl
@@ -26,6 +27,7 @@ import dev.kokoroidkt.core.runtime.crash.CrashRegistryImpl
 import dev.kokoroidkt.core.runtime.state.RuntimeState
 import dev.kokoroidkt.core.utils.binds
 import dev.kokoroidkt.coreApi.config.ConfigHelper
+import dev.kokoroidkt.coreApi.database.DatabaseManager
 import dev.kokoroidkt.coreApi.logging.LoggerFactory
 import dev.kokoroidkt.driverApi.driver.DriverRegistry
 import dev.kokoroidkt.pluginApi.factory.ConversationOrchestratorFactory
@@ -76,6 +78,7 @@ val basicModules =
         single<GlobalEventLoop> { GlobalEventLoop() }
         single<KokoroidLauncher> { KokoroidLauncher() }
         single<CrashRegistry> { CrashRegistryImpl() }
+        single<DatabaseManager> { DatabaseManagerImpl }
     }
 
 val runtimeModules =

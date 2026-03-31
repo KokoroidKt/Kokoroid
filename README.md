@@ -3,10 +3,10 @@
 [中文](README.md)
 
 > [!IMPORTANT]
-> 
+>
 > Kokoroid还处于0.x版本，API尚未稳定，大部分API可能在未来有更改！
-> 
-> Kokoroid is currently in version 0.x. 
+>
+> Kokoroid is currently in version 0.x.
 > Please note that the API is unstable and is subject to change in future releases!
 
 ## 简介
@@ -39,4 +39,5 @@ Kokoroid目前还处于0.x版本，还有大部分内容等待实现
 
 ## 许可证
 
-Kokoroid使用GNU Lesser General Public License-2.1许可证进行开源，了解更多请访问：[Wikipedia - GNU Lesser General Public License](https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License)
+Kokoroid使用GNU Lesser General Public
+License-2.1许可证进行开源，了解更多请访问：[Wikipedia - GNU Lesser General Public License](https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License)

@@ -23,7 +23,10 @@ fun <T> Driver.saveConfigToFile(
     config: T,
     path: Path = Paths.get("/settings.conf"),
 ) {
-    KoinPlatform.getKoin().get<ConfigHelper>().encodeHoconToFile(config, Path.of("driver", metadata()!!.name).resolve(path))
+    KoinPlatform
+        .getKoin()
+        .get<ConfigHelper>()
+        .encodeHoconToFile(config, Path.of("driver", metadata()!!.name).resolve(path))
 }
 
 fun <T> Driver.loadConfigFromFile(path: Path = Paths.get("/settings.conf")): T =

@@ -3,17 +3,15 @@
 //
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
-package dev.kokoroid.simpleExtension
+package dev.kokoroidkt.simpleExtension
 
-import dev.kokoroid.simpleExtension.config.MockConfig
-import dev.kokoroid.simpleExtension.utils.Util
-import dev.kokoroidkt.adapterApi.utils.loadConfigFromFile
-import dev.kokoroidkt.adapterApi.utils.saveConfigToFile
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
 import dev.kokoroidkt.pluginApi.logger.getLogger
 import dev.kokoroidkt.pluginApi.plugin.KotlinPlugin
 import dev.kokoroidkt.pluginApi.utils.loadConfigFromFile
 import dev.kokoroidkt.pluginApi.utils.saveConfigToFile
+import dev.kokoroidkt.simpleExtension.config.MockConfig
+import dev.kokoroidkt.simpleExtension.utils.Util
 
 class PluginMain : KotlinPlugin() {
     override fun onLoad() {

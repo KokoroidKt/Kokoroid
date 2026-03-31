@@ -12,7 +12,7 @@ import dev.kokoroidkt.coreApi.event.MessageEvent
 import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.message.MessageSegment
 import dev.kokoroidkt.coreApi.message.TextConvertible
-import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.coreApi.user.Users
 import dev.kokoroidkt.coreApi.user.special.NoUser
 import dev.kokoroidkt.pluginApi.conversation.Reply
 import dev.kokoroidkt.pluginApi.conversation.extensions.waitForMessage
@@ -35,7 +35,7 @@ import kotlin.test.assertTrue
 class TestMessageEvent(
     eventId: String,
     override val messageChain: MessageChain,
-    users: UserGroup = NoUser.NO_USER_GROUP,
+    users: Users = NoUser.NO_USER_GROUP,
 ) : Event(eventId, Instant.now(), users, TestBot("")),
     MessageEvent {
     fun sayHi() {
@@ -48,7 +48,7 @@ class TestMessageEvent(
 class AnotherMessageEvent(
     eventId: String,
     override val messageChain: MessageChain,
-    users: UserGroup = NoUser.NO_USER_GROUP,
+    users: Users = NoUser.NO_USER_GROUP,
 ) : Event(eventId, Instant.now(), users, TestBot("")),
     MessageEvent {
     fun sayHi() {

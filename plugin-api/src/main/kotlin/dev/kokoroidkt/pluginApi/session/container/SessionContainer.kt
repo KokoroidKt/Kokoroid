@@ -7,12 +7,10 @@
 package dev.kokoroidkt.pluginApi.session.container
 
 import dev.kokoroidkt.coreApi.event.Event
-import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.coreApi.user.Users
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
 import dev.kokoroidkt.pluginApi.conversation.Processor
-import dev.kokoroidkt.pluginApi.conversation.Reply
 import dev.kokoroidkt.pluginApi.session.Session
-import kotlin.reflect.KFunction
 
 interface SessionContainer {
     suspend fun getMatchedSession(event: Event): Session?
@@ -20,7 +18,7 @@ interface SessionContainer {
     suspend fun getOrCreateSession(
         event: Event,
         processor: Processor,
-        userGroup: UserGroup,
+        users: Users,
         orchestrator: ConversationOrchestrator,
     ): Session
 

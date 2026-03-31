@@ -6,15 +6,44 @@
 
 package dev.kokoroidkt.coreApi.user
 
-abstract class User {
-    /**
-     * 唯一标识一个用户的ID
-     * 推荐格式：平台ID@Adapter完全类名
-     * 此Id不要与群组相关
-     * 例如：如果平台有私聊/群聊，为了区分用户消息来自私聊还是群聊
-     * 请定义一个新的字段来区分，而不是使用不同的userId
+import dev.kokoroidkt.coreApi.database.DatabaseManager
+import dev.kokoroidkt.coreApi.database.tables.UserGroupTable
+import dev.kokoroidkt.coreApi.database.tables.UserPermissionTable
+import dev.kokoroidkt.coreApi.permission.GrantedPermission
+import dev.kokoroidkt.coreApi.permission.PermissionExtraData
+import dev.kokoroidkt.coreApi.permission.PermissionHolder
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.selectAll
+import org.jetbrains.exposed.v1.jdbc.upsert
+import org.jetbrains.exposed.v1.json.contains
+import org.koin.java.KoinJavaComponent.getKoin
+import kotlin.uuid.ExperimentalUuidApi
+
+abstract class User(
+    val adapterId: String,
+) : PermissionHolder {
+    /*
      */
-    abstract val userId: String
+    abstract val platfromUserId: String
+
+    open val userId = "$platfromUserId@$adapterId"
+
+    open val userGroups: List<UserGroup> by lazy {
+        getKoin().get<DatabaseManager>().transaction {
+            return@transaction UserGroupTable
+                .selectAll()
+                .where { UserGroupTable.users.contains(userId) }
+                .map { row ->
+                    @OptIn(ExperimentalUuidApi::class)
+                    UserGroup.createFromExist(
+                        row[UserGroupTable.name],
+                        row[UserGroupTable.uuid],
+                        row[UserGroupTable.users],
+                    )
+                }.toList()
+        }
+    }
 
     /**
      * 只要两个用户的[User.userId]是一样的，我们就认为他们是同一个人
@@ -30,4 +59,44 @@ abstract class User {
     }
 
     override fun hashCode(): Int = userId.hashCode()
+
+    /**
+     * 查找用户本人的完整权限
+     *
+     * @param permissionNode 某个权限节点，例如user.profile.edit，此处不应该添加**任何**通配符
+     * @return
+     */
+    override fun findPermission(
+        namespace: String,
+        permissionNode: String,
+    ): GrantedPermission? {
+        val databaseManager = getKoin().get<DatabaseManager>()
+        val permissionColumn =
+            databaseManager.transaction {
+                UserPermissionTable
+                    .selectAll()
+                    .where {
+                        (UserPermissionTable.userId eq userId) and
+                            (UserPermissionTable.permissionNode eq permissionNode) and
+                            (UserPermissionTable.namespace eq namespace)
+                    }.firstOrNull()
+            } ?: return null
+        return GrantedPermission(
+            permissionColumn[UserPermissionTable.namespace],
+            permissionColumn[UserPermissionTable.permissionNode],
+            PermissionExtraData.fromMap(permissionColumn[UserPermissionTable.extra]),
+        )
+    }
+
+    override fun addPermission(permission: GrantedPermission) {
+        val databaseManager = getKoin().get<DatabaseManager>()
+        databaseManager.transaction {
+            UserPermissionTable.upsert {
+                it[namespace] = permission.namespace
+                it[permissionNode] = permission.permissionNode
+                it[extra] = permission.extraData.data
+                it[userId] = userId
+            }
+        }
+    }
 }

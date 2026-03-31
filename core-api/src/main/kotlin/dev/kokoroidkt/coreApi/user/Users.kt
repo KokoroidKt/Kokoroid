@@ -4,10 +4,6 @@
 //
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
-package dev.kokoroid.simpleExtension.utils
+package dev.kokoroidkt.coreApi.user
 
-class Util(
-    val from: String,
-) {
-    fun sayHi() = "hi from ${this.from}"
-}
+typealias Users = List<User>

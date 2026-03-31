@@ -5,7 +5,6 @@
 
 package dev.kokoroidkt.pluginApi.utils
 
-import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.pluginApi.conversation.ConversationScope
 import dev.kokoroidkt.pluginApi.exceptions.SessionTimeoutException
 import dev.kokoroidkt.pluginApi.session.Session

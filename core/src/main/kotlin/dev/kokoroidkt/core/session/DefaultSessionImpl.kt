@@ -9,7 +9,7 @@ package dev.kokoroidkt.core.session
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.event.MessageEvent
-import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.coreApi.user.Users
 import dev.kokoroidkt.pluginApi.conversation.ConversationContext
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
 import dev.kokoroidkt.pluginApi.conversation.ConversationScope
@@ -23,7 +23,7 @@ import kotlin.coroutines.resume
 class DefaultSessionImpl(
     private var _state: SessionState = SessionState.Alive(),
     private val processor: Processor,
-    override val users: UserGroup,
+    override val users: Users,
     conversationOrchestrator: ConversationOrchestrator,
 ) : Session {
     override var state: SessionState

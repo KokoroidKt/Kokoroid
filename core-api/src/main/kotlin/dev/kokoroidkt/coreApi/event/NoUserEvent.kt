@@ -7,7 +7,6 @@
 package dev.kokoroidkt.coreApi.event
 
 import dev.kokoroidkt.coreApi.bot.Bot
-import dev.kokoroidkt.coreApi.user.UserGroup
 import dev.kokoroidkt.coreApi.user.special.NoUser
 import java.time.Instant
 

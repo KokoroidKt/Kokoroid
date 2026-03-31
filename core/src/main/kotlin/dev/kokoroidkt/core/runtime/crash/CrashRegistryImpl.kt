@@ -7,6 +7,7 @@
 package dev.kokoroidkt.core.runtime.crash
 
 import dev.kokoroidkt.core.config.Config
+import dev.kokoroidkt.core.constants.ExitStatus
 import dev.kokoroidkt.core.logger.getLogger
 import dev.kokoroidkt.core.runtime.state.InternalState
 import dev.kokoroidkt.core.runtime.state.RuntimeState
@@ -30,11 +31,16 @@ class CrashRegistryImpl :
 
     val records = mutableListOf<CrashRecord>()
     val runtimeState = getKoin().get<RuntimeState>()
+    var _exitCode: Int = ExitStatus.CRITICAL_ERROR_EXIT
+
+    override val exitCode get() = _exitCode
 
     override fun recordAndRequestStop(
         err: CriticalException,
         event: Event?,
+        exitCode: Int,
     ) {
+        this._exitCode = exitCode
         lock.withLock {
             records.add(
                 CrashRecord(

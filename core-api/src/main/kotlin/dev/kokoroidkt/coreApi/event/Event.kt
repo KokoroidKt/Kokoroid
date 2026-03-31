@@ -7,7 +7,7 @@
 package dev.kokoroidkt.coreApi.event
 
 import dev.kokoroidkt.coreApi.bot.Bot
-import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.coreApi.user.Users
 import java.time.Instant
 
 abstract class Event(
@@ -24,7 +24,7 @@ abstract class Event(
      * 触发事件的用户组
      *
      */
-    val users: UserGroup,
+    val users: Users,
     /**
      * 收到这个信息的bot
      */

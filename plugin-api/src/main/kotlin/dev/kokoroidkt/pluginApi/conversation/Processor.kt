@@ -11,13 +11,12 @@ import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.event.MessageEvent
 import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.user.User
-import dev.kokoroidkt.coreApi.user.UserGroup
+import dev.kokoroidkt.coreApi.user.Users
 import dev.kokoroidkt.pluginApi.conversation.status.ProcessorStatus
 import dev.kokoroidkt.pluginApi.rule.RuleChain
 import dev.kokoroidkt.pluginApi.session.Session
 import dev.kokoroidkt.pluginApi.session.SessionState
 import dev.kokoroidkt.pluginApi.task.BackgroundTask
-import kotlin.collections.listOf
 import kotlin.reflect.KFunction
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.callSuspendBy
@@ -77,7 +76,7 @@ class Processor(
     suspend fun tryCallSuspend(
         event: Event,
         bot: Bot,
-        users: UserGroup,
+        users: Users,
         session: Session,
     ): ProcessorStatus {
         // check

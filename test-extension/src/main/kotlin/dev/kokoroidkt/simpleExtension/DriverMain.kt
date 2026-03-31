@@ -3,17 +3,15 @@
 //
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
-package dev.kokoroid.simpleExtension
+package dev.kokoroidkt.simpleExtension
 
-import dev.kokoroid.simpleExtension.config.MockConfig
-import dev.kokoroid.simpleExtension.utils.Util
-import dev.kokoroidkt.adapterApi.utils.loadConfigFromFile
-import dev.kokoroidkt.adapterApi.utils.saveConfigToFile
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
 import dev.kokoroidkt.driverApi.driver.Driver
 import dev.kokoroidkt.driverApi.logger.getLogger
 import dev.kokoroidkt.driverApi.utils.loadConfigFromFile
 import dev.kokoroidkt.driverApi.utils.saveConfigToFile
+import dev.kokoroidkt.simpleExtension.config.MockConfig
+import dev.kokoroidkt.simpleExtension.utils.Util
 
 class DriverMain : Driver() {
     override fun onLoad() {

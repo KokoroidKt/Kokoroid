@@ -3,13 +3,9 @@
 //
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
-package dev.kokoroidkt.coreApi.test.config
+package dev.kokoroidkt.coreApi.config
 
 import dev.kokoroidkt.coreApi.annotation.WithComment
-import dev.kokoroidkt.coreApi.config.decodeHoconFile
-import dev.kokoroidkt.coreApi.config.decodeHoconString
-import dev.kokoroidkt.coreApi.config.encodeHoconToFile
-import dev.kokoroidkt.coreApi.config.encodeHoconToString
 import kotlinx.serialization.Serializable
 import org.junit.jupiter.api.Test
 import java.io.File

@@ -5,7 +5,6 @@
 
 package dev.kokoroidkt.pluginApi.conversation.extensions
 
-import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.pluginApi.conversation.ConversationContext
 import dev.kokoroidkt.pluginApi.conversation.ConversationScope
 import dev.kokoroidkt.pluginApi.session.Session
