@@ -91,7 +91,7 @@ class Processor(
         // process
         val arg =
             arguments
-                .mapNotNull {
+                .map {
                     when {
                         it.type.isSupertypeOf(event::class.starProjectedType) -> {
                             it to event
