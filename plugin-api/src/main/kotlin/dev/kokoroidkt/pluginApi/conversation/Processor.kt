@@ -122,4 +122,6 @@ class Processor(
         session.state = SessionState.Finished(returnTypeWarps(result))
         return ProcessorStatus.Processed
     }
+
+    override fun name(): String = "Processor(${function.name})"
 }

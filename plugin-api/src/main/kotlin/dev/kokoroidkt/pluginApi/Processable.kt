@@ -18,4 +18,6 @@ interface Processable {
         users: Users,
         session: Session,
     ): ProcessorStatus
+
+    fun name(): String
 }
