@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1
+
 package dev.kokoroidkt.core.conversation
 
 import dev.kokoroidkt.core.di.allModules
@@ -100,7 +105,8 @@ class CommandDslTest {
 
                 // 2. 测试深层叶子节点 /app settings network proxy
                 println("--- Test 2: /app settings network proxy ---")
-                val event2 = MockMessageEvent(MessageChain.of(TextMessage("/app settings network proxy")), listOf(user), bot)
+                val event2 =
+                    MockMessageEvent(MessageChain.of(TextMessage("/app settings network proxy")), listOf(user), bot)
                 val status2 = processor.tryCallSuspend(event2, bot, listOf(user), session)
                 assertTrue(status2 is ProcessorStatus.Processed)
                 assertEquals("proxy", processor.foundedCommandItem?.thisKeyword)
@@ -155,7 +161,12 @@ class CommandDslTest {
                         }
                     }
                 println("--- Test 7: Deep tree 5 levels ---")
-                val event7 = MockMessageEvent(MessageChain.of(TextMessage("/app settings network proxy auth token")), listOf(user), bot)
+                val event7 =
+                    MockMessageEvent(
+                        MessageChain.of(TextMessage("/app settings network proxy auth token")),
+                        listOf(user),
+                        bot,
+                    )
                 val status7 = deepProcessor.tryCallSuspend(event7, bot, listOf(user), session)
                 assertTrue(status7 is ProcessorStatus.Processed)
                 assertEquals("token", deepProcessor.foundedCommandItem?.thisKeyword)

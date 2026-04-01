@@ -7,7 +7,6 @@
 package dev.kokoroidkt.core.conversation.extension
 
 import dev.kokoroidkt.core.di.allModules
-import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.event.MessageEvent
 import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.message.MessageSegment
