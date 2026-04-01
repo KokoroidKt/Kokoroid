@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlinPluginSerialization)
     application
     id("com.palantir.git-version")
+    id("com.gradleup.nmcp")
+    `maven-publish`
 }
 
 repositories {
@@ -46,5 +48,3 @@ tasks.jar {
     }
     archiveFileName.set("kokoroid-core-api-$version-$gitCommit.jar")
 }
-
-configureMavenPublishFor("kokoroid-core-api")

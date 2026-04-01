@@ -4,6 +4,8 @@ plugins {
     id("com.palantir.git-version")
     kotlin("plugin.serialization") version "2.1.21"
     application
+    id("com.gradleup.nmcp")
+    `maven-publish`
 }
 
 application {
@@ -90,5 +92,3 @@ tasks.jar {
     }
     archiveFileName.set("kokoroid-core-$version-$gitCommit.jar")
 }
-
-configureMavenPublishFor("kokoroid-core")

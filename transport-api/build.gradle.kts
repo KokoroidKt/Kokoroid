@@ -1,6 +1,8 @@
 plugins {
     kotlin("jvm")
     id("com.palantir.git-version")
+    id("com.gradleup.nmcp")
+    `maven-publish`
 }
 
 repositories {
@@ -41,5 +43,3 @@ tasks.jar {
     }
     archiveFileName.set("kokoroid-transport-api-$version-$gitCommit.jar")
 }
-
-configureMavenPublishFor("kokoroid-transport-api")

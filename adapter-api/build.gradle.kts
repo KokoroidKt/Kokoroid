@@ -2,6 +2,8 @@ plugins {
     kotlin("jvm")
     kotlin("plugin.serialization") version "2.1.21"
     application
+    id("com.gradleup.nmcp")
+    `maven-publish`
 }
 
 repositories {
@@ -47,5 +49,3 @@ tasks.jar {
     }
     archiveFileName.set("kokoroid-adapter-api-$version-$gitCommit.jar")
 }
-
-configureMavenPublishFor("kokoroid-adapter-api")

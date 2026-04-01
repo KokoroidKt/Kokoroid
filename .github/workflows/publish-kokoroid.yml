@@ -58,7 +58,9 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       - name: Build Core
-        run: ./gradlew clean :core:build :core:shadowJar
+        run: |
+                  VERSION="${GITHUB_REF_NAME#v}"
+                  ./gradlew clean :core:build :core:shadowJar -Pversion="$VERSION"
       - name: Create Release with changelogits
         run: npx changelogits --repo-provider github
         env:
@@ -101,4 +103,6 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        run: ./gradlew publish -Pversion="${{ github.ref_name }}"
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          ./gradlew publish -Pversion="$VERSION"
