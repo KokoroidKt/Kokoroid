@@ -5,6 +5,7 @@
 
 package dev.kokoroidkt.pluginApi.dsl
 
+import dev.kokoroidkt.pluginApi.Processable
 import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.rule.RuleChain
 import kotlin.reflect.KFunction
@@ -25,7 +26,7 @@ class ConversationBuilder {
         rules += rule(block)
     }
 
-    fun build(): Processor = Processor(kFunction!!, rules)
+    fun build(): Processable = Processor(kFunction!!, rules)
 }
 
-fun conversation(block: ConversationBuilder.() -> Unit): Processor = ConversationBuilder().apply(block).build()
+fun conversation(block: ConversationBuilder.() -> Unit): Processable = ConversationBuilder().apply(block).build()

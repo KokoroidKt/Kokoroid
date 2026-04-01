@@ -7,6 +7,7 @@
 package dev.kokoroidkt.pluginApi.session.container
 
 import dev.kokoroidkt.coreApi.user.Users
+import dev.kokoroidkt.pluginApi.Processable
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
 import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.session.Session
@@ -15,7 +16,7 @@ fun interface
 SessionFactoty {
     fun createSession(
         user: Users,
-        processor: Processor,
+        processor: Processable,
         conversationOrchestrator: ConversationOrchestrator,
     ): Session
 }

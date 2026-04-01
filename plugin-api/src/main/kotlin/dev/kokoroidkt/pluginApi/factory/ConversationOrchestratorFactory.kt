@@ -6,9 +6,9 @@
 
 package dev.kokoroidkt.pluginApi.factory
 
+import dev.kokoroidkt.pluginApi.Processable
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
-import dev.kokoroidkt.pluginApi.conversation.Processor
 
 interface ConversationOrchestratorFactory {
-    fun create(processor: Processor): ConversationOrchestrator
+    fun create(processor: Processable): ConversationOrchestrator
 }

@@ -10,26 +10,25 @@ import dev.kokoroidkt.core.config.Config
 import dev.kokoroidkt.core.logger.getLogger
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
+import dev.kokoroidkt.pluginApi.Processable
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
 import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.session.Session
 import dev.kokoroidkt.pluginApi.session.SessionPromise
 import dev.kokoroidkt.pluginApi.session.container.SessionContainer
 import dev.kokoroidkt.pluginApi.session.container.SessionFactoty
-import kotlinx.coroutines.CompletableDeferred
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.util.concurrent.ConcurrentHashMap
 
 class DefaultConversationOrchestrator(
-    val processor: Processor,
+    val processor: Processable,
 ) : ConversationOrchestrator(),
     KoinComponent {
     val config: Config by inject()
-    val id: String = "ConversationOrchestrator{${processor.function.name}}"
+    val id: String = "ConversationOrchestrator(${this.getProcessorQualifiedName()})"
     val logger = getLogger(id)
 
-    private val promiseMap: MutableMap<Session, CompletableDeferred<Unit>> = ConcurrentHashMap()
+    // private val promiseMap: MutableMap<Session, CompletableDeferred<Unit>> = ConcurrentHashMap()
     val sessionContainer: SessionContainer by inject()
 
     private val sessionFactory: SessionFactoty by inject()
@@ -64,7 +63,7 @@ class DefaultConversationOrchestrator(
         sessionContainer.registerSession(session)
     }
 
-    override fun getProcessorQualifiedName(): String = processor.function.name
+    override fun getProcessorQualifiedName(): String = if (processor is Processor) processor.function.name else processor.javaClass.name
 
     override suspend fun isExist(session: Session): Boolean = sessionContainer.snapshot().any { session == it }
 }

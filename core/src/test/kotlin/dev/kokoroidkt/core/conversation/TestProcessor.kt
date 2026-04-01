@@ -73,8 +73,6 @@ suspend fun replyWithMessageChain(event: TestEvent): MessageChain {
     println("Bye from no reply")
     return MessageChain.of(
         object : MessageSegment() {
-            override val isTextConvertible: Boolean
-                get() = false
         },
     )
 }

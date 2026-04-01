@@ -11,7 +11,7 @@ sealed class ProcessorStatus {
     object Processed : ProcessorStatus()
 
     class Unmatched(
-        val expect: KType,
+        val expect: Any?,
         val acual: Any?,
     ) : ProcessorStatus()
 }

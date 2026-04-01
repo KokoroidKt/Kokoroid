@@ -121,9 +121,6 @@ class TestWaitForMessage {
                             "321",
                             MessageChain.of(
                                 object : MessageSegment(), TextConvertible {
-                                    override val isTextConvertible: Boolean
-                                        get() = true
-
                                     override fun toPlainText(): String = "Hello World"
                                 },
                             ),
@@ -171,9 +168,6 @@ class TestWaitForMessage {
                             "Mqweqwdascd",
                             MessageChain.of(
                                 object : MessageSegment(), TextConvertible {
-                                    override val isTextConvertible: Boolean
-                                        get() = true
-
                                     override fun toPlainText(): String = "Hello World"
                                 },
                             ),
@@ -192,9 +186,6 @@ class TestWaitForMessage {
                             "Matched",
                             MessageChain.of(
                                 object : MessageSegment(), TextConvertible {
-                                    override val isTextConvertible: Boolean
-                                        get() = true
-
                                     override fun toPlainText(): String = "Hello World"
                                 },
                             ),
@@ -244,9 +235,6 @@ class TestWaitForMessage {
                             "321",
                             MessageChain.of(
                                 object : MessageSegment(), TextConvertible {
-                                    override val isTextConvertible: Boolean
-                                        get() = true
-
                                     override fun toPlainText(): String = "User Group Test"
                                 },
                             ),

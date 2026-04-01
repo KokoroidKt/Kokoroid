@@ -12,7 +12,7 @@ import dev.kokoroidkt.core.MockEvent
 import dev.kokoroidkt.core.MockUser
 import dev.kokoroidkt.core.di.allModules
 import dev.kokoroidkt.coreApi.user.Users
-import dev.kokoroidkt.pluginApi.conversation.Processor
+import dev.kokoroidkt.pluginApi.Processable
 import dev.kokoroidkt.pluginApi.conversation.Reply
 import dev.kokoroidkt.pluginApi.dsl.conversation
 import dev.kokoroidkt.pluginApi.factory.ConversationOrchestratorFactory
@@ -33,7 +33,7 @@ import org.koin.mp.KoinPlatform.getKoin
  */
 
 class CowSessionContainerTest {
-    val processor: Processor = conversation { setProcessor(::testReplyProcessor) }
+    val processor: Processable = conversation { setProcessor(::testReplyProcessor) }
     val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(processor)
 
     @Test
