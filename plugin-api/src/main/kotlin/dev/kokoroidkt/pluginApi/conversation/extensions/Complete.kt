@@ -12,6 +12,7 @@ import dev.kokoroidkt.pluginApi.session.SessionState
 import dev.kokoroidkt.pluginApi.utils.startTimeoutWatchdog
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 internal fun ConversationScope.addSessionAndComplete(
     conversationContext: ConversationContext,
@@ -20,7 +21,7 @@ internal fun ConversationScope.addSessionAndComplete(
 ): Session {
     val session = conversationContext.session
 
-    launch {
+    runBlocking {
         conversationContext.conversationOrchestrator.registerSession(session)
     }
     conversationContext.deferred.complete(Unit)
