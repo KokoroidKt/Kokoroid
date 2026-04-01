@@ -12,5 +12,7 @@ ktlint {
 
 allprojects {
     group = "dev.kokoroidkt"
-    version = System.getenv("VERSION") ?: "undefined"
+    version = findProperty("version")?.toString()
+        ?: System.getenv("VERSION")
+        ?: "undefined"
 }

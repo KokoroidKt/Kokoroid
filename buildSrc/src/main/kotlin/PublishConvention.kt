@@ -2,6 +2,7 @@ import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.publish.PublishingExtension
 import org.gradle.api.publish.maven.MavenPublication
+import org.gradle.api.publish.tasks.GenerateModuleMetadata
 import org.gradle.plugins.signing.SigningExtension
 
 private fun Project.isPublishRequested(): Boolean =
@@ -24,6 +25,10 @@ fun Project.configureMavenPublish(
 ) {
     pluginManager.apply("maven-publish")
     pluginManager.apply("signing")
+
+    tasks.withType(GenerateModuleMetadata::class.java).configureEach {
+        enabled = false
+    }
 
     afterEvaluate {
         val publishing = extensions.findByType(PublishingExtension::class.java) ?: return@afterEvaluate
