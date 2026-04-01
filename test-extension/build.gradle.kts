@@ -4,9 +4,6 @@ plugins {
     application
 }
 
-group = "dev.kokoroidkt"
-version = project.findProperty("version") as String? ?: "undefined"
-
 repositories {
     mavenCentral()
 }

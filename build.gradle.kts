@@ -9,3 +9,8 @@ repositories {
 ktlint {
     version = "1.4.0"
 }
+
+allprojects {
+    group = "dev.kokoroidkt"
+    version = System.getenv("VERSION") ?: "undefined"
+}

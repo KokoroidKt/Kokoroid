@@ -1,5 +1,3 @@
-import buildsrc.convention.gitCommitShort
-
 plugins {
     kotlin("jvm")
     id("com.gradleup.shadow") version "9.3.1"
@@ -12,9 +10,6 @@ application {
     mainClass.set("dev.kokoroidkt.MainKt")
     applicationDefaultJvmArgs = listOf("--enable-native-access=ALL-UNNAMED")
 }
-
-group = "dev.kokoroidkt"
-version = project.findProperty("version") as String? ?: "undefined"
 
 val gitCommit = gitCommitShort().get()
 
@@ -95,3 +90,5 @@ tasks.jar {
     }
     archiveFileName.set("kokoroid-core-$version-$gitCommit.jar")
 }
+
+configureMavenPublishFor("kokoroid-core")
