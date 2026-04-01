@@ -104,5 +104,5 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          VERSION="${GITHUB_REF_NAME#v}"
-          ./gradlew publish -Pversion="$VERSION"
+            VERSION="${GITHUB_REF_NAME#v}"
+            ./gradlew publish publishAggregationToCentralPortal -Pversion="$VERSION"
