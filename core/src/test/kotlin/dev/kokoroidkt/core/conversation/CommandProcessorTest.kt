@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1
+
 package dev.kokoroidkt.core.conversation
 
 import dev.kokoroidkt.core.di.allModules
@@ -37,12 +42,14 @@ class MockBot(
     override fun callApi(
         apiEndpoint: String,
         data: kotlinx.serialization.json.JsonElement,
-    ) {}
+    ) {
+    }
 
     override fun replyMessage(
         event: Event,
         message: MessageChain,
-    ) {}
+    ) {
+    }
 }
 
 class MockUser(

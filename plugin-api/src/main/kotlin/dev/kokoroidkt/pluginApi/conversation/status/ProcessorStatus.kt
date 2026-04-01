@@ -5,8 +5,6 @@
 
 package dev.kokoroidkt.pluginApi.conversation.status
 
-import kotlin.reflect.KType
-
 sealed class ProcessorStatus {
     object Processed : ProcessorStatus()
 

@@ -1,3 +1,8 @@
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1
+
 package dev.kokoroidkt.pluginApi.conversation.command
 
 import dev.kokoroidkt.coreApi.bot.Bot
@@ -138,7 +143,10 @@ data class CommandItem(
 
         if (arg.size != arguments.size) {
             session.state = SessionState.Finished(Reply.Unprocessed)
-            return ProcessorStatus.Unmatched(arguments.first { it !in arg.keys }.type, listOf(event, user, rawChain, bot))
+            return ProcessorStatus.Unmatched(
+                arguments.first { it !in arg.keys }.type,
+                listOf(event, user, rawChain, bot),
+            )
         }
 
         val result = thisProcessor.callSuspendBy(arg)

@@ -1,7 +1,11 @@
+// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
+// SPDX-FileContributor: moran0710
+//
+// SPDX-License-Identifier: LGPL-2.1
+
 package dev.kokoroidkt.pluginApi.conversation.command
 
 import dev.kokoroidkt.coreApi.message.MessageSegment
-import dev.kokoroidkt.coreApi.message.TextConvertible
 
 sealed class CommandArg {
     data class Segment(

@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.repositories
 plugins {
     alias(libs.plugins.ktlint)
 }
