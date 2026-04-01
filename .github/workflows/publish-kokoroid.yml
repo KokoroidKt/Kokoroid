@@ -101,5 +101,4 @@ jobs:
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-          VERSION: ${{ env.VERSION }}
-        run: ./gradlew publish -Pversion=$VERSION
+        run: ./gradlew publish -Pversion="${{ github.ref_name }}"

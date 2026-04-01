@@ -78,27 +78,16 @@ fun Project.configureMavenPublish(
             maven {
                 name = "CentralPortal"
                 url = uri("https://central.sonatype.com/api/v1/publisher/")
+                credentials {
+                    username = providers.environmentVariable("MAVEN_USERNAME").orNull
+                    password = providers.environmentVariable("MAVEN_PASSWORD").orNull
+                }
             }
         }
 
-        gradle.taskGraph.whenReady {
-            if (!isPublishRequested()) return@whenReady
-
-            val mavenUsername = requireEnv("MAVEN_USERNAME")
-            val mavenPassword = requireEnv("MAVEN_PASSWORD")
+        if (isPublishRequested()) {
             val gpgPrivateKey = requireEnv("GPG_PRIVATE_KEY")
             val gpgPassphrase = requireEnv("GPG_PASSPHRASE")
-
-            publishing.repositories
-                .withType(org.gradle.api.artifacts.repositories.MavenArtifactRepository::class.java)
-                .named("CentralPortal")
-                .configure {
-                    credentials {
-                        username = mavenUsername
-                        password = mavenPassword
-                    }
-                }
-
             signing.useInMemoryPgpKeys(gpgPrivateKey, gpgPassphrase)
             signing.sign(publishing.publications)
         }
