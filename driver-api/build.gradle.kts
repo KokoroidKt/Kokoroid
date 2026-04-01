@@ -1,14 +1,9 @@
-import buildsrc.convention.gitCommitShort
-
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization") version "2.1.21"
     application
     id("com.palantir.git-version")
 }
-
-group = "dev.kokoroidkt"
-version = project.findProperty("version") as String? ?: "undefined"
 
 repositories {
     mavenCentral()
@@ -51,3 +46,5 @@ tasks.jar {
     }
     archiveFileName.set("kokoroid-driver-api-$version-$gitCommit.jar")
 }
+
+configureMavenPublishFor("kokoroid-driver-api")

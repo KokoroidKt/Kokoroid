@@ -8,8 +8,8 @@ package dev.kokoroidkt.pluginApi.utils
 
 import dev.kokoroidkt.coreApi.config.ConfigHelper
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
+import dev.kokoroidkt.pluginApi.Processable
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
-import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.exceptions.ConversationRegisterFailedException
 import dev.kokoroidkt.pluginApi.factory.ConversationOrchestratorFactory
 import dev.kokoroidkt.pluginApi.plugin.Plugin
@@ -40,7 +40,7 @@ internal fun Plugin.getContainer() =
 
 fun Plugin.metadata(): PluginMeta = getContainer().metadata
 
-fun Plugin.addConversation(processor: Processor) {
+fun Plugin.addConversation(processor: Processable) {
     val orchestrator: ConversationOrchestrator
     val container = getContainer()
     try {
@@ -48,7 +48,7 @@ fun Plugin.addConversation(processor: Processor) {
         container.registerOrchestrator(orchestrator)
     } catch (e: Exception) {
         throw ConversationRegisterFailedException(
-            "Register Conversation ${processor.function.name} failed",
+            "Register Conversation ${processor.name()} failed",
             container,
             e,
         )
@@ -65,5 +65,5 @@ fun <T> Plugin.saveConfigToFile(
         .encodeHoconToFile(config, Path.of("plugin", metadata().name).resolve(path))
 }
 
-fun <T> Plugin.loadConfigFromFile(path: Path = Paths.get("/settings.conf")): T =
+fun <T> Plugin.loadConfigFromFile(path: Path = Paths.get("/settings.conf")) =
     KoinPlatform.getKoin().get<ConfigHelper>().decodeHoconFile<T>(Path.of("plugin", metadata().name).resolve(path))

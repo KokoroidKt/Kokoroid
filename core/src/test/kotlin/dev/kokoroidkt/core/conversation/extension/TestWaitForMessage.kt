@@ -7,7 +7,6 @@
 package dev.kokoroidkt.core.conversation.extension
 
 import dev.kokoroidkt.core.di.allModules
-import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.event.MessageEvent
 import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.message.MessageSegment
@@ -36,8 +35,7 @@ class TestMessageEvent(
     eventId: String,
     override val messageChain: MessageChain,
     users: Users = NoUser.NO_USER_GROUP,
-) : Event(eventId, Instant.now(), users, TestBot("")),
-    MessageEvent {
+) : MessageEvent(eventId, Instant.now(), users, TestBot("")) {
     fun sayHi() {
         println("hi from message event")
     }
@@ -49,8 +47,7 @@ class AnotherMessageEvent(
     eventId: String,
     override val messageChain: MessageChain,
     users: Users = NoUser.NO_USER_GROUP,
-) : Event(eventId, Instant.now(), users, TestBot("")),
-    MessageEvent {
+) : MessageEvent(eventId, Instant.now(), users, TestBot("")) {
     fun sayHi() {
         println("hi from another message event")
     }
@@ -121,9 +118,6 @@ class TestWaitForMessage {
                             "321",
                             MessageChain.of(
                                 object : MessageSegment(), TextConvertible {
-                                    override val isTextConvertible: Boolean
-                                        get() = true
-
                                     override fun toPlainText(): String = "Hello World"
                                 },
                             ),
@@ -171,9 +165,6 @@ class TestWaitForMessage {
                             "Mqweqwdascd",
                             MessageChain.of(
                                 object : MessageSegment(), TextConvertible {
-                                    override val isTextConvertible: Boolean
-                                        get() = true
-
                                     override fun toPlainText(): String = "Hello World"
                                 },
                             ),
@@ -192,9 +183,6 @@ class TestWaitForMessage {
                             "Matched",
                             MessageChain.of(
                                 object : MessageSegment(), TextConvertible {
-                                    override val isTextConvertible: Boolean
-                                        get() = true
-
                                     override fun toPlainText(): String = "Hello World"
                                 },
                             ),
@@ -244,9 +232,6 @@ class TestWaitForMessage {
                             "321",
                             MessageChain.of(
                                 object : MessageSegment(), TextConvertible {
-                                    override val isTextConvertible: Boolean
-                                        get() = true
-
                                     override fun toPlainText(): String = "User Group Test"
                                 },
                             ),

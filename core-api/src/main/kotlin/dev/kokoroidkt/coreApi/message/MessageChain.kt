@@ -62,12 +62,11 @@ class MessageChain :
 
     override fun toPlainText(): String {
         val sb = StringBuilder()
-        sb.append(
-            messages
-                .mapNotNull {
-                    (it as? TextConvertible)?.toPlainText()
-                }.toList(),
-        )
+        messages.forEach {
+            if (it is TextConvertible) {
+                sb.append(it.toPlainText())
+            }
+        }
         return sb.toString()
     }
 

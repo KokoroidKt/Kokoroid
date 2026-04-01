@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.repositories
 plugins {
     alias(libs.plugins.ktlint)
 }
@@ -9,4 +8,9 @@ repositories {
 }
 ktlint {
     version = "1.4.0"
+}
+
+allprojects {
+    group = "dev.kokoroidkt"
+    version = System.getenv("VERSION") ?: "undefined"
 }

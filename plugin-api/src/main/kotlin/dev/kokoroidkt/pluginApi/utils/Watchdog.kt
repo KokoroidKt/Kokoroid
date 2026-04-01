@@ -12,6 +12,7 @@ import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resumeWithException
+import kotlin.time.Duration.Companion.milliseconds
 
 internal fun ConversationScope.startTimeoutWatchdog(
     timeoutMilli: Long?,
@@ -21,7 +22,7 @@ internal fun ConversationScope.startTimeoutWatchdog(
     timeoutMilli?.let { if (it < 0) throw IllegalStateException("Timeout must be greater than 0") }
     if (timeoutMilli != null) {
         launch {
-            delay(timeoutMilli)
+            delay(timeoutMilli.milliseconds)
             if (continuation.isActive) {
                 continuation.resumeWithException(
                     SessionTimeoutException("Session $session time out: already waited $timeoutMilli seconds."),
