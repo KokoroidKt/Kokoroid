@@ -1,14 +1,9 @@
-import buildsrc.convention.gitCommitShort
-
 plugins {
     kotlin("jvm")
     kotlin("plugin.serialization") version "2.1.21"
     application
     id("com.palantir.git-version")
 }
-
-group = "dev.kokoroidkt"
-version = project.findProperty("version") as String? ?: "undefined"
 
 repositories {
     mavenCentral()
@@ -24,7 +19,6 @@ dependencies {
     implementation(libs.koin.core)
     testImplementation(libs.koin.test)
     testImplementation(libs.bundles.testSuit)
-    testImplementation(libs.junit.jupiter)
     testImplementation(libs.junit.jupiter)
 }
 
@@ -52,3 +46,5 @@ tasks.jar {
     }
     archiveFileName.set("kokoroid-plugin-api-$version-$gitCommit.jar")
 }
+
+configureMavenPublishFor("kokoroid-plugin-api")
