@@ -84,4 +84,6 @@ class CommandProcessor(
         }
         return ProcessorStatus.Unmatched(prefix, plainText[0])
     }
+
+    override fun name(): String = "CommandProcessor(root=${root.thisKeyword}, rootProcessor=${root.thisProcessor.name})"
 }
