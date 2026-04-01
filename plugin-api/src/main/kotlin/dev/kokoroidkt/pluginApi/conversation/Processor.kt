@@ -12,6 +12,7 @@ import dev.kokoroidkt.coreApi.event.MessageEvent
 import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.user.User
 import dev.kokoroidkt.coreApi.user.Users
+import dev.kokoroidkt.pluginApi.Processable
 import dev.kokoroidkt.pluginApi.conversation.status.ProcessorStatus
 import dev.kokoroidkt.pluginApi.rule.RuleChain
 import dev.kokoroidkt.pluginApi.session.Session
@@ -27,7 +28,7 @@ import kotlin.reflect.full.starProjectedType
 class Processor(
     val function: KFunction<*>,
     val rules: RuleChain,
-) {
+) : Processable {
     val returnTypeWarps: (Any?) -> Reply =
         run {
             when {
@@ -73,7 +74,7 @@ class Processor(
             }.toList()
     }
 
-    suspend fun tryCallSuspend(
+    override suspend fun tryCallSuspend(
         event: Event,
         bot: Bot,
         users: Users,

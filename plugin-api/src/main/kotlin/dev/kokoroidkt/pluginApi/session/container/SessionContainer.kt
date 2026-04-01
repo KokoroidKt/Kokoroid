@@ -8,8 +8,8 @@ package dev.kokoroidkt.pluginApi.session.container
 
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.user.Users
+import dev.kokoroidkt.pluginApi.Processable
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
-import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.session.Session
 
 interface SessionContainer {
@@ -17,7 +17,7 @@ interface SessionContainer {
 
     suspend fun getOrCreateSession(
         event: Event,
-        processor: Processor,
+        processor: Processable,
         users: Users,
         orchestrator: ConversationOrchestrator,
     ): Session

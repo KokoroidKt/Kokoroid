@@ -10,6 +10,7 @@ import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.event.MessageEvent
 import dev.kokoroidkt.coreApi.user.Users
+import dev.kokoroidkt.pluginApi.Processable
 import dev.kokoroidkt.pluginApi.conversation.ConversationContext
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
 import dev.kokoroidkt.pluginApi.conversation.ConversationScope
@@ -22,7 +23,7 @@ import kotlin.coroutines.resume
 
 class DefaultSessionImpl(
     private var _state: SessionState = SessionState.Alive(),
-    private val processor: Processor,
+    private val processor: Processable,
     override val users: Users,
     conversationOrchestrator: ConversationOrchestrator,
 ) : Session {
@@ -34,7 +35,7 @@ class DefaultSessionImpl(
         set(value) {
             _state = value
         }
-    val context = ConversationContext(users, this, conversationOrchestrator, CompletableDeferred<Unit>())
+    val context = ConversationContext(users, this, conversationOrchestrator, CompletableDeferred())
 
     override fun toString() = "SessionImpl(state: SessionState=$state, users=${users.joinToString { ", " }})"
 

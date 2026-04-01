@@ -12,7 +12,7 @@ import kotlinx.serialization.json.buildJsonObject
 
 abstract class MessageSegment {
     open val rawData: JsonElement = buildJsonObject { }
-    abstract val isTextConvertible: Boolean
+    val isTextConvertible: Boolean = this is TextConvertible
 
     open fun toJson(): String = Json.encodeToString(rawData)
 

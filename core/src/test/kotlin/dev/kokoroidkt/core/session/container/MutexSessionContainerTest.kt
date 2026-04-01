@@ -9,6 +9,7 @@ package dev.kokoroidkt.core.session.container
 import dev.kokoroidkt.core.MockEvent
 import dev.kokoroidkt.core.MockUser
 import dev.kokoroidkt.core.di.allModules
+import dev.kokoroidkt.pluginApi.Processable
 import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.conversation.Reply
 import dev.kokoroidkt.pluginApi.dsl.conversation
@@ -29,7 +30,7 @@ import org.koin.mp.KoinPlatform.getKoin
  * or a new session is created based on the provided event, processor, and user group.
  */
 class MutexSessionContainerTest {
-    val processor: Processor = conversation { setProcessor(::mockProcessor) }
+    val processor: Processable = conversation { setProcessor(::mockProcessor) }
     val orchestrator = getKoin().get<ConversationOrchestratorFactory>().create(processor)
 
     @Test
@@ -76,7 +77,7 @@ class MutexSessionContainerTest {
         runBlocking {
             val container = MutexSessionContainer()
             val event = MockEvent(users = userGroupA)
-            val processor: Processor = conversation { setProcessor(::mockProcessor) }
+            val processor: Processable = conversation { setProcessor(::mockProcessor) }
 
             val session1 = container.getOrCreateSession(event, processor, userGroupA, orchestrator)
             val session2 = container.getOrCreateSession(event, processor, userGroupA, orchestrator)
@@ -90,7 +91,7 @@ class MutexSessionContainerTest {
             val container = MutexSessionContainer()
             val eventA = MockEvent(users = userGroupA)
             val eventB = MockEvent(users = userGroupB)
-            val processor: Processor = conversation { setProcessor(::mockProcessor) }
+            val processor: Processable = conversation { setProcessor(::mockProcessor) }
 
             val sessionA = container.getOrCreateSession(eventA, processor, userGroupA, orchestrator)
             val sessionB = container.getOrCreateSession(eventB, processor, userGroupB, orchestrator)
