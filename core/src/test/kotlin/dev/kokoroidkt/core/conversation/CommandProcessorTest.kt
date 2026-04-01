@@ -13,10 +13,12 @@ import dev.kokoroidkt.pluginApi.conversation.Reply
 import dev.kokoroidkt.pluginApi.conversation.command.CommandArg
 import dev.kokoroidkt.pluginApi.conversation.command.CommandItem
 import dev.kokoroidkt.pluginApi.conversation.command.CommandProcessor
+import dev.kokoroidkt.pluginApi.conversation.extensions.waitForEvent
 import dev.kokoroidkt.pluginApi.conversation.status.ProcessorStatus
 import dev.kokoroidkt.pluginApi.session.Session
 import dev.kokoroidkt.pluginApi.session.SessionState
 import io.mockk.mockk
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -27,6 +29,7 @@ import java.time.Instant
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.milliseconds
 
 class MockBot(
     override val botId: String = "testBot",
@@ -51,8 +54,7 @@ class MockMessageEvent(
     override val messageChain: MessageChain,
     users: Users = listOf(MockUser("user1")),
     bot: Bot = MockBot(),
-) : Event("testEvent", Instant.now(), users, bot),
-    MessageEvent
+) : MessageEvent("testEvent", Instant.now(), users, bot)
 
 class CommandProcessorTest {
     companion object {
@@ -165,6 +167,49 @@ class CommandProcessorTest {
             assertEquals("docs", processor.foundedCommandItem?.thisKeyword)
         }
 
+    // 新增：测试命令规则检查
+    @Test
+    fun `test command rule check`() =
+        runBlocking {
+            val root =
+                CommandItem(
+                    children = emptyMap(),
+                    thisKeyword = "say",
+                    thisProcessor = ::sayWithArgs,
+                    goDown = false,
+                    rules =
+                        dev.kokoroidkt.pluginApi.dsl.rule {
+                            with {
+                                // 只有 eventId 为 "Allowed" 的事件才允许执行
+                                event.eventId == "Allowed"
+                            }
+                        },
+                )
+
+            val processor = CommandProcessor('/', root)
+            val session = mockk<Session>(relaxed = true)
+
+            // 1. 不匹配规则的情况
+            val deniedEvent =
+                MockMessageEvent(
+                    MessageChain.of(TextMessage("/say hello")),
+                ).apply {
+                    // MockMessageEvent 默认 eventId 是 "testEvent"
+                }
+
+            val deniedStatus = processor.tryCallSuspend(deniedEvent, deniedEvent.bot, deniedEvent.users, session)
+            assertTrue(deniedStatus is ProcessorStatus.Unmatched)
+
+            // 2. 匹配规则的情况
+            val allowedEvent =
+                object : MessageEvent("Allowed", Instant.now(), listOf(MockUser("user1")), MockBot()) {
+                    override val messageChain: MessageChain = MessageChain.of(TextMessage("/say hello"))
+                }
+
+            val status = processor.tryCallSuspend(allowedEvent, allowedEvent.bot, allowedEvent.users, session)
+            assertTrue(status is ProcessorStatus.Processed)
+        }
+
     // 3. Reply 的接收正常
     @Test
     fun `test reply from command`() =
@@ -213,8 +258,7 @@ class CommandProcessorTest {
 
     // 5. waitForT (waitForEvent) 函数的工作是否正常
     suspend fun waitProcessor(event: Event): Reply {
-        dev.kokoroidkt.pluginApi.conversation.extensions
-            .waitForEvent<MockMessageEvent>()
+        waitForEvent<MockMessageEvent>()
         return Reply.NoReply
     }
 
@@ -237,13 +281,14 @@ class CommandProcessorTest {
             val event1 = MockMessageEvent(MessageChain.of(TextMessage("/wait")))
             val promise1 = orchestrator.callSessionToProcessOrCreate(event1, event1.bot)
 
-            kotlinx.coroutines.delay(100)
+            kotlinx.coroutines.delay(100.milliseconds)
             assertTrue(promise1.session.state is SessionState.WaitingFor)
 
             val event2 = MockMessageEvent(MessageChain.of(TextMessage("something")))
             orchestrator.callSessionToProcessOrCreate(event2, event2.bot)
 
             promise1.deferred.await()
+            delay(100.milliseconds)
             assertTrue(promise1.session.state is SessionState.Finished)
         }
 }

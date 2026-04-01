@@ -36,8 +36,7 @@ class TestMessageEvent(
     eventId: String,
     override val messageChain: MessageChain,
     users: Users = NoUser.NO_USER_GROUP,
-) : Event(eventId, Instant.now(), users, TestBot("")),
-    MessageEvent {
+) : MessageEvent(eventId, Instant.now(), users, TestBot("")) {
     fun sayHi() {
         println("hi from message event")
     }
@@ -49,8 +48,7 @@ class AnotherMessageEvent(
     eventId: String,
     override val messageChain: MessageChain,
     users: Users = NoUser.NO_USER_GROUP,
-) : Event(eventId, Instant.now(), users, TestBot("")),
-    MessageEvent {
+) : MessageEvent(eventId, Instant.now(), users, TestBot("")) {
     fun sayHi() {
         println("hi from another message event")
     }
