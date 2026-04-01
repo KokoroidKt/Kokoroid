@@ -14,6 +14,18 @@ ktlint {
     version = "1.4.0"
 }
 
+dependencies {
+
+    dependencies {
+        nmcpAggregation(project(":core"))
+        nmcpAggregation(project(":core-api"))
+        nmcpAggregation(project(":adapter-api"))
+        nmcpAggregation(project(":driver-api"))
+        nmcpAggregation(project(":plugin-api"))
+        nmcpAggregation(project(":transport-api"))
+    }
+}
+
 allprojects {
 
     group = "dev.kokoroidkt"
