@@ -20,7 +20,6 @@ dependencyResolutionManagement {
 plugins {
     // Use the Foojay Toolchains plugin to automatically download JDKs required by subprojects.
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
-    id("com.palantir.git-version") version "4.2.0" apply false
 }
 
 // Include the `app` and `utils` subprojects in the build.

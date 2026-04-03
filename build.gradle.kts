@@ -1,9 +1,13 @@
+import org.jetbrains.dokka.versioning.VersioningConfiguration
+import org.jetbrains.dokka.versioning.VersioningPlugin
 import java.time.temporal.ChronoUnit
+
 
 plugins {
     alias(libs.plugins.ktlint)
 
     id("com.gradleup.nmcp.aggregation").version("1.4.4")
+    id("org.jetbrains.dokka") version "2.2.0"
 }
 
 repositories {
@@ -14,8 +18,64 @@ ktlint {
     version = "1.4.0"
 }
 
-allprojects {
+dokka {
+    dokkaPublications.html {
+        moduleName.set(project.name)
+        moduleVersion.set(project.version.toString())
+        // Standard output directory for HTML documentation
+        outputDirectory.set(layout.buildDirectory.dir("dokka/html"))
+        failOnWarning.set(false)
+        suppressInheritedMembers.set(false)
+        suppressObviousFunctions.set(true)
+        offlineMode.set(false)
 
+        // Output directory for additional files
+        // Use this block instead of the standard when you
+        // want to change the output directory and include extra files
+        outputDirectory.set(rootDir.resolve("docs/api/$version"))
+
+        // Use fileTree to add multiple files
+        includes.from(
+            fileTree("docs") {
+                include("**/*.md")
+            },
+        )
+    }
+}
+
+buildscript {
+    dependencies {
+        classpath("org.jetbrains.dokka:versioning-plugin:2.2.0")
+    }
+}
+
+dependencies {
+    dokkaHtmlPlugin("org.jetbrains.dokka:versioning-plugin:2.2.0")
+    dokka(project(":core"))
+    dokka(project(":core-api"))
+    dokka(project(":adapter-api"))
+    dokka(project(":driver-api"))
+    dokka(project(":plugin-api"))
+    dokka(project(":transport-api"))
+    nmcpAggregation(project(":core"))
+    nmcpAggregation(project(":core-api"))
+    nmcpAggregation(project(":adapter-api"))
+    nmcpAggregation(project(":driver-api"))
+    nmcpAggregation(project(":plugin-api"))
+    nmcpAggregation(project(":transport-api"))
+
+    dokkaHtmlPlugin("org.jetbrains.dokka:versioning-plugin:2.2.0")
+}
+
+tasks.dokkaHtml {
+    pluginConfiguration<VersioningPlugin, VersioningConfiguration> {
+        version = project.version.toString()
+        versionsOrdering = listOf(project.version.toString())
+        renderVersionsNavigationOnAllPages = true
+    }
+}
+
+allprojects {
     group = "dev.kokoroidkt"
     version = findProperty("version")?.toString()
         ?: System.getenv("VERSION")

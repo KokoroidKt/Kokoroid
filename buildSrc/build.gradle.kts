@@ -3,6 +3,8 @@ plugins {
     // Convention plugins are located in `src/main/kotlin`, with the file extension `.gradle.kts`,
     // and are applied in the project's `build.gradle.kts` files as required.
     `kotlin-dsl`
+
+    id("org.jetbrains.dokka") version "2.2.0"
 }
 
 kotlin {
