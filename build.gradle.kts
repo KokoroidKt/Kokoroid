@@ -1,6 +1,5 @@
 import org.jetbrains.dokka.versioning.VersioningConfiguration
 import org.jetbrains.dokka.versioning.VersioningPlugin
-import java.time.temporal.ChronoUnit
 
 
 plugins {

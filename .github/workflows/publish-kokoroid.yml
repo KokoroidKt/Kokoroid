@@ -59,8 +59,8 @@ jobs:
         run: chmod +x ./gradlew
       - name: Build Core
         run: |
-                  VERSION="${GITHUB_REF_NAME#v}"
-                  ./gradlew clean :core:build :core:shadowJar -Pversion="$VERSION"
+          VERSION="${GITHUB_REF_NAME#v}"
+          ./gradlew clean :core:build :core:shadowJar -Pversion="$VERSION"
       - name: Create Release with changelogits
         run: npx changelogits --repo-provider github
         env:
@@ -104,5 +104,5 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-            VERSION="${GITHUB_REF_NAME#v}"
-            ./gradlew publishAggregationToCentralPortal -Pversion="$VERSION"
+          VERSION="${GITHUB_REF_NAME#v}"
+          ./gradlew publishAggregationToCentralPortal -Pversion="$VERSION"
