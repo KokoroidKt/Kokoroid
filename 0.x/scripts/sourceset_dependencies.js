@@ -1,0 +1,1 @@
+sourceset_dependencies = '{":core/main":[],":transport-api/main":[],":core-api/main":[],":plugin-api/main":[],":adapter-api/main":[],":driver-api/main":[]}'
