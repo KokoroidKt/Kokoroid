@@ -17,6 +17,8 @@ ktlint {
     version = "1.4.0"
 }
 
+val docVersion = "0.x"
+
 dokka {
     dokkaPublications.html {
         moduleName.set(project.name)
@@ -30,7 +32,7 @@ dokka {
         // Output directory for additional files
         // Use this block instead of the standard when you
         // want to change the output directory and include extra files
-        outputDirectory.set(rootDir.resolve("docs/api/0.x"))
+        outputDirectory.set(rootDir.resolve("docs/api/$docVersion"))
 
         // Use fileTree to add multiple files
         includes.from(
@@ -66,7 +68,7 @@ dependencies {
 
 tasks.dokkaHtml {
     pluginConfiguration<VersioningPlugin, VersioningConfiguration> {
-        version = project.version.toString()
+        version = docVersion
         versionsOrdering = listOf(project.version.toString())
         renderVersionsNavigationOnAllPages = true
     }
