@@ -22,7 +22,6 @@ dokka {
     dokkaPublications.html {
         moduleName.set(project.name)
         moduleVersion.set(project.version.toString())
-        // Standard output directory for HTML documentation
         outputDirectory.set(layout.buildDirectory.dir("dokka/html"))
         failOnWarning.set(false)
         suppressInheritedMembers.set(false)
@@ -63,7 +62,6 @@ dependencies {
     nmcpAggregation(project(":driver-api"))
     nmcpAggregation(project(":plugin-api"))
     nmcpAggregation(project(":transport-api"))
-
     dokkaHtmlPlugin("org.jetbrains.dokka:versioning-plugin:2.2.0")
 }
 

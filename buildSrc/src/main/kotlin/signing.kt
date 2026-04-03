@@ -11,7 +11,7 @@ import org.gradle.plugins.signing.SigningExtension
  * 要求：模块已应用 'maven-publish' 和 'signing' 插件，并已创建名为 "mavenJava" 的 MavenPublication
  */
 fun Project.autoConfigureSigning() {
-    pluginManager.apply("maven-publish")
+    // pluginManager.apply("maven-publish")
     pluginManager.apply("signing")
 
     afterEvaluate {

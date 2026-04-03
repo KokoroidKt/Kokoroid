@@ -13,14 +13,6 @@ repositories {
     mavenCentral()
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            from(components["java"])
-        }
-    }
-}
-
 dependencies {
     testImplementation(kotlin("test"))
     api(libs.bundles.kotlinxEcosystem)
