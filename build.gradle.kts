@@ -30,7 +30,7 @@ dokka {
         // Output directory for additional files
         // Use this block instead of the standard when you
         // want to change the output directory and include extra files
-        outputDirectory.set(rootDir.resolve("docs/api/$version"))
+        outputDirectory.set(rootDir.resolve("docs/api/0.x"))
 
         // Use fileTree to add multiple files
         includes.from(

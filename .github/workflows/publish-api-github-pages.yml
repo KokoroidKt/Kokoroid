@@ -1,4 +1,4 @@
-name: Publish Dokka API to GitHub Pages
+name: Publis KDoc to GitHub Pages
 
 on:
   push:
