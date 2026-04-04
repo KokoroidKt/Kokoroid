@@ -5,7 +5,7 @@
 
 package dev.kokoroidkt.pluginApi.dsl
 
-import dev.kokoroidkt.pluginApi.Processable
+import dev.kokoroidkt.pluginApi.conversation.Processable
 import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.rule.RuleChain
 import kotlin.reflect.KFunction

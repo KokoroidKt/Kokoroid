@@ -11,7 +11,7 @@ import dev.kokoroidkt.coreApi.event.MessageEvent
 import dev.kokoroidkt.coreApi.message.TextConvertible
 import dev.kokoroidkt.coreApi.message.builtin.TextMessage
 import dev.kokoroidkt.coreApi.user.Users
-import dev.kokoroidkt.pluginApi.Processable
+import dev.kokoroidkt.pluginApi.conversation.Processable
 import dev.kokoroidkt.pluginApi.conversation.status.ProcessorStatus
 import dev.kokoroidkt.pluginApi.session.Session
 import kotlin.reflect.full.starProjectedType

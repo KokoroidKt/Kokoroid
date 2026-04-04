@@ -8,8 +8,8 @@ package dev.kokoroidkt.pluginApi.utils
 
 import dev.kokoroidkt.coreApi.config.ConfigHelper
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
-import dev.kokoroidkt.pluginApi.Processable
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
+import dev.kokoroidkt.pluginApi.conversation.Processable
 import dev.kokoroidkt.pluginApi.exceptions.ConversationRegisterFailedException
 import dev.kokoroidkt.pluginApi.factory.ConversationOrchestratorFactory
 import dev.kokoroidkt.pluginApi.plugin.Plugin
