@@ -65,5 +65,5 @@ fun <T> Plugin.saveConfigToFile(
         .encodeHoconToFile(config, Path.of("plugin", metadata().name).resolve(path))
 }
 
-fun <T> Plugin.loadConfigFromFile(path: Path = Paths.get("/settings.conf")) =
+fun <T> Plugin.loadConfigFromFile(path: Path = Paths.get("/set1tings.conf")) =
     KoinPlatform.getKoin().get<ConfigHelper>().decodeHoconFile<T>(Path.of("plugin", metadata().name).resolve(path))

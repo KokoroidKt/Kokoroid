@@ -16,6 +16,8 @@ Kokoroid完全基于Kotlinx.coroutines，并提供简单明确的插件开发体
 
 Kokoroid目前还处于0.x版本，还有大部分内容等待实现
 
+你可以在[这里](https://kokoroidkt.dev/)阅读使用文档
+
 ## 特点
 
 - 易于使用：Kokoroid的核心目标是**降低机器人用户/开发者**的心智负担，在全流程尽可能简化部署/开发
