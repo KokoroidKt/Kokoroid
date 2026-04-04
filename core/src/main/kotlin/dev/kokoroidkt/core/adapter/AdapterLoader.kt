@@ -8,8 +8,9 @@ package dev.kokoroidkt.core.adapter
 
 import dev.kokoroidkt.adapterApi.adapter.Adapter
 import dev.kokoroidkt.adapterApi.adapter.AdapterMeta
-import dev.kokoroidkt.core.classloader.JarClassLoader
+import dev.kokoroidkt.core.classloader.ExtensionClassLoaderImpl
 import dev.kokoroidkt.core.exceptions.LoadAdapterFailedException
+import dev.kokoroidkt.core.logger.getLogger
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -35,9 +36,10 @@ class AdapterLoader(
                 jar.getInputStream(metadataEntry).use {
                     json.decodeFromStream<AdapterMeta>(it)
                 }
-            val classLoader = JarClassLoader(jarFile)
+            val classLoader = ExtensionClassLoaderImpl(jarFile)
             val clazz = classLoader.loadClass(metadata.mainClass)
             val adapter = clazz.getConstructor().newInstance() as Adapter
+            classLoader.logger = getLogger(metadata.name)
             return adapter to metadata
         } catch (e: Exception) {
             throw LoadAdapterFailedException(

@@ -6,8 +6,9 @@
 
 package dev.kokoroidkt.core.plugin
 
-import dev.kokoroidkt.core.classloader.JarClassLoader
+import dev.kokoroidkt.core.classloader.ExtensionClassLoaderImpl
 import dev.kokoroidkt.core.exceptions.LoadPluginFailedException
+import dev.kokoroidkt.core.logger.getLogger
 import dev.kokoroidkt.pluginApi.plugin.Plugin
 import dev.kokoroidkt.pluginApi.plugin.PluginMeta
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -31,7 +32,9 @@ class PluginLoader(
         val metadata = getMetadata()
         var plugin: Plugin
         try {
-            val clazz = JarClassLoader(jarFile).loadClass(metadata.mainClass)
+            val classLoader = ExtensionClassLoaderImpl(jarFile)
+            classLoader.logger = getLogger(metadata.name)
+            val clazz = classLoader.loadClass(metadata.mainClass)
             plugin = clazz.getConstructor().newInstance() as Plugin
         } catch (e: Exception) {
             throw LoadPluginFailedException(
