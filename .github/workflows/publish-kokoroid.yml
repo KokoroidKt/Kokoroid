@@ -57,13 +57,10 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
           ./gradlew clean :core:build :core:shadowJar -Pversion="$VERSION"
-      - name: Auto-generate Release Notes
-        run: |
-          gh release edit ${{ github.event.release.tag_name }} \
-            --generate-notes \
-            --repo ${{ github.repository }}
+      - name: Create Release with changelogits
+        run: npx changelogits --repo-provider github
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload Assets to Release
         uses: softprops/action-gh-release@v2.6.1
         with:
@@ -105,3 +102,24 @@ jobs:
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
           ./gradlew publishAggregationToCentralPortal -Pversion="$VERSION"
+      - name: Send email reminder
+        uses: dawidd6/action-send-mail@v4
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}
+          server_port: ${{ secrets.MAIL_PORT }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "[Kokoroid] Maven Central 发布成功，请检查版本 ${{ env.VERSION }}"
+          to: ${{ secrets.MAIL_TO }}
+          from: ${{ secrets.MAIL_FROM }}
+          body: |
+            版本 ${{ env.VERSION }} 已成功上传到 Sonatype OSSRH staging 仓库。
+
+            请前往 https://s01.oss.sonatype.org/#stagingRepositories 登录，
+            检查该版本的组件是否正确（尤其是版本号是否为 ${{ env.VERSION }}），
+            确认无误后执行 Close → Release。
+
+            完成后该版本将在 10-30 分钟后同步到 Maven Central。
+
+            ---
+            此邮件由 GitHub Actions 自动发送。
