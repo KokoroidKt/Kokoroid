@@ -1,4 +1,4 @@
-name: Publis KDoc to GitHub Pages
+name: Publish KDoc to GitHub Pages
 
 on:
   push:
