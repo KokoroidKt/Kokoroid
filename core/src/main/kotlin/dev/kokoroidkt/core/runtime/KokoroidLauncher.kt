@@ -123,6 +123,7 @@ class KokoroidLauncher : KoinComponent {
                     )
                 }
             }
+        databaseManager.init(db)
         logger.debug { "jdbc url: ${db.url}" }
         when (val result = trySyncDB()) {
             MigrationResult.NoChange -> {
@@ -162,7 +163,7 @@ class KokoroidLauncher : KoinComponent {
                     }
                     logger.info { "Auto migration ${result.oldHash} -> ${result.newHash} completed successfully" }
                 }
-                databaseManager.init(db)
+                // databaseManager.init(db)
             }
 
             MigrationResult.CreateNew -> {
