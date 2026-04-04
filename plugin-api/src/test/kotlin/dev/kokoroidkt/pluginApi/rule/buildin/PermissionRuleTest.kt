@@ -4,7 +4,7 @@
 //
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
-package dev.kokoroidkt.pluginApi.rule.builtin
+package dev.kokoroidkt.pluginApi.rule.buildin
 
 import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.permission.PermissionModel

@@ -1,4 +1,4 @@
-package dev.kokoroidkt.pluginApi.rule.builtin
+package dev.kokoroidkt.pluginApi.rule.buildin
 
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event

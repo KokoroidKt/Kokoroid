@@ -3,7 +3,7 @@
 //
 // SPDX-License-Identifier: LGPL-2.1
 
-package dev.kokoroidkt.coreApi.message.builtin
+package dev.kokoroidkt.coreApi.message.buildin
 
 import dev.kokoroidkt.coreApi.message.MessageSegment
 import dev.kokoroidkt.coreApi.message.TextConvertible
