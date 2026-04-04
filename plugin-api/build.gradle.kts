@@ -48,19 +48,19 @@ tasks.jar {
             "Enable-Native-Access" to "ALL-UNNAMED",
         )
     }
-    archiveFileName.set("kokoroid-plugin-api-$version.jar")
+    archiveFileName.set("kokoroidkt-plugin-api-$version.jar")
 }
 
 val sourcesJar by tasks.registering(Jar::class) {
     archiveClassifier.set("sources")
-    archiveFileName.set("kokoroid-plugin-api-$version-sources.jar")
+    archiveFileName.set("kokoroidkt-plugin-api-$version-sources.jar")
     from(sourceSets.main.get().allSource)
 }
 
 val dokkaJavadocJar by tasks.registering(Jar::class) {
     dependsOn(tasks.dokkaGeneratePublicationJavadoc) // 依赖生成文档的任务
     archiveClassifier.set("javadoc")
-    archiveFileName.set("kokoroid-plugin-api-$version-javadoc.jar")
+    archiveFileName.set("kokoroidkt-plugin-api-$version-javadoc.jar")
     from(tasks.dokkaGeneratePublicationJavadoc.flatMap { it.outputDirectory })
 }
 
@@ -78,7 +78,7 @@ publishing {
             pom {
                 name.set("Kokoroid Plugin API")
                 description.set("Plugin API module of Kokoroid framework")
-                artifactId = "kokoroid-plugin-api"
+                artifactId = "kokoroidkt-plugin-api"
                 url.set("https://github.com/kokoroidkt/kokoroid")
                 licenses {
                     license {

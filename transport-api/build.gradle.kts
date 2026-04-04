@@ -43,19 +43,19 @@ tasks.jar {
             "Enable-Native-Access" to "ALL-UNNAMED",
         )
     }
-    archiveFileName.set("kokoroid-transport-api-$version.jar")
+    archiveFileName.set("kokoroidkt-transport-api-$version.jar")
 }
 
 val sourcesJar by tasks.registering(Jar::class) {
     archiveClassifier.set("sources")
-    archiveFileName.set("kokoroid-transport-api-$version-sources.jar")
+    archiveFileName.set("kokoroidkt-transport-api-$version-sources.jar")
     from(sourceSets.main.get().allSource)
 }
 
 val dokkaJavadocJar by tasks.registering(Jar::class) {
     dependsOn(tasks.dokkaGeneratePublicationJavadoc) // 依赖生成文档的任务
     archiveClassifier.set("javadoc")
-    archiveFileName.set("kokoroid-transport-api-$version-javadoc.jar")
+    archiveFileName.set("kokoroidkt-transport-api-$version-javadoc.jar")
     from(tasks.dokkaGeneratePublicationJavadoc.flatMap { it.outputDirectory })
 }
 
@@ -72,7 +72,7 @@ publishing {
             pom {
                 name.set("Kokoroid Transport API")
                 description.set("Transport API module of Kokoroid framework")
-                artifactId = "kokoroid-transport-api"
+                artifactId = "kokoroidkt-transport-api"
                 url.set("https://github.com/kokoroidkt/kokoroid")
                 licenses {
                     license {
@@ -91,6 +91,7 @@ publishing {
                         email.set("moran0710@qq.com")
                     }
                 }
+
                 scm {
                     url.set("https://github.com/kokoroidkt/kokoroid.git")
                     connection.set("scm:git:git://github.com/kokoroidkt/kokoroid.git")

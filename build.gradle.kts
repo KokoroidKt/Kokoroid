@@ -87,7 +87,7 @@ nmcpAggregation {
         password = providers.environmentVariable("MAVEN_PASSWORD").orNull
 
         // optional: publish manually from the portal
-        publishingType = "AUTOMATIC"
+        publishingType = "USER"
 
         // optional: configure the name of your publication in the portal UI
         publicationName = "kokoroid:$version"
