@@ -15,13 +15,12 @@ import java.util.jar.JarFile
 open class ExtensionClassLoaderImpl(
     jarFile: File,
     parent: ClassLoader? = Thread.currentThread().contextClassLoader,
-) : ClassLoader(parent),
-    ExtensionClassloader {
+) : ExtensionClassloader(parent) {
     private var _logger: KokoroidLogger? = null
 
-    var logger: KokoroidLogger
+    override var logger: KokoroidLogger
         get() = _logger ?: throw IllegalStateException("Logger is not initialized")
-        internal set(value) {
+        set(value) {
             _logger = value
         }
 
