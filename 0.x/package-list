@@ -30,6 +30,7 @@ dev.kokoroidkt.core.utils
 module:core-api
 dev.kokoroidkt.coreApi.annotation
 dev.kokoroidkt.coreApi.bot
+dev.kokoroidkt.coreApi.classloader
 dev.kokoroidkt.coreApi.config
 dev.kokoroidkt.coreApi.database
 dev.kokoroidkt.coreApi.database.migrations
@@ -38,11 +39,12 @@ dev.kokoroidkt.coreApi.event
 dev.kokoroidkt.coreApi.exceptions
 dev.kokoroidkt.coreApi.logging
 dev.kokoroidkt.coreApi.message
-dev.kokoroidkt.coreApi.message.builtin
+dev.kokoroidkt.coreApi.message.buildin
 dev.kokoroidkt.coreApi.permission
 dev.kokoroidkt.coreApi.user
 dev.kokoroidkt.coreApi.user.internal
 dev.kokoroidkt.coreApi.user.special
+dev.kokoroidkt.coreApi.utils
 module:driver-api
 dev.kokoroidkt.driverApi.decoder
 dev.kokoroidkt.driverApi.driver
@@ -50,7 +52,6 @@ dev.kokoroidkt.driverApi.exception
 dev.kokoroidkt.driverApi.logger
 dev.kokoroidkt.driverApi.utils
 module:plugin-api
-dev.kokoroidkt.pluginApi
 dev.kokoroidkt.pluginApi.conversation
 dev.kokoroidkt.pluginApi.conversation.command
 dev.kokoroidkt.pluginApi.conversation.extensions
@@ -62,7 +63,7 @@ dev.kokoroidkt.pluginApi.factory
 dev.kokoroidkt.pluginApi.logger
 dev.kokoroidkt.pluginApi.plugin
 dev.kokoroidkt.pluginApi.rule
-dev.kokoroidkt.pluginApi.rule.builtin
+dev.kokoroidkt.pluginApi.rule.buildin
 dev.kokoroidkt.pluginApi.session
 dev.kokoroidkt.pluginApi.session.container
 dev.kokoroidkt.pluginApi.task
