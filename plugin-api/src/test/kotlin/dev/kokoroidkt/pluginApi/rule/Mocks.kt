@@ -33,8 +33,12 @@ class MockBot(
 class MockUser(
     override val platformUserId: String = "test_user",
     adapterId: String = "test_adapter",
+    private val isOpMock: Boolean = false,
 ) : User(adapterId) {
     override val userId: String = "$platformUserId@$adapterId"
+
+    override val isOp: Boolean
+        get() = isOpMock
 
     override fun findPermission(
         namespace: String,
