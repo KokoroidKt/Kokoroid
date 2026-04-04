@@ -28,7 +28,7 @@ abstract class User(
      */
     abstract val platformUserId: String
 
-    val isOp: Boolean by lazy {
+    open val isOp: Boolean by lazy {
         getKoin().get<DatabaseManager>().transaction {
             return@transaction OperatorTable
                 .selectAll()

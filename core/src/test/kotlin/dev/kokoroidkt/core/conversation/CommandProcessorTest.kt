@@ -11,7 +11,7 @@ import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.event.MessageEvent
 import dev.kokoroidkt.coreApi.message.MessageChain
 import dev.kokoroidkt.coreApi.message.MessageSegment
-import dev.kokoroidkt.coreApi.message.builtin.TextMessage
+import dev.kokoroidkt.coreApi.message.buildin.TextMessage
 import dev.kokoroidkt.coreApi.user.User
 import dev.kokoroidkt.coreApi.user.Users
 import dev.kokoroidkt.pluginApi.conversation.Reply

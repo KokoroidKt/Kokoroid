@@ -9,7 +9,7 @@ import dev.kokoroidkt.core.di.allModules
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.MessageEvent
 import dev.kokoroidkt.coreApi.message.MessageChain
-import dev.kokoroidkt.coreApi.message.builtin.TextMessage
+import dev.kokoroidkt.coreApi.message.buildin.TextMessage
 import dev.kokoroidkt.pluginApi.conversation.Reply
 import dev.kokoroidkt.pluginApi.conversation.command.CommandArg
 import dev.kokoroidkt.pluginApi.conversation.status.ProcessorStatus

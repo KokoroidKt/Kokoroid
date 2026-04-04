@@ -10,8 +10,8 @@ import dev.kokoroidkt.core.config.Config
 import dev.kokoroidkt.core.logger.getLogger
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event
-import dev.kokoroidkt.pluginApi.Processable
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
+import dev.kokoroidkt.pluginApi.conversation.Processable
 import dev.kokoroidkt.pluginApi.conversation.Processor
 import dev.kokoroidkt.pluginApi.session.Session
 import dev.kokoroidkt.pluginApi.session.SessionPromise

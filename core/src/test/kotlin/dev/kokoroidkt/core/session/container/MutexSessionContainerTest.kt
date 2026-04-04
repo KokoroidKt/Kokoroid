@@ -9,7 +9,7 @@ package dev.kokoroidkt.core.session.container
 import dev.kokoroidkt.core.MockEvent
 import dev.kokoroidkt.core.MockUser
 import dev.kokoroidkt.core.di.allModules
-import dev.kokoroidkt.pluginApi.Processable
+import dev.kokoroidkt.pluginApi.conversation.Processable
 import dev.kokoroidkt.pluginApi.conversation.Reply
 import dev.kokoroidkt.pluginApi.dsl.conversation
 import dev.kokoroidkt.pluginApi.factory.ConversationOrchestratorFactory
