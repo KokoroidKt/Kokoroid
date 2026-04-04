@@ -8,8 +8,8 @@ package dev.kokoroidkt.core.session.container
 
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.user.Users
-import dev.kokoroidkt.pluginApi.Processable
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
+import dev.kokoroidkt.pluginApi.conversation.Processable
 import dev.kokoroidkt.pluginApi.session.Session
 import dev.kokoroidkt.pluginApi.session.container.SessionContainer
 import dev.kokoroidkt.pluginApi.session.container.SessionFactoty
