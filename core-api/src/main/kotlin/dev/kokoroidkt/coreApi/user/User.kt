@@ -26,7 +26,7 @@ abstract class User(
 ) : PermissionHolder {
     /*
      */
-    abstract val platfromUserId: String
+    abstract val platformUserId: String
 
     val isOp: Boolean by lazy {
         getKoin().get<DatabaseManager>().transaction {
@@ -37,7 +37,7 @@ abstract class User(
         }
     }
 
-    open val userId get() = "$platfromUserId@$adapterId"
+    open val userId get() = "$platformUserId@$adapterId"
 
     open val userGroups: List<UserGroup> by lazy {
         getKoin().get<DatabaseManager>().transaction {

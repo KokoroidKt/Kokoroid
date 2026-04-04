@@ -30,11 +30,11 @@ class PermissionModelTest {
     }
 
     private class MockUser(
-        override val platfromUserId: String,
+        override val platformUserId: String,
         private val holder: TestPermissionHolder,
         private var _groups: List<UserGroup> = emptyList(),
     ) : User("test_adapter") {
-        override val userId: String = "$platfromUserId@$adapterId"
+        override val userId: String = "$platformUserId@$adapterId"
         override val userGroups: List<UserGroup> get() = _groups
 
         fun setGroups(groups: List<UserGroup>) {

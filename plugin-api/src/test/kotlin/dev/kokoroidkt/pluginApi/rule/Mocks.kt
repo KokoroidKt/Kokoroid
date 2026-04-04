@@ -31,10 +31,10 @@ class MockBot(
 }
 
 class MockUser(
-    override val platfromUserId: String = "test_user",
+    override val platformUserId: String = "test_user",
     adapterId: String = "test_adapter",
 ) : User(adapterId) {
-    override val userId: String = "$platfromUserId@$adapterId"
+    override val userId: String = "$platformUserId@$adapterId"
 
     override fun findPermission(
         namespace: String,

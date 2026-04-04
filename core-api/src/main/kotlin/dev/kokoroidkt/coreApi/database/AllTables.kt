@@ -9,7 +9,6 @@ import dev.kokoroidkt.coreApi.database.tables.OperatorTable
 import dev.kokoroidkt.coreApi.database.tables.UserGroupPermissionTable
 import dev.kokoroidkt.coreApi.database.tables.UserGroupTable
 import dev.kokoroidkt.coreApi.database.tables.UserPermissionTable
-import org.jetbrains.exposed.v1.core.Op
 import org.jetbrains.exposed.v1.core.Table
 
 val allTables: Array<out Table> = arrayOf(UserPermissionTable, UserGroupTable, UserGroupPermissionTable, OperatorTable)
