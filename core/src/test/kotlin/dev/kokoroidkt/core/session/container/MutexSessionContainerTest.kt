@@ -101,8 +101,8 @@ class MutexSessionContainerTest {
     // Mock processor for testing purposes
     private fun mockProcessor(): Reply = throw NotImplementedError("This is a test processor mock.")
 
-    private val userGroupA = listOf(MockUser(platfromUserId = "A"))
-    private val userGroupB = listOf(MockUser(platfromUserId = "B"))
+    private val userGroupA = listOf(MockUser(platformUserId = "A"))
+    private val userGroupB = listOf(MockUser(platformUserId = "B"))
 
     companion object {
         @JvmStatic

@@ -1,9 +1,4 @@
-// SPDX-FileCopyrightText: 2026 Kokoroid Contributors
-// SPDX-FileContributor: moran0710
-//
-// SPDX-License-Identifier: LGPL-2.1
-
-package dev.kokoroidkt.pluginApi
+package dev.kokoroidkt.pluginApi.conversation
 
 import dev.kokoroidkt.coreApi.bot.Bot
 import dev.kokoroidkt.coreApi.event.Event

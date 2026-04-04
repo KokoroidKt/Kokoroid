@@ -6,14 +6,24 @@
 
 package dev.kokoroidkt.core.classloader
 
+import dev.kokoroidkt.coreApi.classloader.ExtensionClassloader
+import dev.kokoroidkt.coreApi.logging.KokoroidLogger
 import java.io.File
 import java.io.IOException
 import java.util.jar.JarFile
 
-open class JarClassLoader(
+open class ExtensionClassLoaderImpl(
     jarFile: File,
     parent: ClassLoader? = Thread.currentThread().contextClassLoader,
-) : ClassLoader(parent) {
+) : ExtensionClassloader(parent) {
+    private var _logger: KokoroidLogger? = null
+
+    override var logger: KokoroidLogger
+        get() = _logger ?: throw IllegalStateException("Logger is not initialized")
+        set(value) {
+            _logger = value
+        }
+
     private val jarFile = JarFile(jarFile)
 
     internal fun isExtensionCorrect(): Boolean = true
@@ -22,8 +32,8 @@ open class JarClassLoader(
         try {
             val entryName = className.replace('.', '/') + ".class"
             val entry =
-                this@JarClassLoader.jarFile.getEntry(entryName) ?: return parent.loadClass(className)
-            return this@JarClassLoader.jarFile.getInputStream(entry).use { input ->
+                this@ExtensionClassLoaderImpl.jarFile.getEntry(entryName) ?: return parent.loadClass(className)
+            return this@ExtensionClassLoaderImpl.jarFile.getInputStream(entry).use { input ->
                 val bytes = input.readBytes()
                 defineClass(className, bytes, 0, bytes.size)
             }

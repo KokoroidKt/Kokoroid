@@ -53,7 +53,7 @@ class MockBot(
 }
 
 class MockUser(
-    override val platfromUserId: String,
+    override val platformUserId: String,
     adapterId: String = "test",
 ) : User(adapterId)
 

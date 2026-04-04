@@ -90,7 +90,7 @@ class CowSessionContainerTest {
 
     fun testUserGroup(len: Int): Users =
         List(len) { i ->
-            MockUser(platfromUserId = "user_$i")
+            MockUser(platformUserId = "user_$i")
         }
 
     companion object {

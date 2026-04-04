@@ -17,11 +17,11 @@ import dev.kokoroidkt.coreApi.user.Users
  * @constructor Create empty No user
  */
 object NoUser : User("dev.kokoroidkt.coreApi") {
-    override val platfromUserId: String
+    override val platformUserId: String
         get() = "###NO-USER###"
 
     override val userId: String
-        get() = platfromUserId
+        get() = platformUserId
 
     val NO_USER_GROUP: Users = listOf(NoUser)
 }

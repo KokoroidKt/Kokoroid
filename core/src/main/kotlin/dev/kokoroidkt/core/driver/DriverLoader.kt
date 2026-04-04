@@ -6,8 +6,9 @@
 
 package dev.kokoroidkt.core.driver
 
-import dev.kokoroidkt.core.classloader.JarClassLoader
+import dev.kokoroidkt.core.classloader.ExtensionClassLoaderImpl
 import dev.kokoroidkt.core.exceptions.LoadDriverFailedException
+import dev.kokoroidkt.core.logger.getLogger
 import dev.kokoroidkt.driverApi.driver.Driver
 import dev.kokoroidkt.driverApi.driver.DriverMeta
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -35,8 +36,9 @@ class DriverLoader(
                 jar.getInputStream(metadataEntry).use {
                     json.decodeFromStream<DriverMeta>(it)
                 }
-            val classLoader = JarClassLoader(jarFile)
+            val classLoader = ExtensionClassLoaderImpl(jarFile)
             val clazz = classLoader.loadClass(metadata.mainClass)
+            classLoader.logger = getLogger(metadata.name)
             val driver = clazz.getConstructor().newInstance() as Driver
             return driver to metadata
         } catch (e: Exception) {

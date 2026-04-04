@@ -7,6 +7,7 @@
 package dev.kokoroidkt.coreApi.user
 
 import dev.kokoroidkt.coreApi.database.DatabaseManager
+import dev.kokoroidkt.coreApi.database.tables.OperatorTable
 import dev.kokoroidkt.coreApi.database.tables.UserGroupTable
 import dev.kokoroidkt.coreApi.database.tables.UserPermissionTable
 import dev.kokoroidkt.coreApi.permission.GrantedPermission
@@ -25,9 +26,18 @@ abstract class User(
 ) : PermissionHolder {
     /*
      */
-    abstract val platfromUserId: String
+    abstract val platformUserId: String
 
-    open val userId = "$platfromUserId@$adapterId"
+    val isOp: Boolean by lazy {
+        getKoin().get<DatabaseManager>().transaction {
+            return@transaction OperatorTable
+                .selectAll()
+                .where { OperatorTable.userId eq userId }
+                .count() > 0
+        }
+    }
+
+    open val userId get() = "$platformUserId@$adapterId"
 
     open val userGroups: List<UserGroup> by lazy {
         getKoin().get<DatabaseManager>().transaction {
