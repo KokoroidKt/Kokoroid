@@ -10,6 +10,7 @@ dev.kokoroidkt.adapterApi.utils
 module:core
 dev.kokoroidkt.core
 dev.kokoroidkt.core.adapter
+dev.kokoroidkt.core.boot
 dev.kokoroidkt.core.classloader
 dev.kokoroidkt.core.config
 dev.kokoroidkt.core.constants
