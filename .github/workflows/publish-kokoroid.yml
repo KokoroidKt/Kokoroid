@@ -66,6 +66,7 @@ jobs:
         with:
           tag_name: ${{ github.event.release.tag_name }}
           files: core/build/libs/*.jar
+          make_latest: "true"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
