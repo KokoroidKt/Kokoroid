@@ -10,7 +10,6 @@ import dev.kokoroidkt.adapterApi.adapter.AdapterRegistry
 import dev.kokoroidkt.core.adapter.AdapterManager
 import dev.kokoroidkt.core.adapter.AdapterRegistryImpl
 import dev.kokoroidkt.core.config.Config
-import dev.kokoroidkt.core.config.ConfigHelperImpl
 import dev.kokoroidkt.core.database.DatabaseManagerImpl
 import dev.kokoroidkt.core.driver.DriverManager
 import dev.kokoroidkt.core.driver.DriverRegistryImpl
@@ -69,7 +68,7 @@ val loggerModules =
 
 val utils =
     module {
-        single<ConfigHelper> { ConfigHelperImpl() }
+        // single<ConfigHelper> { ConfigHelperImpl() }
     }
 
 val basicModules =

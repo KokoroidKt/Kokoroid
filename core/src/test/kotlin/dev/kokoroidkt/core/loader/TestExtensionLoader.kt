@@ -8,12 +8,61 @@ package dev.kokoroidkt.core.loader
 
 import dev.kokoroidkt.core.config.BasicConfig
 import dev.kokoroidkt.core.config.Config
+import dev.kokoroidkt.core.config.ConversationSessionsStoreType
+import dev.kokoroidkt.core.config.DatabaseConfig
+import dev.kokoroidkt.core.config.Global
+import dev.kokoroidkt.core.config.PerformanceConfig
+import dev.kokoroidkt.core.config.Session
+import dev.kokoroidkt.core.constants.DefaultPaths
+import dev.kokoroidkt.core.database.DatabaseManagerImpl
+import dev.kokoroidkt.core.di.adapterModules
 import dev.kokoroidkt.core.di.allModules
+import dev.kokoroidkt.core.di.basicModules
+import dev.kokoroidkt.core.di.driverModules
+import dev.kokoroidkt.core.di.loggerModules
+import dev.kokoroidkt.core.di.pluginModules
+import dev.kokoroidkt.core.di.runtimeModules
+import dev.kokoroidkt.core.di.utils
+import dev.kokoroidkt.core.runtime.GlobalEventLoop
 import dev.kokoroidkt.core.runtime.KokoroidLauncher
+import dev.kokoroidkt.core.runtime.crash.CrashRegistry
+import dev.kokoroidkt.core.runtime.crash.CrashRegistryImpl
+import dev.kokoroidkt.coreApi.database.DatabaseManager
+import dev.kokoroidkt.coreApi.database.DatabaseType
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 import org.koin.core.error.KoinApplicationAlreadyStartedException
+import org.koin.dsl.module
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import kotlin.collections.flatten
+import kotlin.io.path.Path
+import kotlin.io.path.copyTo
+import kotlin.io.path.createDirectories
+import kotlin.io.path.exists
+import kotlin.io.path.isDirectory
 import kotlin.test.Test
+
+fun copyDir(
+    source: Path,
+    target: Path,
+) {
+    if (!source.exists()) return
+
+    Files.walk(source).use { stream ->
+        stream.forEach { src ->
+            val dest = target.resolve(source.relativize(src).toString())
+            if (src.isDirectory()) {
+                dest.createDirectories()
+            } else {
+                src.copyTo(dest, overwrite = true)
+            }
+        }
+    }
+}
 
 class TestExtensionLoader {
     val kokoroidLauncher = KokoroidLauncher()
@@ -31,50 +80,45 @@ class TestExtensionLoader {
         @JvmStatic
         @BeforeAll
         fun `set test configuration`() {
+            val adaptersPath = Paths.get("./kokoroid/adapters")
+            val pluginsPath = Paths.get("./kokoroid/plugins")
+            val driversPath = Paths.get("./kokoroid/drivers")
+            val kokoroidPath = Paths.get("./kokoroid")
+            kokoroidPath.createDirectories()
+            val testExtensionPath = Paths.get("../test-extension/build/libs")
+
+            copyDir(testExtensionPath, adaptersPath)
+            copyDir(testExtensionPath, pluginsPath)
+            copyDir(testExtensionPath, driversPath)
             try {
+                val config = Config()
                 startKoin {
-                    modules(allModules)
+                    modules(
+                        listOf(
+                            pluginModules,
+                            adapterModules,
+                            driverModules,
+                            loggerModules,
+                            runtimeModules,
+                            utils,
+                            module {
+                                single<Config> { config }
+                                single<GlobalEventLoop> { GlobalEventLoop() }
+                                single<KokoroidLauncher> { KokoroidLauncher() }
+                                single<CrashRegistry> { CrashRegistryImpl() }
+                                single<DatabaseManager> { DatabaseManagerImpl }
+                            },
+                        ),
+                    )
                 }
             } catch (_: KoinApplicationAlreadyStartedException) {
             }
-            val cfg =
-                BasicConfig.createDefault()
-            try {
-                // Kotlin 的 lazy 委托会生成一个名为 "basic$delegate" 的字段
-                val delegateField = Config::class.java.getDeclaredField("basic\$delegate")
-                delegateField.isAccessible = true
-                val delegate = delegateField.get(Config())
+        }
 
-                // Lazy 实现类有一个 _value 字段
-                val valueField = delegate::class.java.getDeclaredField("_value")
-                valueField.isAccessible = true
-                valueField.set(delegate, cfg)
-            } catch (e: NoSuchFieldException) {
-                // 如果上面的方法失败，尝试其他可能的字段名
-                try {
-                    // 有时字段名可能是 "basic$delegate" 或其他变体
-                    val fields = Config::class.java.declaredFields
-                    println("可用的字段: ${fields.map { it.name }}")
-
-                    // 查找包含 "basic" 的字段
-                    val basicField = fields.firstOrNull { it.name.contains("basic") }
-                    if (basicField != null) {
-                        basicField.isAccessible = true
-                        val delegate = basicField.get(Config())
-
-                        // 尝试设置值
-                        val valueField =
-                            delegate::class.java.declaredFields
-                                .firstOrNull { it.name.contains("value", ignoreCase = true) }
-                        if (valueField != null) {
-                            valueField.isAccessible = true
-                            valueField.set(delegate, cfg)
-                        }
-                    }
-                } catch (e2: Exception) {
-                    println("警告: 无法通过反射设置配置: ${e2.message}")
-                }
-            }
+        @JvmStatic
+        @AfterAll
+        fun `tear down koin`() {
+            stopKoin()
         }
     }
 }

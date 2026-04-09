@@ -7,7 +7,7 @@
   ],
   "description": "meow meow",
   "version": "1.0.0",
-  "mainClass": "dev.kokoroid.simpleExtension.PluginMain",
+  "mainClass": "dev.kokoroidkt.simpleExtension.PluginMain",
   "website": "https://example.com",
   "priority": 10
 }

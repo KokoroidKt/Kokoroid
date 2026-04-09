@@ -11,6 +11,9 @@ import dev.kokoroidkt.adapterApi.adapter.Adapter
 import dev.kokoroidkt.adapterApi.adapter.AdapterMeta
 import dev.kokoroidkt.core.adapter.AdapterLoader
 import dev.kokoroidkt.core.adapter.AdapterManager
+import dev.kokoroidkt.core.boot.AdapterPreloader
+import dev.kokoroidkt.core.boot.DriverPreloader
+import dev.kokoroidkt.core.boot.PluginPreloader
 import dev.kokoroidkt.core.config.Config
 import dev.kokoroidkt.core.constants.ExitStatus
 import dev.kokoroidkt.core.constants.ExitStatus.DATABASE_TOO_OLD
@@ -56,7 +59,11 @@ import kotlin.io.path.extension
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.walk
 
-class KokoroidLauncher : KoinComponent {
+class KokoroidLauncher(
+    private val pluginPreloader: PluginPreloader = PluginPreloader(),
+    private val adapterPreloader: AdapterPreloader = AdapterPreloader(),
+    private val driverPreloader: DriverPreloader = DriverPreloader(),
+) : KoinComponent {
     private val pluginManager: PluginManager by inject()
     private val adapterManager: AdapterManager by inject()
     private val driverManager: DriverManager by inject()
@@ -65,7 +72,7 @@ class KokoroidLauncher : KoinComponent {
     private val crashRegistry: CrashRegistry by inject()
     private val runtimeState: RuntimeState by inject()
     private val databaseManager: DatabaseManager by inject()
-    val logger = getLogger("KokoroidLifecycle")
+    private val logger = getLogger("KokoroidLifecycle")
 
     private val shutdownThread =
         Thread {
@@ -388,24 +395,19 @@ class KokoroidLauncher : KoinComponent {
                             .loadDriver()
                     val driver: Driver = driverPair.first
                     val metadata: DriverMeta = driverPair.second
-                    driverManager.register(driver, metadata)
+                    driverManager.create(driver, metadata)
                 } catch (e: Exception) {
                     logger.error(e) {
                         "Failed to load driver: ${e.message}"
                     }
                     null
                 }
-            }.sortedBy { it.metadata.priority }
-            .forEach {
-                try {
-                    logger.debug { "${it.driverId} metadata: ${Json.encodeToString(it.metadata)}" }
-                    logger.info { "Loading ${it.driverId}" }
-                    driverManager.loadDriver(it)
-                    logger.info { "Loaded ${it.driverId} successfully" }
-                } catch (e: Exception) {
-                    logger.error(e) { "Failed to load driver: ${e.message}" }
-                }
+            }.forEach {
+                driverPreloader.install(it)
             }
+        driverPreloader.classes.forEach {
+            driverManager.loadDriver(it)
+        }
         logger.info { "successfully loaded ${driverManager.length} drivers" }
     }
 

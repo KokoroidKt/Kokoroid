@@ -49,7 +49,7 @@ inline fun <reified T : Any> encodeHocon(data: T): Config {
     return root.toConfig()
 }
 
-internal inline fun <reified T : Any> encodeHoconToFile(
+inline fun <reified T : Any> encodeHoconToFile(
     data: T,
     file: File,
 ) {

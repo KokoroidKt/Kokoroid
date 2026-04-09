@@ -31,13 +31,17 @@ class DriverRegistryImpl :
         }
     }
 
-    override fun register(
+    override fun create(
         driver: Driver,
         metadata: DriverMeta,
     ): DriverContainer {
         val container = DriverContainer(metadata, driver)
         drivers[container.driverId] = container
         return container
+    }
+
+    override fun register(driverContainer: DriverContainer) {
+        drivers[driverContainer.driverId] = driverContainer
     }
 
     override fun loadDriver(container: DriverContainer) {

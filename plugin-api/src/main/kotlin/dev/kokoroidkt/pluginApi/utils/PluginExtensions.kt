@@ -6,7 +6,8 @@
 
 package dev.kokoroidkt.pluginApi.utils
 
-import dev.kokoroidkt.coreApi.config.ConfigHelper
+import dev.kokoroidkt.coreApi.config.decodeDataFromPath
+import dev.kokoroidkt.coreApi.config.encodeDataToPath
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
 import dev.kokoroidkt.pluginApi.conversation.ConversationOrchestrator
 import dev.kokoroidkt.pluginApi.conversation.Processable
@@ -55,15 +56,24 @@ fun Plugin.addConversation(processor: Processable) {
     }
 }
 
-fun <T> Plugin.saveConfigToFile(
+/**
+ * 将配置保存到文件。
+ *
+ * @param config 要保存的配置对象。
+ * @param path 配置文件相对于 plugin/<plugin_name> 的路径。默认为 /settings.conf。
+ */
+inline fun <reified T : Any> Plugin.saveConfigToFile(
     config: T,
     path: Path = Paths.get("/settings.conf"),
 ) {
-    KoinPlatform
-        .getKoin()
-        .get<ConfigHelper>()
-        .encodeHoconToFile(config, Path.of("plugin", metadata().name).resolve(path))
+    encodeDataToPath(config, Path.of("plugin", metadata().name).resolve(path))
 }
 
-fun <T> Plugin.loadConfigFromFile(path: Path = Paths.get("/set1tings.conf")) =
-    KoinPlatform.getKoin().get<ConfigHelper>().decodeHoconFile<T>(Path.of("plugin", metadata().name).resolve(path))
+/**
+ * 从文件加载配置。
+ *
+ * @param path 配置文件相对于 plugin/<plugin_name> 的路径。默认为 /settings.conf。
+ * @return 加载的配置对象。
+ */
+inline fun <reified T : Any> Plugin.loadConfigFromFile(path: Path = Paths.get("/settings.conf")): T =
+    decodeDataFromPath<T>(Path.of("plugin", metadata().name).resolve(path))

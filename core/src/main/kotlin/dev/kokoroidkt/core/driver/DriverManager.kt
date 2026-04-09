@@ -23,8 +23,10 @@ abstract class DriverManager {
 
     internal abstract fun stopDriver(container: DriverContainer)
 
-    internal abstract fun register(
+    internal abstract fun create(
         driver: Driver,
         metadata: DriverMeta,
     ): DriverContainer
+
+    internal abstract fun register(driverContainer: DriverContainer)
 }

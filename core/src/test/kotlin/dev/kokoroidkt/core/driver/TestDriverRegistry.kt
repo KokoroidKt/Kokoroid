@@ -100,7 +100,7 @@ class TestDriverRegistry {
     @Order(2)
     fun `test register driver`() {
         // 注册驱动器
-        val container = registry.register(testDriver, testDriverMeta)
+        val container = registry.create(testDriver, testDriverMeta)
 
         assertEquals(testDriverMeta, container.metadata)
     }
@@ -108,7 +108,7 @@ class TestDriverRegistry {
     @Test
     @Order(3)
     fun `test driver lifecycle`() {
-        val container = registry.register(testDriver, testDriverMeta)
+        val container = registry.create(testDriver, testDriverMeta)
 
         assertEquals(DriverState.BEFORE_LOAD, testDriver.state)
 
@@ -127,7 +127,7 @@ class TestDriverRegistry {
     @Test
     @Order(4)
     fun `test get driver by id`() {
-        val container = registry.register(testDriver, testDriverMeta)
+        val container = registry.create(testDriver, testDriverMeta)
 
         val retrievedDriver = registry[container.driverId]
         assertNotNull(retrievedDriver)
@@ -140,7 +140,7 @@ class TestDriverRegistry {
     @Order(5)
     fun `test get driver id by class`() {
         // 注册驱动器
-        val container = registry.register(testDriver, testDriverMeta)
+        val container = registry.create(testDriver, testDriverMeta)
 
         // 通过类获取驱动器 ID
         val driverId = registry.getDriverId(SimpleTestDriver::class.java)
@@ -169,8 +169,8 @@ class TestDriverRegistry {
             )
 
         // 注册两个驱动器
-        val container1 = registry.register(testDriver, testDriverMeta)
-        val container2 = registry.register(secondDriver, secondDriverMeta)
+        val container1 = registry.create(testDriver, testDriverMeta)
+        val container2 = registry.create(secondDriver, secondDriverMeta)
 
         // 验证驱动器 ID 不同
         assertTrue(container1.driverId != container2.driverId)

@@ -8,6 +8,7 @@ package dev.kokoroidkt.coreApi.config
 import com.typesafe.config.Config
 import java.nio.file.Path
 
+@Deprecated("Use Config functions instead")
 interface ConfigHelper {
     fun decodeHoconFileToConfig(path: Path): Config
 

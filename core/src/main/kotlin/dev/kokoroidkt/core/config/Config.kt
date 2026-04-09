@@ -22,12 +22,15 @@ class Config {
     @Volatile
     private var overrideBasic: BasicConfig? = null
     val logger = getLogger("Config")
+    internal var basicInject: BasicConfig? = null
 
     val basic: BasicConfig by lazy {
-        overrideBasic ?: if (!DefaultPaths.BASIC_CONFIG_PATH.exists()) {
-            createDefaultConfig()
+        overrideBasic ?: if (overrideBasic != null) {
+            return@lazy overrideBasic!!
+        } else if (!DefaultPaths.BASIC_CONFIG_PATH.exists()) {
+            return@lazy createDefaultConfig()
         } else {
-            loadExistingConfig()
+            return@lazy loadExistingConfig()
         }
     }
 
