@@ -8,6 +8,7 @@ package dev.kokoroidkt.core.runtime
 
 import ch.qos.logback.classic.Level
 import dev.kokoroidkt.adapterApi.adapter.Adapter
+import dev.kokoroidkt.adapterApi.adapter.AdapterContainer
 import dev.kokoroidkt.adapterApi.adapter.AdapterMeta
 import dev.kokoroidkt.core.adapter.AdapterLoader
 import dev.kokoroidkt.core.adapter.AdapterManager
@@ -36,11 +37,14 @@ import dev.kokoroidkt.coreApi.database.migrations.computeTableHash
 import dev.kokoroidkt.coreApi.database.migrations.trySyncDB
 import dev.kokoroidkt.coreApi.database.tables.MigrationTable
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
+import dev.kokoroidkt.coreApi.logging.KokoroidLogger
 import dev.kokoroidkt.coreApi.logging.LogFiles
 import dev.kokoroidkt.coreApi.logging.LogLevelManager
 import dev.kokoroidkt.driverApi.driver.Driver
+import dev.kokoroidkt.driverApi.driver.DriverContainer
 import dev.kokoroidkt.driverApi.driver.DriverMeta
 import dev.kokoroidkt.pluginApi.plugin.Plugin
+import dev.kokoroidkt.pluginApi.plugin.PluginContainer
 import dev.kokoroidkt.pluginApi.plugin.PluginMeta
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
@@ -53,7 +57,9 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.java.KoinJavaComponent
+import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.collections.flatten
 import kotlin.io.path.Path
 import kotlin.io.path.extension
 import kotlin.io.path.isRegularFile
@@ -388,28 +394,52 @@ class KokoroidLauncher(
             .walk()
             .filter { it.isRegularFile() && it.extension == "jar" }
             .mapNotNull {
-                try {
-                    logger.debug { "try to load ${it.toFile().absolutePath}" }
-                    val driverPair =
-                        DriverLoader(it.toFile())
-                            .loadDriver()
-                    val driver: Driver = driverPair.first
-                    val metadata: DriverMeta = driverPair.second
-                    driverManager.create(driver, metadata)
-                } catch (e: Exception) {
-                    logger.error(e) {
-                        "Failed to load driver: ${e.message}"
-                    }
-                    null
-                }
+                loadDriverJar(logger, it)
             }.forEach {
                 driverPreloader.install(it)
             }
-        driverPreloader.classes.forEach {
-            driverManager.loadDriver(it)
+
+        driverPreloader.jarPaths
+            .filter {
+                it.extension == "jar" && it.isRegularFile()
+            }.mapNotNull {
+                loadDriverJar(logger, it)
+            }.forEach {
+                driverPreloader.install(it)
+            }
+
+        driverPreloader.instants.sortedBy { it.metadata.priority }.forEach {
+            driverManager.register(it)
+            try {
+                logger.debug { "${it.driverId} metadata: ${Json.encodeToString(it.metadata)}" }
+                logger.info { "Loading ${it.driverId}" }
+                driverManager.loadDriver(it)
+                logger.info { "Loaded ${it.driverId} successfully" }
+            } catch (e: Exception) {
+                logger.error(e) { "Failed to load driver: ${e.message}" }
+            }
         }
         logger.info { "successfully loaded ${driverManager.length} drivers" }
     }
+
+    private fun loadDriverJar(
+        logger: KokoroidLogger,
+        paths: Path,
+    ): DriverContainer? =
+        try {
+            logger.debug { "try to load ${paths.toFile().absolutePath}" }
+            val driverPair =
+                DriverLoader(paths.toFile())
+                    .loadDriver()
+            val driver: Driver = driverPair.first
+            val metadata: DriverMeta = driverPair.second
+            driverManager.create(driver, metadata)
+        } catch (e: Exception) {
+            logger.error(e) {
+                "Failed to load driver: ${e.message}"
+            }
+            null
+        }
 
     fun loadAdapters() {
         val logger = getLogger("AdapterLoader")
@@ -424,20 +454,24 @@ class KokoroidLauncher(
             .walk()
             .filter { it.isRegularFile() && it.extension == "jar" }
             .mapNotNull {
-                try {
-                    logger.debug { "try to load ${it.toFile().absolutePath}" }
-                    val adapterPair = AdapterLoader(it.toFile()).loadAdapter()
-                    val adapter: Adapter = adapterPair.first
-                    val metadata: AdapterMeta = adapterPair.second
-                    adapterManager.register(adapter, metadata)
-                } catch (e: Exception) {
-                    logger.error(e) {
-                        "Failed to load adapter: ${e.message}"
-                    }
-                    null
-                }
-            }.sortedBy { it.metadata.priority }
+                loadAdapterJar(logger, it)
+            }.forEach {
+                adapterPreloader.install(it)
+            }
+
+        adapterPreloader.jarPaths
+            .filter {
+                it.extension == "jar" && it.isRegularFile()
+            }.mapNotNull {
+                loadAdapterJar(logger, it)
+            }.forEach {
+                adapterPreloader.install(it)
+            }
+
+        adapterPreloader.instants
+            .sortedBy { it.metadata.priority }
             .forEach {
+                adapterManager.register(it)
                 try {
                     logger.debug { "${it.adapterId} metadata: ${Json.encodeToString(it.metadata)}" }
                     logger.info { "Loading ${it.adapterId}" }
@@ -449,6 +483,23 @@ class KokoroidLauncher(
             }
         logger.info { "successfully loaded ${adapterManager.length} adapters" }
     }
+
+    private fun loadAdapterJar(
+        logger: KokoroidLogger,
+        paths: Path,
+    ): AdapterContainer? =
+        try {
+            logger.debug { "try to load ${paths.toFile().absolutePath}" }
+            val adapterPair = AdapterLoader(paths.toFile()).loadAdapter()
+            val adapter: Adapter = adapterPair.first
+            val metadata: AdapterMeta = adapterPair.second
+            adapterManager.create(adapter, metadata)
+        } catch (e: Exception) {
+            logger.error(e) {
+                "Failed to load adapter: ${e.message}"
+            }
+            null
+        }
 
     fun initPlugins() {
         val logger = getLogger("PluginLoader")
@@ -465,18 +516,24 @@ class KokoroidLauncher(
             .walk()
             .filter { it.isRegularFile() && it.extension == "jar" }
             .mapNotNull {
-                try {
-                    logger.debug { "Try to loading: ${it.toFile().absolutePath}" }
-                    val pluginPair = PluginLoader(it.toFile()).loadPlugin()
-                    val plugin: Plugin = pluginPair.first
-                    val metadata: PluginMeta = pluginPair.second
-                    pluginManager.register(plugin, metadata)
-                } catch (e: Exception) {
-                    logger.error(e) { "Failed to load plugin: ${e.message}" }
-                    null
-                }
-            }.sortedBy { it.metadata.priority }
+                loadPluginJar(logger, it)
+            }.forEach {
+                pluginPreloader.install(it)
+            }
+
+        pluginPreloader.jarPaths
+            .filter {
+                it.extension == "jar" && it.isRegularFile()
+            }.mapNotNull {
+                loadPluginJar(logger, it)
+            }.forEach {
+                pluginPreloader.install(it)
+            }
+
+        pluginPreloader.instants
+            .sortedBy { it.metadata.priority }
             .forEach {
+                pluginManager.register(it)
                 try {
                     logger.debug { "${it.pluginId} metadata: ${Json.encodeToString(it.metadata)}" }
                     logger.info { "loading ${it.pluginId}" }
@@ -490,4 +547,19 @@ class KokoroidLauncher(
             }
         logger.info { "successfully loaded ${pluginManager.length} plugins" }
     }
+
+    private fun loadPluginJar(
+        logger: KokoroidLogger,
+        paths: Path,
+    ): PluginContainer? =
+        try {
+            logger.debug { "Try to loading: ${paths.toFile().absolutePath}" }
+            val pluginPair = PluginLoader(paths.toFile()).loadPlugin()
+            val plugin: Plugin = pluginPair.first
+            val metadata: PluginMeta = pluginPair.second
+            pluginManager.create(plugin, metadata)
+        } catch (e: Exception) {
+            logger.error(e) { "Failed to load plugin: ${e.message}" }
+            null
+        }
 }

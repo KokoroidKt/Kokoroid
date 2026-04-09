@@ -6,21 +6,21 @@ import dev.kokoroidkt.driverApi.driver.DriverMeta
 import java.nio.file.Path
 
 class DriverPreloader {
-    val jarPaths: MutableList<String> = mutableListOf()
-    val classes: MutableList<DriverContainer> = mutableListOf()
+    val jarPaths: MutableList<Path> = mutableListOf()
+    val instants: MutableList<DriverContainer> = mutableListOf()
 
     fun addJar(path: Path) {
-        jarPaths.add(path.toString())
+        jarPaths.add(path)
     }
 
     fun install(
         driver: Driver,
         meta: DriverMeta,
     ) {
-        classes.add(DriverContainer(meta, driver))
+        instants.add(DriverContainer(meta, driver))
     }
 
     fun install(driver: DriverContainer) {
-        classes.add(driver)
+        instants.add(driver)
     }
 }

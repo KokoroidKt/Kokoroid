@@ -14,10 +14,12 @@ abstract class AdapterManager {
     abstract val length: Int
     abstract val adapterList: List<AdapterContainer>
 
-    internal abstract fun register(
+    internal abstract fun create(
         adapter: Adapter,
         metadata: AdapterMeta,
     ): AdapterContainer
+
+    internal abstract fun register(container: AdapterContainer)
 
     internal abstract fun startAdapter(container: AdapterContainer)
 

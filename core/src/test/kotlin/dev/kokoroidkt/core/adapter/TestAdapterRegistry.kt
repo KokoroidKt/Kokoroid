@@ -146,7 +146,7 @@ class TestAdapterRegistry {
     @Order(2)
     fun `test register adapter`() {
         // 注册适配器
-        val container = registry.register(testAdapter, testAdapterMeta)
+        val container = registry.create(testAdapter, testAdapterMeta)
 
         // 验证注册结果
         assertNotNull(container)
@@ -160,7 +160,7 @@ class TestAdapterRegistry {
     @Order(3)
     fun `test get adapter id`() {
         // 注册适配器
-        val container = registry.register(testAdapter, testAdapterMeta)
+        val container = registry.create(testAdapter, testAdapterMeta)
 
         // 验证通过扩展函数获取的 ID 与容器中的 ID 一致
         val adapterIdFromExtension = testAdapter.getId()
@@ -171,7 +171,7 @@ class TestAdapterRegistry {
     @Order(4)
     fun `test adapter lifecycle`() {
         // 注册适配器
-        val container = registry.register(testAdapter, testAdapterMeta)
+        val container = registry.create(testAdapter, testAdapterMeta)
 
         // 验证初始状态
         assertEquals(AdapterState.BEFORE_LOAD, testAdapter.state)
@@ -195,7 +195,7 @@ class TestAdapterRegistry {
     @Order(5)
     fun `test get adapter id by class`() {
         // 注册适配器
-        val container = registry.register(testAdapter, testAdapterMeta)
+        val container = registry.create(testAdapter, testAdapterMeta)
 
         // 通过类获取适配器 ID
         val adapterId = registry.getAdapterId(SimpleTestAdapter::class.java)

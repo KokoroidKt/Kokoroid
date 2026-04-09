@@ -17,7 +17,11 @@ class PluginRegistryImpl :
     PluginRegistry {
     val pluginMap = mutableMapOf<String, PluginContainer>()
 
-    public override fun register(
+    override fun register(container: PluginContainer) {
+        pluginMap[container.pluginId] = container
+    }
+
+    public override fun create(
         plugin: Plugin,
         meta: PluginMeta,
     ): PluginContainer {

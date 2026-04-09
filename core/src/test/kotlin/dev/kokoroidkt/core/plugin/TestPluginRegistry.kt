@@ -104,7 +104,7 @@ class TestPluginContainer {
     @Test
     @Order(2)
     fun `test register a plugin`() {
-        val container = registry.register(plugin, meta)
+        val container = registry.create(plugin, meta)
         assert(container.metadata == meta)
         println(container.pluginId)
     }
@@ -112,14 +112,14 @@ class TestPluginContainer {
     @Test
     @Order(3)
     fun `test get plugin id`() {
-        val container = registry.register(plugin, meta)
+        val container = registry.create(plugin, meta)
         assert(container.pluginId == plugin.getId())
     }
 
     @Test
     @Order(4)
     fun `test life circle`() {
-        val container = registry.register(plugin, meta)
+        val container = registry.create(plugin, meta)
 
         assert(plugin.state == PluginState.BEFORE_LOAD)
         registry.loadPlugin(container)

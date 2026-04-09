@@ -6,17 +6,21 @@ import dev.kokoroidkt.pluginApi.plugin.PluginMeta
 import java.nio.file.Path
 
 class PluginPreloader {
-    val jarPaths: MutableList<String> = mutableListOf()
-    val classes: MutableList<PluginContainer> = mutableListOf()
+    val jarPaths: MutableList<Path> = mutableListOf()
+    val instants: MutableList<PluginContainer> = mutableListOf()
 
     fun addJar(path: Path) {
-        jarPaths.add(path.toString())
+        jarPaths.add(path)
     }
 
     fun install(
         plugin: Plugin,
         meta: PluginMeta,
     ) {
-        classes.add(PluginContainer(plugin, meta))
+        instants.add(PluginContainer(plugin, meta))
+    }
+
+    fun install(plugin: PluginContainer) {
+        instants.add(plugin)
     }
 }

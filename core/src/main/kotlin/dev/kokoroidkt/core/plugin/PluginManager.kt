@@ -11,7 +11,9 @@ import dev.kokoroidkt.pluginApi.plugin.PluginContainer
 import dev.kokoroidkt.pluginApi.plugin.PluginMeta
 
 abstract class PluginManager {
-    internal abstract fun register(
+    internal abstract fun register(container: PluginContainer)
+
+    internal abstract fun create(
         plugin: Plugin,
         meta: PluginMeta,
     ): PluginContainer

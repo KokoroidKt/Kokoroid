@@ -31,13 +31,17 @@ class AdapterRegistryImpl :
         }
     }
 
-    override fun register(
+    override fun create(
         adapter: Adapter,
         metadata: AdapterMeta,
     ): AdapterContainer {
         val container = AdapterContainer(adapter, metadata)
         adapters[container.adapterId] = container
         return container
+    }
+
+    override fun register(container: AdapterContainer) {
+        adapters[container.adapterId] = container
     }
 
     override fun startAdapter(container: AdapterContainer) {
