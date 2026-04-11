@@ -70,5 +70,7 @@ dev.kokoroidkt.pluginApi.session.container
 dev.kokoroidkt.pluginApi.task
 dev.kokoroidkt.pluginApi.utils
 module:transport-api
+dev.kokoroid.transport.client
+dev.kokoroid.transport.connection
 dev.kokoroid.transport.decoder
 dev.kokoroid.transport.raw
