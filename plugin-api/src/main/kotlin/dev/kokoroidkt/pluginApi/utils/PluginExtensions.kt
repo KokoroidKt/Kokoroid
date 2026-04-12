@@ -64,7 +64,7 @@ fun Plugin.addConversation(processor: Processable) {
  */
 inline fun <reified T : Any> Plugin.saveConfigToFile(
     config: T,
-    path: Path = Paths.get("/settings.conf"),
+    path: Path = Paths.get("settings.conf"),
 ) {
     encodeDataToPath(config, Path.of("plugin", metadata().name).resolve(path))
 }
@@ -75,5 +75,5 @@ inline fun <reified T : Any> Plugin.saveConfigToFile(
  * @param path 配置文件相对于 plugin/<plugin_name> 的路径。默认为 /settings.conf。
  * @return 加载的配置对象。
  */
-inline fun <reified T : Any> Plugin.loadConfigFromFile(path: Path = Paths.get("/settings.conf")): T =
+inline fun <reified T : Any> Plugin.loadConfigFromFile(path: Path = Paths.get("settings.conf")): T =
     decodeDataFromPath<T>(Path.of("plugin", metadata().name).resolve(path))

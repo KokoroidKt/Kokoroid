@@ -28,7 +28,7 @@ fun Driver.metadata(): DriverMeta? = getKoin().get<DriverRegistry>()[this::class
  */
 inline fun <reified T : Any> Driver.saveConfigToFile(
     config: T,
-    path: Path = Paths.get("/settings.conf"),
+    path: Path = Paths.get("settings.conf"),
 ) {
     encodeDataToPath(config, Path.of("driver", metadata()!!.name).resolve(path))
 }
@@ -39,5 +39,5 @@ inline fun <reified T : Any> Driver.saveConfigToFile(
  * @param path 配置文件相对于 driver/<driver_name> 的路径。默认为 /settings.conf。
  * @return 加载的配置对象。
  */
-inline fun <reified T : Any> Driver.loadConfigFromFile(path: Path = Paths.get("/settings.conf")): T =
+inline fun <reified T : Any> Driver.loadConfigFromFile(path: Path = Paths.get("settings.conf")): T =
     decodeDataFromPath<T>(Path.of("driver", metadata()!!.name).resolve(path))
