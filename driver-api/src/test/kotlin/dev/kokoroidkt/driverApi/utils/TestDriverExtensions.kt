@@ -13,12 +13,17 @@ import dev.kokoroidkt.driverApi.driver.DriverRegistry
 import kotlinx.serialization.Serializable
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
+import java.nio.file.Files
 import kotlin.io.path.deleteIfExists
+import kotlin.io.path.exists
 
 @Serializable
 data class TestDriverConfig(
@@ -83,7 +88,70 @@ class TestDriverExtensions {
         val config = TestDriverConfig("hello", 123)
         driver.saveConfigToFile(config)
 
-        val loadedConfig = driver.loadConfigFromFile<TestDriverConfig>()
+        val loadedConfig = driver.loadConfigFromFile(defaultWhenNull = TestDriverConfig("default", 0))
         assertEquals(config, loadedConfig)
+    }
+
+    @Test
+    fun testDriverLoadConfigWhenFileExists() {
+        val config = TestDriverConfig("test", 456)
+        driver.saveConfigToFile(config)
+
+        val loadedConfig = driver.loadConfigFromFile(defaultWhenNull = TestDriverConfig("default", 0))
+        assertEquals(config, loadedConfig)
+    }
+
+    @Test
+    fun testDriverLoadConfigWhenFileNotExistsAndCreateWhenNullTrue() {
+        val defaultConfig = TestDriverConfig("default", 999)
+        val configPath = kokoroidConfigRoot.resolve("driver/TestDriver/settings.conf")
+        
+        configPath.deleteIfExists()
+        
+        val loadedConfig = driver.loadConfigFromFile(
+            defaultWhenNull = defaultConfig,
+            createWhenNull = true
+        )
+        
+        assertEquals(defaultConfig, loadedConfig)
+        assertTrue(configPath.exists())
+        
+        val fileContent = Files.readString(configPath)
+        assertTrue(fileContent.contains("foo") && fileContent.contains("default"))
+        assertTrue(fileContent.contains("bar") && fileContent.contains("999"))
+    }
+
+    @Test
+    fun testDriverLoadConfigWhenFileNotExistsAndCreateWhenNullFalse() {
+        val defaultConfig = TestDriverConfig("default", 999)
+        val configPath = kokoroidConfigRoot.resolve("driver/TestDriver/settings.conf")
+        
+        configPath.deleteIfExists()
+        
+        val loadedConfig = driver.loadConfigFromFile(
+            defaultWhenNull = defaultConfig,
+            createWhenNull = false
+        )
+        
+        assertEquals(defaultConfig, loadedConfig)
+        assertFalse(configPath.exists())
+    }
+
+    @Test
+    fun testDriverLoadConfigWhenFileHasInvalidFormat() {
+        val defaultConfig = TestDriverConfig("default", 999)
+        val configPath = kokoroidConfigRoot.resolve("driver/TestDriver/settings.conf")
+        
+        // 创建格式错误的配置文件
+        configPath.parent.toFile().mkdirs()
+        Files.writeString(configPath, "invalid json content")
+        
+        // 当配置文件格式错误时，应该抛出异常
+        assertThrows(Exception::class.java) {
+            driver.loadConfigFromFile(
+                defaultWhenNull = defaultConfig,
+                createWhenNull = false
+            )
+        }
     }
 }

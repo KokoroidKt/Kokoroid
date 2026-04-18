@@ -28,7 +28,10 @@ class AdapterMain : Adapter {
         getLogger().info { "Adapter Main started and ${Util("AdapterMain").sayHi()}" }
         val config = MockConfig("123", 456)
         saveConfigToFile<MockConfig>(config)
-        val new = loadConfigFromFile<MockConfig>()
+        val new =
+            loadConfigFromFile<MockConfig>(
+                defaultWhenNull = MockConfig("123", 456),
+            )
         if (config != new) {
             throw CriticalException("Config function assert false")
         }

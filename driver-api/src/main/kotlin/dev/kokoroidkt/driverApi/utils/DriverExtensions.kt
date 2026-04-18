@@ -8,6 +8,7 @@ package dev.kokoroidkt.driverApi.utils
 
 import dev.kokoroidkt.coreApi.config.decodeDataFromPath
 import dev.kokoroidkt.coreApi.config.encodeDataToPath
+import dev.kokoroidkt.coreApi.config.kokoroidConfigRoot
 import dev.kokoroidkt.driverApi.driver.Driver
 import dev.kokoroidkt.driverApi.driver.DriverMeta
 import dev.kokoroidkt.driverApi.driver.DriverRegistry
@@ -39,5 +40,17 @@ inline fun <reified T : Any> Driver.saveConfigToFile(
  * @param path 配置文件相对于 driver/<driver_name> 的路径。默认为 /settings.conf。
  * @return 加载的配置对象。
  */
-inline fun <reified T : Any> Driver.loadConfigFromFile(path: Path = Paths.get("settings.conf")): T =
-    decodeDataFromPath<T>(Path.of("driver", metadata()!!.name).resolve(path))
+inline fun <reified T : Any> Driver.loadConfigFromFile(path: Path = Paths.get("settings.conf"),
+                                                        defaultWhenNull: T,
+                                                        createWhenNull: Boolean = true): T  {
+    val fullPath = Path.of("driver", metadata()!!.name).resolve(path)
+    val configFile = kokoroidConfigRoot.resolve(fullPath).toFile()
+    if (configFile.exists()) {
+        return decodeDataFromPath<T>(fullPath)
+    }
+    else if (createWhenNull) {
+        saveConfigToFile(defaultWhenNull, path)
+    }
+    return defaultWhenNull
+}
+

@@ -18,7 +18,7 @@ class DriverMain : Driver() {
         getLogger().info { "Driver Main Loaded and ${Util("DriverMain").sayHi()}" }
         val config = MockConfig("123", 456)
         saveConfigToFile<MockConfig>(config)
-        val new = loadConfigFromFile<MockConfig>()
+        val new = loadConfigFromFile<MockConfig>(defaultWhenNull = MockConfig("123", 456))
         if (config != new) {
             throw CriticalException("Config function assert false")
         }

@@ -13,12 +13,17 @@ import dev.kokoroidkt.pluginApi.plugin.PluginRegistry
 import kotlinx.serialization.Serializable
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
 import org.koin.dsl.module
+import java.nio.file.Files
 import kotlin.io.path.deleteIfExists
+import kotlin.io.path.exists
 
 @Serializable
 data class TestPluginConfig(
@@ -84,7 +89,70 @@ class TestPluginExtensions {
         val config = TestPluginConfig("hello", 123)
         plugin.saveConfigToFile(config)
 
-        val loadedConfig = plugin.loadConfigFromFile<TestPluginConfig>()
+        val loadedConfig = plugin.loadConfigFromFile(defaultWhenNull = TestPluginConfig("default", 0))
         assertEquals(config, loadedConfig)
+    }
+
+    @Test
+    fun testPluginLoadConfigWhenFileExists() {
+        val config = TestPluginConfig("test", 456)
+        plugin.saveConfigToFile(config)
+
+        val loadedConfig = plugin.loadConfigFromFile(defaultWhenNull = TestPluginConfig("default", 0))
+        assertEquals(config, loadedConfig)
+    }
+
+    @Test
+    fun testPluginLoadConfigWhenFileNotExistsAndCreateWhenNullTrue() {
+        val defaultConfig = TestPluginConfig("default", 999)
+        val configPath = kokoroidConfigRoot.resolve("plugin/TestPlugin/settings.conf")
+        
+        configPath.deleteIfExists()
+        
+        val loadedConfig = plugin.loadConfigFromFile(
+            defaultWhenNull = defaultConfig,
+            createWhenNull = true
+        )
+        
+        assertEquals(defaultConfig, loadedConfig)
+        assertTrue(configPath.exists())
+        
+        val fileContent = Files.readString(configPath)
+        assertTrue(fileContent.contains("foo") && fileContent.contains("default"))
+        assertTrue(fileContent.contains("bar") && fileContent.contains("999"))
+    }
+
+    @Test
+    fun testPluginLoadConfigWhenFileNotExistsAndCreateWhenNullFalse() {
+        val defaultConfig = TestPluginConfig("default", 999)
+        val configPath = kokoroidConfigRoot.resolve("plugin/TestPlugin/settings.conf")
+        
+        configPath.deleteIfExists()
+        
+        val loadedConfig = plugin.loadConfigFromFile(
+            defaultWhenNull = defaultConfig,
+            createWhenNull = false
+        )
+        
+        assertEquals(defaultConfig, loadedConfig)
+        assertFalse(configPath.exists())
+    }
+
+    @Test
+    fun testPluginLoadConfigWhenFileHasInvalidFormat() {
+        val defaultConfig = TestPluginConfig("default", 999)
+        val configPath = kokoroidConfigRoot.resolve("plugin/TestPlugin/settings.conf")
+        
+        // 创建格式错误的配置文件
+        configPath.parent.toFile().mkdirs()
+        Files.writeString(configPath, "invalid json content")
+        
+        // 当配置文件格式错误时，应该抛出异常
+        assertThrows(Exception::class.java) {
+            plugin.loadConfigFromFile(
+                defaultWhenNull = defaultConfig,
+                createWhenNull = false
+            )
+        }
     }
 }
