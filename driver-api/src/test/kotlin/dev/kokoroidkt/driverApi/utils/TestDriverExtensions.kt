@@ -88,7 +88,7 @@ class TestDriverExtensions {
         val config = TestDriverConfig("hello", 123)
         driver.saveConfigToFile(config)
 
-        val loadedConfig = driver.loadConfigFromFile(defaultWhenNull = TestDriverConfig("default", 0))
+        val loadedConfig = driver.loadConfigFromFile(TestDriverConfig("default", 0))
         assertEquals(config, loadedConfig)
     }
 
@@ -97,7 +97,7 @@ class TestDriverExtensions {
         val config = TestDriverConfig("test", 456)
         driver.saveConfigToFile(config)
 
-        val loadedConfig = driver.loadConfigFromFile(defaultWhenNull = TestDriverConfig("default", 0))
+        val loadedConfig = driver.loadConfigFromFile(TestDriverConfig("default", 0))
         assertEquals(config, loadedConfig)
     }
 
@@ -109,7 +109,7 @@ class TestDriverExtensions {
         configPath.deleteIfExists()
         
         val loadedConfig = driver.loadConfigFromFile(
-            defaultWhenNull = defaultConfig,
+            defaultConfig,
             createWhenNull = true
         )
         
@@ -129,7 +129,7 @@ class TestDriverExtensions {
         configPath.deleteIfExists()
         
         val loadedConfig = driver.loadConfigFromFile(
-            defaultWhenNull = defaultConfig,
+            defaultConfig,
             createWhenNull = false
         )
         
@@ -149,7 +149,7 @@ class TestDriverExtensions {
         // 当配置文件格式错误时，应该抛出异常
         assertThrows(Exception::class.java) {
             driver.loadConfigFromFile(
-                defaultWhenNull = defaultConfig,
+                defaultConfig,
                 createWhenNull = false
             )
         }

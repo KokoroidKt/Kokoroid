@@ -73,11 +73,13 @@ inline fun <reified T : Any> Plugin.saveConfigToFile(
 /**
  * 从文件加载配置。
  *
+ * @param defaultWhenNull 当配置文件不存在时返回的默认值
  * @param path 配置文件相对于 plugin/<plugin_name> 的路径。默认为 /settings.conf。
+ * @param createWhenNull 当配置文件不存在时是否创建默认配置文件，默认为 true
  * @return 加载的配置对象。
  */
-inline fun <reified T : Any> Plugin.loadConfigFromFile(path: Path = Paths.get("settings.conf"),
-                                                        defaultWhenNull: T,
+inline fun <reified T : Any> Plugin.loadConfigFromFile(defaultWhenNull: T,
+                                                        path: Path = Paths.get("settings.conf"),
                                                         createWhenNull: Boolean = true): T  {
     val fullPath = Path.of("plugin", metadata().name).resolve(path)
     val configFile = kokoroidConfigRoot.resolve(fullPath).toFile()

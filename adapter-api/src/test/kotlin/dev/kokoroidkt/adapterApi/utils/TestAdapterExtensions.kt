@@ -153,7 +153,7 @@ class TestAdapterExtensions {
         println("Decode path: $decodePath")
         println("Decode path exists: ${decodePath.toFile().exists()}")
 
-        val loadedConfig = adapter.loadConfigFromFile(defaultWhenNull = TestConfigData("default", 0))
+        val loadedConfig = adapter.loadConfigFromFile(TestConfigData("default", 0))
         println("Loaded config: $loadedConfig")
         println("Expected config: $config")
         assertEquals(config, loadedConfig)
@@ -164,7 +164,7 @@ class TestAdapterExtensions {
         val config = TestConfigData("test", 456)
         adapter.saveConfigToFile(config)
 
-        val loadedConfig = adapter.loadConfigFromFile(defaultWhenNull = TestConfigData("default", 0))
+        val loadedConfig = adapter.loadConfigFromFile(TestConfigData("default", 0))
         assertEquals(config, loadedConfig)
     }
 
@@ -176,7 +176,7 @@ class TestAdapterExtensions {
         configPath.deleteIfExists()
         
         val loadedConfig = adapter.loadConfigFromFile(
-            defaultWhenNull = defaultConfig,
+            defaultConfig,
             createWhenNull = true
         )
         
@@ -197,7 +197,7 @@ class TestAdapterExtensions {
         configPath.deleteIfExists()
         
         val loadedConfig = adapter.loadConfigFromFile(
-            defaultWhenNull = defaultConfig,
+            defaultConfig,
             createWhenNull = false
         )
         
@@ -217,7 +217,7 @@ class TestAdapterExtensions {
         // 当配置文件格式错误时，应该抛出异常
         assertThrows(Exception::class.java) {
             adapter.loadConfigFromFile(
-                defaultWhenNull = defaultConfig,
+                defaultConfig,
                 createWhenNull = false
             )
         }

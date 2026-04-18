@@ -89,7 +89,7 @@ class TestPluginExtensions {
         val config = TestPluginConfig("hello", 123)
         plugin.saveConfigToFile(config)
 
-        val loadedConfig = plugin.loadConfigFromFile(defaultWhenNull = TestPluginConfig("default", 0))
+        val loadedConfig = plugin.loadConfigFromFile(TestPluginConfig("default", 0))
         assertEquals(config, loadedConfig)
     }
 
@@ -98,7 +98,7 @@ class TestPluginExtensions {
         val config = TestPluginConfig("test", 456)
         plugin.saveConfigToFile(config)
 
-        val loadedConfig = plugin.loadConfigFromFile(defaultWhenNull = TestPluginConfig("default", 0))
+        val loadedConfig = plugin.loadConfigFromFile(TestPluginConfig("default", 0))
         assertEquals(config, loadedConfig)
     }
 
@@ -110,7 +110,7 @@ class TestPluginExtensions {
         configPath.deleteIfExists()
         
         val loadedConfig = plugin.loadConfigFromFile(
-            defaultWhenNull = defaultConfig,
+            defaultConfig,
             createWhenNull = true
         )
         
@@ -130,7 +130,7 @@ class TestPluginExtensions {
         configPath.deleteIfExists()
         
         val loadedConfig = plugin.loadConfigFromFile(
-            defaultWhenNull = defaultConfig,
+            defaultConfig,
             createWhenNull = false
         )
         
@@ -150,7 +150,7 @@ class TestPluginExtensions {
         // 当配置文件格式错误时，应该抛出异常
         assertThrows(Exception::class.java) {
             plugin.loadConfigFromFile(
-                defaultWhenNull = defaultConfig,
+                defaultConfig,
                 createWhenNull = false
             )
         }
