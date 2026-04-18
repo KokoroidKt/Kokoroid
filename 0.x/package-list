@@ -5,7 +5,6 @@ module:adapter-api
 dev.kokoroidkt.adapterApi.adapter
 dev.kokoroidkt.adapterApi.exceptions
 dev.kokoroidkt.adapterApi.logger
-dev.kokoroidkt.adapterApi.transport
 dev.kokoroidkt.adapterApi.utils
 module:core
 dev.kokoroidkt.core
@@ -51,6 +50,7 @@ dev.kokoroidkt.driverApi.decoder
 dev.kokoroidkt.driverApi.driver
 dev.kokoroidkt.driverApi.exception
 dev.kokoroidkt.driverApi.logger
+dev.kokoroidkt.driverApi.transport
 dev.kokoroidkt.driverApi.utils
 module:plugin-api
 dev.kokoroidkt.pluginApi.conversation
