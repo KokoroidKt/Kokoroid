@@ -4,11 +4,12 @@
 //
 // SPDX-License-Identifier: LGPL-2.1-or-later
 
-package dev.kokoroidkt.adapterApi.transport
+package dev.kokoroidkt.driverApi.transport
 
 import dev.kokoroid.transport.decoder.Decoder
 import dev.kokoroid.transport.raw.Raw
 import dev.kokoroidkt.coreApi.event.Event
+import org.koin.java.KoinJavaComponent.getKoin
 
 interface EventEmitter {
     /**
@@ -28,4 +29,15 @@ interface EventEmitter {
      * @param event 要提交的事件
      */
     suspend fun emit(event: Event?)
+
+    companion object {
+        /**
+         * 向主事件循环提交一个事件
+         *
+         * @param event
+         */
+        suspend fun emit(event: Event?) {
+            getKoin().get<GlobalLoopEmitter>().emit(event)
+        }
+    }
 }

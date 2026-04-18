@@ -29,6 +29,7 @@ import dev.kokoroidkt.coreApi.config.ConfigHelper
 import dev.kokoroidkt.coreApi.database.DatabaseManager
 import dev.kokoroidkt.coreApi.logging.LoggerFactory
 import dev.kokoroidkt.driverApi.driver.DriverRegistry
+import dev.kokoroidkt.driverApi.transport.GlobalLoopEmitter
 import dev.kokoroidkt.pluginApi.factory.ConversationOrchestratorFactory
 import dev.kokoroidkt.pluginApi.plugin.PluginRegistry
 import dev.kokoroidkt.pluginApi.session.container.SessionContainer
@@ -74,7 +75,7 @@ val utils =
 val basicModules =
     module {
         single<Config> { Config() }
-        single<GlobalEventLoop> { GlobalEventLoop() }
+        single { GlobalEventLoop() }.binds(GlobalLoopEmitter::class, GlobalEventLoop::class)
         single<KokoroidLauncher> { KokoroidLauncher() }
         single<CrashRegistry> { CrashRegistryImpl() }
         single<DatabaseManager> { DatabaseManagerImpl }

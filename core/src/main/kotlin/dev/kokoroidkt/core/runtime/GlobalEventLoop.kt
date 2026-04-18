@@ -8,7 +8,6 @@ package dev.kokoroidkt.core.runtime
 
 import dev.kokoroid.transport.decoder.Decoder
 import dev.kokoroid.transport.raw.Raw
-import dev.kokoroidkt.adapterApi.transport.EventEmitter
 import dev.kokoroidkt.core.config.Config
 import dev.kokoroidkt.core.exceptions.EventBufferIsFullException
 import dev.kokoroidkt.core.exceptions.state.ErrorSessionStateException
@@ -19,6 +18,8 @@ import dev.kokoroidkt.core.runtime.state.InternalState
 import dev.kokoroidkt.core.runtime.state.RuntimeState
 import dev.kokoroidkt.coreApi.event.Event
 import dev.kokoroidkt.coreApi.exceptions.CriticalException
+import dev.kokoroidkt.driverApi.transport.EventEmitter
+import dev.kokoroidkt.driverApi.transport.GlobalLoopEmitter
 import dev.kokoroidkt.pluginApi.conversation.Reply
 import dev.kokoroidkt.pluginApi.session.SessionState
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +32,7 @@ import org.koin.core.component.inject
 import kotlin.coroutines.cancellation.CancellationException
 
 class GlobalEventLoop :
-    EventEmitter,
+    GlobalLoopEmitter,
     KoinComponent {
     private val config: Config by inject()
     private val eventChannel = Channel<Event>(config.basic.performance.global.bufferSize)
