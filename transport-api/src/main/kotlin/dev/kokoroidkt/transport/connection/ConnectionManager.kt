@@ -1,4 +1,4 @@
-package dev.kokoroid.transport.connection
+package dev.kokoroidkt.transport.connection
 
 object ConnectionManager {
     val connections: List<Connection>

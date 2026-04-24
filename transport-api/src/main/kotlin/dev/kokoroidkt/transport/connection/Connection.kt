@@ -1,6 +1,6 @@
-package dev.kokoroid.transport.connection
+package dev.kokoroidkt.transport.connection
 
-import dev.kokoroid.transport.decoder.Decoder
+import dev.kokoroidkt.transport.decoder.Decoder
 
 interface Connection {
     val state: ConnectionState

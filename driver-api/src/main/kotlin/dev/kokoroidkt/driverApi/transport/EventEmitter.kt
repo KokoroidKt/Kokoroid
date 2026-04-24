@@ -6,9 +6,9 @@
 
 package dev.kokoroidkt.driverApi.transport
 
-import dev.kokoroid.transport.decoder.Decoder
-import dev.kokoroid.transport.raw.Raw
 import dev.kokoroidkt.coreApi.event.Event
+import dev.kokoroidkt.transport.decoder.Decoder
+import dev.kokoroidkt.transport.raw.Raw
 import org.koin.java.KoinJavaComponent.getKoin
 
 interface EventEmitter {
